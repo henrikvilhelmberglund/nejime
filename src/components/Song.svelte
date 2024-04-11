@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PhraseSelector from "./PhraseSelector.svelte";
+	import PatternSelector from "./PatternSelector.svelte";
 
 	let channels = [1, 2, 3, 4, 5];
 	let rows = Array.from({ length: 64 });
@@ -9,7 +9,7 @@
 	{#each rows as row, i}
 		<div id={`row-${i}`} class="flex gap-2">
 			{#each channels as channel, j}
-				<PhraseSelector id={`row-${i}-channel-${j}`} />
+				<PatternSelector id={`row-${i}-channel-${j}`} />
 			{/each}
 		</div>
 	{/each}
