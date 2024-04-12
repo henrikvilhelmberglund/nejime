@@ -1,7 +1,20 @@
+let activeScreenState = $state("song");
 let activePhraseElementId = $state();
 let activePatternElementId = $state();
 let sPressed = $state(false);
+let dPressed = $state(false);
+let fPressed = $state(false);
 
+export function createActiveScreenState() {
+	return {
+		get value() {
+			return activeScreenState;
+		},
+		set value(newState) {
+			activeScreenState = newState;
+		}
+	};
+}
 
 export function createSPressedState() {
 	return {
@@ -13,6 +26,28 @@ export function createSPressedState() {
 		// },
 		set value(newState) {
 			sPressed = newState;
+		}
+	};
+}
+
+export function createDPressedState() {
+	return {
+		get value() {
+			return dPressed;
+		},
+		set value(newState) {
+			dPressed = newState;
+		}
+	};
+}
+
+export function createFPressedState() {
+	return {
+		get value() {
+			return fPressed;
+		},
+		set value(newState) {
+			fPressed = newState;
 		}
 	};
 }
