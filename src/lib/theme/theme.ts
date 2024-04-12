@@ -7,14 +7,39 @@ interface Theme {
 	primary: ColorObject;
 	secondary: ColorObject;
 	monochrome: ColorObject;
+	selection: ColorObject;
 }
 
 // add colors here, then create an object inside presetTheme({theme: {} in uno.config.js
 export const themes = createThemes([
-	{ name: "blue", primary: colors.blue, secondary: colors.purple, monochrome: colors.slate },
-	{ name: "green", primary: colors.green, secondary: colors.orange, monochrome: colors.gray },
-	{ name: "yellow", primary: colors.yellow, secondary: colors.pink, monochrome: colors.stone },
-	{ name: "pink", primary: colors.pink, secondary: colors.rose, monochrome: colors.stone }
+	{
+		name: "blue",
+		primary: colors.blue,
+		secondary: colors.purple,
+		monochrome: colors.slate,
+		selection: colors.amber
+	},
+	{
+		name: "green",
+		primary: colors.green,
+		secondary: colors.orange,
+		monochrome: colors.gray,
+		selection: colors.blue
+	},
+	{
+		name: "yellow",
+		primary: colors.yellow,
+		secondary: colors.pink,
+		monochrome: colors.stone,
+		selection: colors.blue
+	},
+	{
+		name: "pink",
+		primary: colors.pink,
+		secondary: colors.rose,
+		monochrome: colors.stone,
+		selection: colors.blue
+	}
 ]);
 export const themeColors = Object.entries(themes).map((theme) => {
 	// console.log(theme[0]);
@@ -26,10 +51,11 @@ export function createThemes(objects: Theme[]) {
 		name: string,
 		primary: ColorObject,
 		secondary: ColorObject,
-		monochrome: ColorObject
+		monochrome: ColorObject,
+		selection: ColorObject
 	) {
 		const colors = {
-      primary: {
+			primary: {
 				50: primary["50"],
 				100: primary["100"],
 				200: primary["200"],
@@ -67,6 +93,19 @@ export function createThemes(objects: Theme[]) {
 				800: monochrome["800"],
 				900: monochrome["900"],
 				950: monochrome["950"]
+			},
+			selection: {
+				50: selection["50"],
+				100: selection["100"],
+				200: selection["200"],
+				300: selection["300"],
+				400: selection["400"],
+				500: selection["500"],
+				600: selection["600"],
+				700: selection["700"],
+				800: selection["800"],
+				900: selection["900"],
+				950: selection["950"]
 			}
 		};
 
@@ -77,8 +116,8 @@ export function createThemes(objects: Theme[]) {
 	}
 
 	const themes = objects.map((object) => {
-		const { name, primary, secondary, monochrome } = object;
-		return generateColorObject(name, primary, secondary, monochrome);
+		const { name, primary, secondary, monochrome, selection } = object;
+		return generateColorObject(name, primary, secondary, monochrome, selection);
 	});
 
 	return Object.assign({}, ...themes);

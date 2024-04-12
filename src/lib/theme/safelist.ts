@@ -15,7 +15,7 @@ const safelistTypes = [
 	// "border-l",
 	// "border",
 	// "divide",
-	"outline",
+	"outline"
 	// "ring",
 	// "ring-offset",
 	// "shadow",
@@ -24,7 +24,7 @@ const safelistTypes = [
 	// "fill",
 	// "stroke",
 ];
-const safelistColors = ["primary", "secondary", "base", "monochrome", ...themeColors];
+const safelistColors = ["primary", "secondary", "base", "monochrome", "selection", ...themeColors];
 const safelistShades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
 // let mode = 2;
 // let myArray = [];
