@@ -1,29 +1,46 @@
 <script lang="ts">
 	import DarkModeToggle from "$lib/theme/DarkModeToggle.svelte";
 	import ThemeSwitcher from "$lib/theme/ThemeSwitcher.svelte";
+	import Instrument from "./Instrument.svelte";
 	import Pattern from "./Pattern.svelte";
 	import Phrase from "./Phrase.svelte";
+	import Project from "./Project.svelte";
 	import Song from "./Song.svelte";
-	import { createSPressedState } from "./globalState.svelte";
+	import {
+		createSPressedState,
+		createDPressedState,
+		createFPressedState,
+		createActiveScreenState
+	} from "./globalState.svelte";
 
-	let allStates = ["song", "patern", "phrase", "instrument"];
-	let activeState = $state("song");
+	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
+	let activeScreenState = createActiveScreenState();
 
 	let sPressed = createSPressedState();
+	let dPressed = createDPressedState();
+	let fPressed = createFPressedState();
 
 	function changeState(direction: string) {
-		if (activeState === "song" && direction === "next") {
-			activeState = "pattern";
-		} else if (activeState === "pattern" && direction === "previous") {
-			activeState = "song";
+		if (activeScreenState.value === "song" && direction === "right") {
+			activeScreenState.value = "pattern";
+		} else if (activeScreenState.value === "pattern" && direction === "left") {
+			activeScreenState.value = "song";
+		} else if (activeScreenState.value === "pattern" && direction === "right") {
+			activeScreenState.value = "phrase";
+		} else if (activeScreenState.value === "pattern" && direction === "right") {
+			activeScreenState.value = "phrase";
+		} else if (activeScreenState.value === "song" && direction === "up") {
+			activeScreenState.value = "project-song";
+		} else if (activeScreenState.value === "pattern" && direction === "up") {
+			activeScreenState.value = "project-pattern";
+		} else if (activeScreenState.value === "project-song" && direction === "down") {
+			activeScreenState.value = "song";
+		} else if (activeScreenState.value === "project-pattern" && direction === "down") {
+			activeScreenState.value = "pattern";
 		}
 	}
-
-	$inspect(activeState);
 </script>
 
-<ThemeSwitcher />
-<DarkModeToggle />
 <div
 	id="nejime"
 	role="presentation"
@@ -32,11 +49,23 @@
 		if (e.code === "KeyS") {
 			sPressed.value = true;
 		}
+		if (e.code === "KeyD") {
+			dPressed.value = true;
+		}
+		if (e.code === "KeyF") {
+			fPressed.value = true;
+		}
 		if (sPressed.value && e.code === "ArrowRight") {
-			changeState("next");
+			changeState("right");
 		}
 		if (sPressed.value && e.code === "ArrowLeft") {
-			changeState("previous");
+			changeState("left");
+		}
+		if (sPressed.value && e.code === "ArrowUp") {
+			changeState("up");
+		}
+		if (sPressed.value && e.code === "ArrowDown") {
+			changeState("down");
 		}
 	}}
 	onkeyup={(e) => {
@@ -45,13 +74,18 @@
 			sPressed.value = false;
 		}
 	}}
-	class="bg-primary-200 dark:bg-primary-950 flex h-[600px] top-24 w-full  justify-center text-black dark:text-white">
-	{#if activeState === "song"}
+	class="h-[500px] w-[500px] rounded-lg border-black border-2 bg-primary-400 flex flex-col text-black dark:text-white">
+  <p class="text-lg text-white font-semibold pl-1">{activeScreenState.value.toUpperCase()}</p>
+	{#if activeScreenState.value === "song"}
 		<Song />
-	{:else if activeState === "pattern"}
+	{:else if activeScreenState.value === "pattern"}
 		<Pattern />
-	{:else if activeState === "phrase"}
+	{:else if activeScreenState.value === "phrase"}
 		<Phrase />
+	{:else if activeScreenState.value === "instrument"}
+		<Instrument />
+	{:else if activeScreenState.value === "project"}
+		<Project />
 	{/if}
 </div>
 

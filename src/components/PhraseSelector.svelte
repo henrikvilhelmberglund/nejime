@@ -52,8 +52,10 @@
 	{id}
 	onkeydown={handleKeyPress}
 	onclick={handleClick}
-	class="focus:ring-none focus-visible:ring-none flex h-6 w-6 items-center justify-center border-none p-0 text-center text-2xl focus:bg-blue-500 focus:outline-transparent focus-visible:border-none focus-visible:outline-none"
-	>{name}</button>
+	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">
+	<span class="pointer-events-none leading-3">
+		{name}
+	</span></button>
 
 <style>
 </style>
