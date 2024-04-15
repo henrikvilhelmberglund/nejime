@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { createActivePhraseElementId } from "./globalState.svelte";
+	import { createActivePhraseElementIdState, createActivePhraseState } from "./globalState.svelte";
 
-	let name = $state("--");
-	let { id }: { id: string } = $props();
-	let activePhraseElementId = createActivePhraseElementId();
+	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
+	let activePhraseElementId = createActivePhraseElementIdState();
+	let activePhrase = createActivePhraseState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -12,13 +12,14 @@
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row-${row}-pattern`)!;
 			phraseSelector.focus();
 			activePhraseElementId.value = phraseSelector.id;
+			activePhrase.value = phraseSelector.innerText;
 		} catch (error) {
-			console.error(`element ${`#row-${row}`} not found, can't focus`);
+			console.error(`element ${`#row${row}`} not found, can't focus`);
 		}
 	}
 
 	function handleKeyPress(e: KeyboardEvent) {
-		const row = id.split("row-")[1].split("-channel")[0];
+		const row = id.split("row")[1].split("-channel")[0];
 		// const channel = id.split("row-")[1].split("-channel-")[1];
 		e.preventDefault();
 		if (e.code === "ArrowLeft") {
@@ -54,7 +55,7 @@
 	onclick={handleClick}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">
 	<span class="pointer-events-none leading-3">
-		{name}
+		{selectedPhrase}
 	</span></button>
 
 <style>

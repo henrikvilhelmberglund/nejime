@@ -1,22 +1,14 @@
-<script lang="ts">
-	import { onMount } from "svelte";
+<!-- <script lang="ts">
 	import {
 		createActivePatternElementIdState,
 		createSPressedState,
 		createDPressedState,
-		createFPressedState,
-		createActivePatternState
+		createFPressedState
 	} from "./globalState.svelte";
 
-	let {
-		id,
-		hex,
-		channel,
-		selectedPattern
-	}: { id: string; hex: string; channel: string; selectedPattern: string } = $props();
-	// let name = $state("--");
+	let name = $state("--");
+	let { id }: { id: string } = $props();
 	let activePatternElementId = createActivePatternElementIdState();
-	let activePattern = createActivePatternState();
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
@@ -26,19 +18,18 @@
 	function focusPatternSelector({ row, channel }: { row: number; channel: number }) {
 		try {
 			const patternSelector: HTMLButtonElement = document.querySelector(
-				`#row${row}-channel${+channel}`
+				`#row-${row}-channel-${+channel}`
 			)!;
 			patternSelector.focus();
 			activePatternElementId.value = patternSelector.id;
-			activePattern.value = patternSelector.innerText;
 		} catch (error) {
-			console.error(`element ${`#row${row}-channel${+channel}`} not found, can't focus`);
+			console.error(`element ${`#row-${row}-channel-${+channel}`} not found, can't focus`);
 		}
 	}
 
 	function handleKeyPress(e: KeyboardEvent) {
-		const row = id.split("row")[1].split("-channel")[0];
-		const channel = id.split("row")[1].split("-channel")[1];
+		const row = id.split("row-")[1].split("-channel")[0];
+		const channel = id.split("row-")[1].split("-channel-")[1];
 		e.preventDefault();
 		// if s, d or f are pressed, don't use below logic that switches cursor location
 		if (sPressed.value || dPressed.value || fPressed.value) return;
@@ -57,20 +48,27 @@
 	function handleClick(e: MouseEvent) {
 		activePatternElementId.value = (<HTMLButtonElement>e.target).id;
 	}
+
+	$effect(() => {
+		if (activePatternElementId && activePatternElementId.value) {
+			document
+				.querySelector<HTMLButtonElement>(`#nejime #${activePatternElementId.value}`)!
+				.focus();
+		} else {
+			document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
+		}
+	});
 </script>
 
 <button
 	{id}
-	data-hex={hex}
 	onkeydown={handleKeyPress}
 	onclick={handleClick}
-	class:text-lg={selectedPattern !== "--"}
-	class:items-center={selectedPattern !== "--"}
-	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 justify-center border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">
-	<span class:leading-={selectedPattern !== "--"} class="pointer-events-none leading-3">
-		{selectedPattern}
+	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">
+	<span class="pointer-events-none leading-3">
+		{name}
 	</span>
 </button>
 
 <style>
-</style>
+</style> -->

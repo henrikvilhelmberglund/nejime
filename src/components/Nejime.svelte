@@ -73,6 +73,12 @@
 		if (e.code === "KeyS") {
 			sPressed.value = false;
 		}
+    if (e.code === "KeyD") {
+			dPressed.value = false;
+		}
+		if (e.code === "KeyF") {
+			fPressed.value = false;
+		}
 	}}
 	class="h-[500px] w-[500px] rounded-lg border-black border-2 bg-primary-400 flex flex-col text-black dark:text-white">
   <p class="text-lg text-white font-semibold pl-1">{activeScreenState.value.toUpperCase()}</p>
