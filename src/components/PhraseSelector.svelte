@@ -9,7 +9,7 @@
 
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {
-			const phraseSelector: HTMLButtonElement = document.querySelector(`#row-${row}-pattern`)!;
+			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
 			phraseSelector.focus();
 			activePhraseElementId.value = phraseSelector.id;
 			activePhrase.value = phraseSelector.innerText;
@@ -18,16 +18,28 @@
 		}
 	}
 
+	function focusTransposeSelector({ row }: { row: number }) {
+		try {
+			const transposeSelector: HTMLButtonElement = document.querySelector(`#row${row}-transpose`)!;
+			transposeSelector.focus();
+			activePhraseElementId.value = transposeSelector.id;
+			activePhrase.value = transposeSelector.innerText;
+		} catch (error) {
+			console.error(`element ${`#row${row}`} not found, can't focus`);
+		}
+	}
+
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("row")[1].split("-channel")[0];
+		console.log("row", row);
 		// const channel = id.split("row-")[1].split("-channel-")[1];
 		e.preventDefault();
 		if (e.code === "ArrowLeft") {
 			// TODO transpose here
-			// focusPhraseSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
+			// focusTransposeSelector({ row: parseInt(row)});
 		} else if (e.code === "ArrowRight") {
 			// TODO transpose here
-			// focusPhraseSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
+			focusTransposeSelector({ row: parseInt(row) });
 		} else if (e.code === "ArrowUp") {
 			focusPhraseSelector({ row: parseInt(row) - 1 });
 		} else if (e.code === "ArrowDown") {
@@ -53,6 +65,8 @@
 	{id}
 	onkeydown={handleKeyPress}
 	onclick={handleClick}
+	class:text-lg={selectedPhrase !== "--"}
+	class:items-center={selectedPhrase !== "--"}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">
 	<span class="pointer-events-none leading-3">
 		{selectedPhrase}
