@@ -2,7 +2,7 @@ let activeScreenState = $state("song");
 let activePhraseElementId = $state();
 let activePhrase = $state();
 let activePatternElementId = $state();
-let activePattern = $state();
+let activePattern = $state("");
 let sPressed = $state(false);
 let dPressed = $state(false);
 let fPressed = $state(false);
@@ -24,17 +24,44 @@ let song = $state({
 });
 let patterns = $state({
 	"00": {
+		"00": "10",
+		"01": "11",
+		"02": "12"
+	},
+	"01": {
+		"00": "41",
+		"01": "42",
+		"02": "43"
+	}
+});
+let transposePatterns = $state({
+	"00": {
+		"00": "01",
+		"02": "02"
+	},
+	"01": {
+		"00": "01",
+		"01": "02",
+		"02": "03"
+	}
+});
+let phrases = $state({
+	"10": {
 		"00": "C1",
 		"01": "C2",
 		"02": "C3"
-  },
-  "01": {
+	},
+	"11": {
 		"00": "E3",
 		"01": "F3",
 		"02": "G3"
 	},
+	"12": {
+		"00": "E4",
+		"01": "F4",
+		"02": "G4"
+	}
 });
-let phrases = $state({});
 
 export function createActiveScreenState() {
 	return {
@@ -163,6 +190,17 @@ export function createPatternsState() {
 		// add(patternToAdd) {
 		// 	patterns.push(patternToAdd);
 		// }
+	};
+}
+
+export function createTransposePatternsState() {
+	return {
+		get value() {
+			return transposePatterns;
+		},
+		set value(newState) {
+			transposePatterns = newState;
+		}
 	};
 }
 
