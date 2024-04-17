@@ -1,7 +1,11 @@
 <script lang="ts">
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
-	import { createActivePatternElementIdState, createSongState } from "./globalState.svelte";
+	import {
+		createActivePatternElementIdState,
+		createActivePatternState,
+		createSongState
+	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
 	let channels = [0, 1, 2, 3, 4];
@@ -9,6 +13,7 @@
 
 	let songState = createSongState();
 	let activePatternElementId = createActivePatternElementIdState();
+	let activePattern = createActivePatternState();
 
 	interface Pattern {
 		channel0: string;
@@ -20,16 +25,22 @@
 
 	$effect(() => {
 		if (activePatternElementId && activePatternElementId.value) {
-			document
-				.querySelector<HTMLButtonElement>(`#nejime #${activePatternElementId.value}`)!
-				.focus();
+			queueMicrotask(() => {
+				document
+					.querySelector<HTMLButtonElement>(`#nejime #${activePatternElementId.value}`)!
+					.focus();
+			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
 			console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
 			// setTimeout(() => {
 			// 	document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
 			// }, 0);
-			document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
+			const patternSelector = document.querySelector<HTMLButtonElement>("#nejime button")!;
+			queueMicrotask(() => {
+				patternSelector.focus();
+			});
+			activePattern.value = patternSelector.innerText;
 			// }
 		}
 	});
