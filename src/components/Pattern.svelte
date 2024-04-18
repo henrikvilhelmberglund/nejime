@@ -4,6 +4,8 @@
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
 		createActivePatternState,
+		createActivePhraseElementIdState,
+		createActivePhraseState,
 		createPatternsState,
 		createTransposePatternsState
 	} from "./globalState.svelte";
@@ -15,7 +17,30 @@
 	let patternState = createPatternsState();
 	let transposePatternsState = createTransposePatternsState();
 	let activePattern = createActivePatternState();
-	// $inspect(patternState.value[activePattern.value])
+	let activePhrase = createActivePhraseState();
+	let activePhraseElementId = createActivePhraseElementIdState();
+
+	$effect(() => {
+		if (activePhraseElementId && activePhraseElementId.value) {
+			queueMicrotask(() => {
+				document
+					.querySelector<HTMLButtonElement>(`#nejime #${activePhraseElementId.value}`)!
+					.focus();
+			});
+		} else {
+			// console.log(document.querySelector("#nejime button"))
+			console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
+			// setTimeout(() => {
+			// 	document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
+			// }, 0);
+			const phraseSelector = document.querySelector<HTMLButtonElement>("#nejime button")!;
+			queueMicrotask(() => {
+				phraseSelector.focus();
+			});
+			activePhrase.value = phraseSelector.innerText;
+			// }
+		}
+	});
 </script>
 
 <main class="flex overflow-hidden">
@@ -29,7 +54,7 @@
 						hex={toHex(i)}
 						id={`row${i}-pattern`} />
 				</div>
-				<div id={`row${i}-transpose-div`} class="flex gap-2 bg-primary-500">
+				<div id={`row${i}-transpose-div`} class="bg-primary-500 flex gap-2">
 					<TransposeSelector
 						transpose={transposePatternsState.value[activePattern.value as keyof typeof patternState.value]?.[toHex(i) as keyof typeof patternState.value] ?? "00"}
 						hex={toHex(i)}

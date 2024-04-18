@@ -1,9 +1,19 @@
 <script lang="ts">
-	import { createActivePhraseElementIdState, createActivePhraseState } from "./globalState.svelte";
+	import {
+		createActivePhraseElementIdState,
+		createActivePhraseState,
+		createSPressedState,
+		createDPressedState,
+		createFPressedState
+	} from "./globalState.svelte";
 
 	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
 	let activePhraseElementId = createActivePhraseElementIdState();
 	let activePhrase = createActivePhraseState();
+
+  let sPressed = createSPressedState();
+	let dPressed = createDPressedState();
+	let fPressed = createFPressedState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -14,18 +24,7 @@
 			activePhraseElementId.value = phraseSelector.id;
 			activePhrase.value = phraseSelector.innerText;
 		} catch (error) {
-			console.error(`element ${`#row${row}`} not found, can't focus`);
-		}
-	}
-
-	function focusTransposeSelector({ row }: { row: number }) {
-		try {
-			const transposeSelector: HTMLButtonElement = document.querySelector(`#row${row}-transpose`)!;
-			transposeSelector.focus();
-			activePhraseElementId.value = transposeSelector.id;
-			activePhrase.value = transposeSelector.innerText;
-		} catch (error) {
-			console.error(`element ${`#row${row}`} not found, can't focus`);
+			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
 		}
 	}
 
@@ -34,12 +33,13 @@
 		console.log("row", row);
 		// const channel = id.split("row-")[1].split("-channel-")[1];
 		e.preventDefault();
+		// if s, d or f are pressed, don't use below logic that switches cursor location
+		if (sPressed.value || dPressed.value || fPressed.value) return;
 		if (e.code === "ArrowLeft") {
-			// TODO transpose here
 			// focusTransposeSelector({ row: parseInt(row)});
 		} else if (e.code === "ArrowRight") {
-			// TODO transpose here
-			focusTransposeSelector({ row: parseInt(row) });
+      // TODO move to right channel
+			// focusTransposeSelector({ row: parseInt(row) });
 		} else if (e.code === "ArrowUp") {
 			focusPhraseSelector({ row: parseInt(row) - 1 });
 		} else if (e.code === "ArrowDown") {

@@ -27,8 +27,6 @@
 			activeScreenState.value = "song";
 		} else if (activeScreenState.value === "pattern" && direction === "right") {
 			activeScreenState.value = "phrase";
-		} else if (activeScreenState.value === "pattern" && direction === "right") {
-			activeScreenState.value = "phrase";
 		} else if (activeScreenState.value === "song" && direction === "up") {
 			activeScreenState.value = "project-song";
 		} else if (activeScreenState.value === "pattern" && direction === "up") {
@@ -36,6 +34,8 @@
 		} else if (activeScreenState.value === "project-song" && direction === "down") {
 			activeScreenState.value = "song";
 		} else if (activeScreenState.value === "project-pattern" && direction === "down") {
+			activeScreenState.value = "pattern";
+		} else if (activeScreenState.value === "phrase" && direction === "left") {
 			activeScreenState.value = "pattern";
 		}
 	}
@@ -73,15 +73,15 @@
 		if (e.code === "KeyS") {
 			sPressed.value = false;
 		}
-    if (e.code === "KeyD") {
+		if (e.code === "KeyD") {
 			dPressed.value = false;
 		}
 		if (e.code === "KeyF") {
 			fPressed.value = false;
 		}
 	}}
-	class="h-[500px] w-[500px] rounded-lg border-black border-2 bg-primary-400 flex flex-col text-black dark:text-white">
-  <p class="text-lg text-white font-semibold pl-1">{activeScreenState.value.toUpperCase()}</p>
+	class="bg-primary-400 flex h-[500px] w-[500px] flex-col rounded-lg border-2 border-black text-black dark:text-white">
+	<p class="pl-1 text-lg font-semibold text-white">{activeScreenState.value.toUpperCase()}</p>
 	{#if activeScreenState.value === "song"}
 		<Song />
 	{:else if activeScreenState.value === "pattern"}

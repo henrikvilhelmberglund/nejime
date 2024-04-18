@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createActiveScreenState } from "./globalState.svelte";
-	import { toHex } from "./utils";
+	import { toHex, toHexSingle } from "./utils";
 
 	let activeScreenState = createActiveScreenState();
 	let songRows = Array.from({ length: 64 });
@@ -33,7 +33,7 @@
 			<span
 				class:bg-selection-500={alternatingFourRows(i)}
 				class:text-black={alternatingFourRows(i)}
-				class="h-5 px-1 leading-5">{toHex(i)}</span>
+				class="h-5 px-1 leading-5">{toHexSingle(i)}</span>
 		{/each}
 	{/if}
 </div>
