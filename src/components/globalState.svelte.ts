@@ -1,4 +1,6 @@
 let activeScreenState = $state("song");
+let activeNoteElementId = $state();
+let activeNote = $state();
 let activePhraseElementId = $state();
 let activePhrase = $state();
 let activePatternElementId = $state();
@@ -47,9 +49,12 @@ let transposePatterns = $state({
 });
 let phrases = $state({
 	"10": {
-		"00": "C1",
-		"01": "C2",
-		"02": "C3"
+		"00": {
+			"00": "C1",
+			"01": "C2",
+			"02": "C3",
+			"03": "C#3"
+		}
 	},
 	"11": {
 		"00": "E3",
@@ -106,6 +111,31 @@ export function createFPressedState() {
 		},
 		set value(newState) {
 			fPressed = newState;
+		}
+	};
+}
+
+export function createActiveNoteElementIdState() {
+	return {
+		get value() {
+			return activeNoteElementId;
+		},
+		// initial() {
+		// 	return { x: 512, y: 300 };
+		// },
+		set value(id) {
+			activeNoteElementId = id;
+		}
+	};
+}
+
+export function createActiveNoteState() {
+	return {
+		get value() {
+			return activeNote;
+		},
+		set value(hex) {
+			activeNote = hex;
 		}
 	};
 }
