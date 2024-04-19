@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "devDependencies": {
     "@iconify-json/carbon": "^1.1.31",
+    "@iconify-json/ph": "^1.1.12",
     "@julr/unocss-preset-forms": "^0.1.0",
     "@julr/unocss-preset-heropatterns": "^1.0.2",
     "@playwright/test": "^1.43.1",
@@ -16,6 +17,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.2.3",
     "prettier-plugin-tailwindcss": "^0.5.13",
+    "smplr": "^0.13.3",
     "svelte": "^5.0.0-next.104",
     "svelte-check": "^3.6.9",
     "tslib": "^2.6.2",
