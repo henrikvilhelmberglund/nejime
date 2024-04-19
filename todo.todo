@@ -1,0 +1,17 @@
+UI:
+  ✔ add transpose field @done(24-04-19 16:59)
+  ☐ add phrase number after Phrase in Phrase
+  ☐ add Note above notes in Phrase
+  
+core:
+    ☐ add instruments
+    ☐ transpose can go from 00 to FF (to allow for negative transpose)
+
+editing: 
+  ☐ add way to add empty pattern, starting from 00
+  ☐ add way to change pattern, should go from 00 to FF
+  ☐ add way to add notes in Phrase for the current channel
+  ☐ add way to delete notes in Phrase for the current channel
+
+cancelled:
+  ✘ fix ugly scrolling, should scroll per line instead of several at once (aka remove standard behavior) @cancelled(24-04-12 16:37) (actually this kind of seems ok now)
