@@ -10,8 +10,14 @@
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
-		createActiveScreenState
+		createActiveScreenState,
+		createIsPlayingBackState,
+		createIntervalIdState,
+		createBpmState,
+		createPhraseLoopIntervalIdState,
+		createPlayPositionState
 	} from "./globalState.svelte";
+	import { play, stop } from "./utils";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 	let activeScreenState = createActiveScreenState();
@@ -19,6 +25,8 @@
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
+	let isPlayingBack = createIsPlayingBackState();
+	let bpmState = createBpmState();
 
 	function changeState(direction: string) {
 		if (activeScreenState.value === "song" && direction === "right") {
@@ -39,6 +47,9 @@
 			activeScreenState.value = "pattern";
 		}
 	}
+	const intervalIdState = createIntervalIdState();
+	const phraseLoopIntervalIdState = createPhraseLoopIntervalIdState();
+	const playPositionState = createPlayPositionState();
 </script>
 
 <div
@@ -66,6 +77,36 @@
 		}
 		if (sPressed.value && e.code === "ArrowDown") {
 			changeState("down");
+		}
+		if (e.code === "Space") {
+			if (!isPlayingBack.value) {
+				if (activeScreenState.value === "phrase") {
+					play(activeScreenState.value);
+					// after first play, start looping
+					phraseLoopIntervalIdState.value = setInterval(
+						() => {
+							play(activeScreenState.value);
+						},
+						1000 * 17 * (60 / (bpmState.value * 4))
+					);
+					intervalIdState.value = setInterval(
+						() => {
+							if (playPositionState.value < 16) {
+								playPositionState.value += 1;
+							} else {
+								playPositionState.value = 0;
+							}
+						},
+						1000 * (60 / (bpmState.value * 4))
+					);
+				}
+				isPlayingBack.value = true;
+			} else {
+				stop(activeScreenState.value);
+				isPlayingBack.value = false;
+				intervalIdState.stop();
+				phraseLoopIntervalIdState.stop();
+			}
 		}
 	}}
 	onkeyup={(e) => {
