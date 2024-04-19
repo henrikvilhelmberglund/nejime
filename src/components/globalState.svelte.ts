@@ -1,3 +1,5 @@
+import { SplendidGrandPiano, Soundfont } from "smplr";
+
 let activeScreenState = $state("song");
 let activeNoteElementId = $state();
 let activeNote = $state();
@@ -8,6 +10,76 @@ let activePattern = $state("");
 let sPressed = $state(false);
 let dPressed = $state(false);
 let fPressed = $state(false);
+let bpm = $state(120);
+let playPosition = $state(0);
+let isPlayingBack = $state(false);
+let intervalId = $state();
+let phraseLoopIntervalId = $state();
+
+export function createPhraseLoopIntervalIdState() {
+	return {
+		get value() {
+			return phraseLoopIntervalId;
+		},
+		set value(newState) {
+			phraseLoopIntervalId = newState;
+		},
+		stop() {
+			clearInterval(phraseLoopIntervalId);
+		}
+	};
+}
+
+export function createIntervalIdState() {
+	return {
+		get value() {
+			return intervalId;
+		},
+		set value(newState) {
+			intervalId = newState;
+		},
+		stop() {
+			clearInterval(intervalId);
+			playPosition = 0;
+		}
+	};
+}
+export function createIsPlayingBackState() {
+	return {
+		get value() {
+			return isPlayingBack;
+		},
+		set value(newState) {
+			isPlayingBack = newState;
+		}
+	};
+}
+
+export function createPlayPositionState() {
+	return {
+		get value() {
+			return playPosition;
+		},
+		set value(newState) {
+			playPosition = newState;
+		}
+	};
+}
+
+export function createBpmState() {
+	return {
+		get value() {
+			return bpm;
+		},
+		set value(newBpm) {
+			bpm = newBpm;
+		}
+	};
+}
+
+export const context = $state(new AudioContext());
+export const marimba = new Soundfont(context, { instrument: "marimba" });
+
 let song = $state({
 	"00": {
 		channel0: "00",
@@ -53,7 +125,11 @@ let phrases = $state({
 			"00": "C1",
 			"01": "C2",
 			"02": "C3",
-			"03": "C#3"
+			"03": "C#3",
+			"05": "F3"
+		},
+		"01": {
+			"00": "G3"
 		}
 	},
 	"11": {
