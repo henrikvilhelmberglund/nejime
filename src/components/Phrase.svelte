@@ -3,13 +3,15 @@
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
-	createActiveNoteElementIdState,
+		createActiveNoteElementIdState,
 		createActiveNoteState,
 		createActivePatternElementIdState,
 		createActivePatternState,
 		createActivePhraseElementIdState,
 		createActivePhraseState,
+		createIsPlayingBackState,
 		createPhrasesState,
+		createPlayPositionState,
 		createSongState
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
@@ -18,10 +20,12 @@
 	let rows = Array.from({ length: 16 });
 
 	let phrasesState = createPhrasesState();
-  let activePhraseElementId = createActivePhraseElementIdState();
+	let activePhraseElementId = createActivePhraseElementIdState();
 	let activePhrase = createActivePhraseState();
 	let activeNoteElementId = createActiveNoteElementIdState();
 	let activeNote = createActiveNoteState();
+	let isPlayingBackState = createIsPlayingBackState();
+	let playPositionState = createPlayPositionState();
 
 	interface Pattern {
 		channel0: string;
@@ -33,11 +37,9 @@
 
 	$effect(() => {
 		if (activeNoteElementId && activeNoteElementId.value) {
-      console.log("active note element id", activeNoteElementId.value)
+			console.log("active note element id", activeNoteElementId.value);
 			queueMicrotask(() => {
-				document
-					.querySelector<HTMLButtonElement>(`#nejime #${activeNoteElementId.value}`)!
-					.focus();
+				document.querySelector<HTMLButtonElement>(`#nejime #${activeNoteElementId.value}`)!.focus();
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
@@ -53,14 +55,18 @@
 			// }
 		}
 	});
+  // $inspect(playPositionState.value);
 </script>
 
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
-	<div class="flex flex-col">
-		{#each rows as row, i}
-			<div id={`note${i}`} class="flex gap-4">
-				{#each channels as channel, j}
+	<div class="relative flex flex-col">
+    {#each rows as row, i}
+    <div id={`note${i}`} class="flex gap-4">
+      {#if isPlayingBackState.value && playPositionState.value === i}
+        <div class="text-xs absolute -left-4 py-[10px] text-white i-ph-play-fill"></div>
+      {/if}
+      {#each channels as channel, j}
 					<NoteSelector
 						selectedNote={phrasesState.value?.[activePhrase.value as keyof typeof phrasesState.value]?.[toHex(j) as keyof Pattern]?.[toHex(i) as keyof Pattern] ?? "---"}
 						hex={toHex(i)}
