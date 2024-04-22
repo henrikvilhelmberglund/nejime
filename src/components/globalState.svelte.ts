@@ -1,20 +1,92 @@
 import { SplendidGrandPiano, Soundfont } from "smplr";
+import { type Pattern, type Patterns, type Phrase } from "../types/types";
+
+export const context = $state(new AudioContext());
+export const marimba = new Soundfont(context, { instrument: "marimba" });
 
 let activeScreenState = $state("song");
-let activeNoteElementId = $state();
-let activeNote = $state();
-let activePhraseElementId = $state();
-let activePhrase = $state();
-let activePatternElementId = $state();
-let activePattern = $state("");
+let lastPhraseHex = $state("");
+let lastPatternHex = $state("");
+
+let lastRowNote = $state(0);
+let lastChannelNote = $state(0);
+let lastRowPhrase = $state(0);
+let lastRowPattern = $state(0);
+let lastChannelPattern = $state(0);
+
 let sPressed = $state(false);
 let dPressed = $state(false);
 let fPressed = $state(false);
+let isPlayingBack = $state(false);
+
 let bpm = $state(120);
 let playPosition = $state(0);
-let isPlayingBack = $state(false);
-let intervalId = $state();
-let phraseLoopIntervalId = $state();
+let intervalId = $state<Timer>();
+let phraseLoopIntervalId = $state<Timer>();
+
+let song = $state<Patterns>({
+	"00": {
+		channel0: "00",
+		channel1: "01",
+		channel2: "02",
+		channel3: "03",
+		channel4: "04"
+	},
+	"01": {
+		channel0: "20",
+		channel1: "21",
+		channel2: "22",
+		channel3: "23",
+		channel4: "24"
+	}
+});
+let patterns = $state<Record<string, Pattern>>({
+	"00": {
+		"00": "10",
+		"01": "11",
+		"02": "12"
+	},
+	"01": {
+		"00": "41",
+		"01": "42",
+		"02": "43"
+	}
+});
+let transposePatterns = $state<Record<string, Pattern>>({
+	"00": {
+		"00": "01",
+		"02": "02"
+	},
+	"01": {
+		"00": "01",
+		"01": "02",
+		"02": "03"
+	}
+});
+let phrases = $state<Record<string, Phrase>>({
+	"10": {
+		"00": {
+			"00": "C1",
+			"01": "C2",
+			"02": "C3",
+			"03": "C#3",
+			"05": "F3"
+		},
+		"01": {
+			"00": "G3"
+		}
+	},
+	"11": {
+		"00": { "00": "E3" },
+		"01": { "00": "F3" },
+		"02": { "00": "G3" }
+	},
+	"12": {
+		"00": { "00": "E4" },
+		"01": { "00": "F4" },
+		"02": { "00": "G4" }
+	}
+});
 
 export function createPhraseLoopIntervalIdState() {
 	return {
@@ -77,73 +149,6 @@ export function createBpmState() {
 	};
 }
 
-export const context = $state(new AudioContext());
-export const marimba = new Soundfont(context, { instrument: "marimba" });
-
-let song = $state({
-	"00": {
-		channel0: "00",
-		channel1: "01",
-		channel2: "02",
-		channel3: "03",
-		channel4: "04"
-	},
-	"01": {
-		channel0: "20",
-		channel1: "21",
-		channel2: "22",
-		channel3: "23",
-		channel4: "24"
-	}
-});
-let patterns = $state({
-	"00": {
-		"00": "10",
-		"01": "11",
-		"02": "12"
-	},
-	"01": {
-		"00": "41",
-		"01": "42",
-		"02": "43"
-	}
-});
-let transposePatterns = $state({
-	"00": {
-		"00": "01",
-		"02": "02"
-	},
-	"01": {
-		"00": "01",
-		"01": "02",
-		"02": "03"
-	}
-});
-let phrases = $state({
-	"10": {
-		"00": {
-			"00": "C1",
-			"01": "C2",
-			"02": "C3",
-			"03": "C#3",
-			"05": "F3"
-		},
-		"01": {
-			"00": "G3"
-		}
-	},
-	"11": {
-		"00": "E3",
-		"01": "F3",
-		"02": "G3"
-	},
-	"12": {
-		"00": "E4",
-		"01": "F4",
-		"02": "G4"
-	}
-});
-
 export function createActiveScreenState() {
 	return {
 		get value() {
@@ -191,82 +196,79 @@ export function createFPressedState() {
 	};
 }
 
-export function createActiveNoteElementIdState() {
+export function createLastRowNoteState() {
 	return {
 		get value() {
-			return activeNoteElementId;
+			return lastRowNote;
 		},
-		// initial() {
-		// 	return { x: 512, y: 300 };
-		// },
-		set value(id) {
-			activeNoteElementId = id;
+		set value(number) {
+			lastRowNote = number;
 		}
 	};
 }
 
-export function createActiveNoteState() {
+export function createLastRowPhraseState() {
 	return {
 		get value() {
-			return activeNote;
+			return lastRowPhrase;
 		},
-		set value(hex) {
-			activeNote = hex;
+		set value(number) {
+			lastRowPhrase = number;
 		}
 	};
 }
 
-export function createActivePhraseElementIdState() {
+export function createLastRowPatternState() {
 	return {
 		get value() {
-			return activePhraseElementId;
+			return lastRowPattern;
 		},
-		// initial() {
-		// 	return { x: 512, y: 300 };
-		// },
-		set value(id) {
-			activePhraseElementId = id;
+		set value(number) {
+			lastRowPattern = number;
 		}
 	};
 }
 
-export function createActivePhraseState() {
+export function createLastChannelPatternState() {
 	return {
 		get value() {
-			return activePhrase;
+			return lastChannelPattern;
 		},
-		set value(hex) {
-			activePhrase = hex;
+		set value(number) {
+			lastChannelPattern = number;
 		}
 	};
 }
 
-export function createActivePatternElementIdState() {
-	// function set(id: string) {
-	// 	activePatternElementId = id;
-	// }
-	// set
-
+export function createLastChannelNoteState() {
 	return {
 		get value() {
-			return activePatternElementId;
+			return lastChannelNote;
 		},
-		// initial() {
-		// 	return { x: 512, y: 300 };
-		// },
-		set value(id) {
-			activePatternElementId = id;
+		set value(number) {
+			lastChannelNote = number;
 		}
 	};
 }
 
-export function createActivePatternState() {
+export function createLastPhraseHexState() {
 	return {
 		get value() {
-			return activePattern;
+			return lastPhraseHex;
 		},
-		set value(hex) {
-			activePattern = hex;
+		set value(string: string) {
+			lastPhraseHex = string;
+		}
+	};
+}
+
+export function createLastPatternHexState() {
+	return {
+		get value() {
+			return lastPatternHex;
+		},
+		set value(string: string) {
+			lastPatternHex = string;
 		}
 	};
 }
