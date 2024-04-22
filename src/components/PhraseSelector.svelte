@@ -1,19 +1,20 @@
 <script lang="ts">
 	import {
-		createActivePhraseElementIdState,
-		createActivePhraseState,
 		createSPressedState,
 		createDPressedState,
-		createFPressedState
+		createFPressedState,
+
+		createLastRowPhraseState
+
 	} from "./globalState.svelte";
 
 	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
-	let activePhraseElementId = createActivePhraseElementIdState();
-	let activePhrase = createActivePhraseState();
 
   let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
+	let lastRowPhrase = createLastRowPhraseState();
+
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -21,8 +22,7 @@
 		try {
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
 			phraseSelector.focus();
-			activePhraseElementId.value = phraseSelector.id;
-			activePhrase.value = phraseSelector.innerText;
+      lastRowPhrase.value = row;
 		} catch (error) {
 			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
 		}
@@ -48,17 +48,8 @@
 	}
 
 	function handleClick(e: MouseEvent) {
-		activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
+		// activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
 	}
-
-	$effect(() => {
-		if (activePhraseElementId && activePhraseElementId.value) {
-			console.log("debug", activePhraseElementId.value);
-			document.querySelector<HTMLButtonElement>(`#nejime #${activePhraseElementId.value}`)!.focus();
-		} else {
-			document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
-		}
-	});
 </script>
 
 <button

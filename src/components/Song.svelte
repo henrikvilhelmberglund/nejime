@@ -1,19 +1,16 @@
 <script lang="ts">
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
-	import {
-		createActivePatternElementIdState,
-		createActivePatternState,
-		createSongState
-	} from "./globalState.svelte";
+	import { createActiveScreenState, createLastChannelPatternState, createLastRowPatternState, createSongState } from "./globalState.svelte";
 	import { toHex } from "./utils";
 
 	let channels = [0, 1, 2, 3, 4];
 	let rows = Array.from({ length: 64 });
 
 	let songState = createSongState();
-	let activePatternElementId = createActivePatternElementIdState();
-	let activePattern = createActivePatternState();
+	let lastRowPattern = createLastRowPatternState();
+	let lastChannelPattern = createLastChannelPatternState();
+	let activeScreenState = createActiveScreenState();
 
 	interface Pattern {
 		channel0: string;
@@ -24,11 +21,9 @@
 	}
 
 	$effect(() => {
-		if (activePatternElementId && activePatternElementId.value) {
+		if (lastRowPattern.value !== undefined) {
 			queueMicrotask(() => {
-				document
-					.querySelector<HTMLButtonElement>(`#nejime #${activePatternElementId.value}`)!
-					.focus();
+				document.querySelector<HTMLButtonElement>(`#nejime #row${lastRowPattern.value}-channel${lastChannelPattern.value}`)!.focus();
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
@@ -40,12 +35,12 @@
 			queueMicrotask(() => {
 				patternSelector.focus();
 			});
-			activePattern.value = patternSelector.innerText;
 			// }
 		}
 	});
 </script>
 
+<p class="pl-1 text-lg font-semibold text-white">{activeScreenState.value.toUpperCase()}</p>
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
 	<div class="flex flex-col">

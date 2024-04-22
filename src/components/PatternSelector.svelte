@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import {
-		createActivePatternElementIdState,
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
-		createActivePatternState
+		createLastRowPatternState,
+		createLastChannelPatternState,
 	} from "./globalState.svelte";
 
 	let {
@@ -15,11 +15,11 @@
 		selectedPattern
 	}: { id: string; hex: string; channel: string; selectedPattern: string } = $props();
 	// let name = $state("--");
-	let activePatternElementId = createActivePatternElementIdState();
-	let activePattern = createActivePatternState();
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
+  let lastRowPattern = createLastRowPatternState();
+  let lastChannelPattern = createLastChannelPatternState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -29,8 +29,8 @@
 				`#row${row}-channel${+channel}`
 			)!;
 			patternSelector.focus();
-			activePatternElementId.value = patternSelector.id;
-			activePattern.value = patternSelector.innerText;
+      lastRowPattern.value = row;
+      lastChannelPattern.value = channel;
 		} catch (error) {
 			console.error(`element ${`#row${row}-channel${+channel}`} not found, can't focus`);
 		}
@@ -41,9 +41,11 @@
 		const channel = id.split("row")[1].split("-channel")[1];
 		e.preventDefault();
 		// if s, d or f are pressed, don't use below logic that switches cursor location
-		if (sPressed.value || dPressed.value || fPressed.value) return;
+		if (sPressed.value || dPressed.value || fPressed.value) {
+      console.log("a")
+    }
 
-		if (e.code === "ArrowLeft") {
+		else if (e.code === "ArrowLeft") {
 			focusPatternSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
 		} else if (e.code === "ArrowRight") {
 			focusPatternSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
@@ -55,7 +57,7 @@
 	}
 
 	function handleClick(e: MouseEvent) {
-		activePatternElementId.value = (<HTMLButtonElement>e.target).id;
+		// activePatternElementId.value = (<HTMLButtonElement>e.target).id;
 	}
 </script>
 

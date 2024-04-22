@@ -3,8 +3,8 @@
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
-		createActiveNoteElementIdState,
-		createActiveNoteState
+		createLastRowNoteState,
+		createLastChannelNoteState
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -16,11 +16,11 @@
 		selectedNote
 	}: { id: string; hex: string; channel: string; selectedNote: string } = $props();
 	// let name = $state("--");
-	let activeNoteElementId = createActiveNoteElementIdState();
-	let activeNote = createActiveNoteState();
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
+	let lastRowNote = createLastRowNoteState();
+	let lastChannelNote = createLastChannelNoteState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -30,7 +30,8 @@
 				`#note${row}-channel${+channel}`
 			)!;
 			noteSelector.focus();
-			activeNoteElementId.value = noteSelector.id;
+			lastRowNote.value = row;
+			lastChannelNote.value = channel;
 			// activeNote.value = noteSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
@@ -56,7 +57,7 @@
 	}
 
 	function handleClick(e: MouseEvent) {
-		activeNoteElementId.value = (<HTMLButtonElement>e.target).id;
+		// activeNoteElementId.value = (<HTMLButtonElement>e.target).id;
 	}
 </script>
 

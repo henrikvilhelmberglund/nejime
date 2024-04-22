@@ -1,6 +1,5 @@
 import {
 	context,
-	createActivePhraseState,
 	createBpmState,
 	createIntervalIdState,
 	createPhrasesState,
@@ -44,7 +43,7 @@ function addSilentNotes(object) {
 	return notes;
 }
 
-export function play(state: string) {
+export function play(state: string, hex: string) {
 	const bpmState = createBpmState();
 	const playPositionState = createPlayPositionState();
 	const intervalIdState = createIntervalIdState();
@@ -52,10 +51,9 @@ export function play(state: string) {
 	if (state === "phrase") {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
-		let activePhrase = createActivePhraseState();
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.currentTime;
-		let notes = phrasesState.value?.[activePhrase.value as keyof typeof phrasesState.value];
+		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
 		notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
 			for (let i = 0; i < 16; i++) {
@@ -82,7 +80,7 @@ export function stop(state: string) {
 	if (state === "phrase") {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
-		let activePhrase = createActivePhraseState();
+		// let activePhrase = createActivePhraseState();
 		const channels = ["00", "01", "02", "03", "04"];
     const now = context.currentTime;
     marimba.stop();

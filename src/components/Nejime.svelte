@@ -15,7 +15,10 @@
 		createIntervalIdState,
 		createBpmState,
 		createPhraseLoopIntervalIdState,
-		createPlayPositionState
+		createPlayPositionState,
+
+		createLastPhraseHexState
+
 	} from "./globalState.svelte";
 	import { play, stop } from "./utils";
 
@@ -29,11 +32,14 @@
 	let bpmState = createBpmState();
 
 	function changeState(direction: string) {
+		let activeElement = <HTMLButtonElement>document.activeElement!;
 		if (activeScreenState.value === "song" && direction === "right") {
+			if (activeElement.innerText === "--") return;
 			activeScreenState.value = "pattern";
 		} else if (activeScreenState.value === "pattern" && direction === "left") {
 			activeScreenState.value = "song";
 		} else if (activeScreenState.value === "pattern" && direction === "right") {
+			if (activeElement.innerText === "--") return;
 			activeScreenState.value = "phrase";
 		} else if (activeScreenState.value === "song" && direction === "up") {
 			activeScreenState.value = "project-song";
@@ -50,13 +56,14 @@
 	const intervalIdState = createIntervalIdState();
 	const phraseLoopIntervalIdState = createPhraseLoopIntervalIdState();
 	const playPositionState = createPlayPositionState();
+  let lastPhraseHex = createLastPhraseHexState();
 </script>
 
 <div
 	id="nejime"
 	role="presentation"
 	onkeydown={(e) => {
-		console.log(e);
+		// console.log(e);
 		if (e.code === "KeyS") {
 			sPressed.value = true;
 		}
@@ -81,11 +88,11 @@
 		if (e.code === "Space") {
 			if (!isPlayingBack.value) {
 				if (activeScreenState.value === "phrase") {
-					play(activeScreenState.value);
+					play(activeScreenState.value, lastPhraseHex.value);
 					// after first play, start looping
 					phraseLoopIntervalIdState.value = setInterval(
 						() => {
-							play(activeScreenState.value);
+							play(activeScreenState.value, lastPhraseHex.value);
 						},
 						1000 * 17 * (60 / (bpmState.value * 4))
 					);
@@ -110,7 +117,7 @@
 		}
 	}}
 	onkeyup={(e) => {
-		console.log(e);
+		// console.log(e);
 		if (e.code === "KeyS") {
 			sPressed.value = false;
 		}
@@ -122,7 +129,6 @@
 		}
 	}}
 	class="bg-primary-400 flex h-[500px] w-[500px] flex-col rounded-lg border-2 border-black text-black dark:text-white">
-	<p class="pl-1 text-lg font-semibold text-white">{activeScreenState.value.toUpperCase()}</p>
 	{#if activeScreenState.value === "song"}
 		<Song />
 	{:else if activeScreenState.value === "pattern"}

@@ -3,13 +3,11 @@
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
-		createActiveNoteElementIdState,
-		createActiveNoteState,
-		createActivePatternElementIdState,
-		createActivePatternState,
-		createActivePhraseElementIdState,
-		createActivePhraseState,
+		createActiveScreenState,
 		createIsPlayingBackState,
+		createLastChannelNoteState,
+		createLastPhraseHexState,
+		createLastRowNoteState,
 		createPhrasesState,
 		createPlayPositionState,
 		createSongState
@@ -20,26 +18,27 @@
 	let rows = Array.from({ length: 16 });
 
 	let phrasesState = createPhrasesState();
-	let activePhraseElementId = createActivePhraseElementIdState();
-	let activePhrase = createActivePhraseState();
-	let activeNoteElementId = createActiveNoteElementIdState();
-	let activeNote = createActiveNoteState();
 	let isPlayingBackState = createIsPlayingBackState();
 	let playPositionState = createPlayPositionState();
+	let lastChannelNote = createLastChannelNoteState();
+	let lastRowNote = createLastRowNoteState();
 
-	interface Pattern {
-		channel0: string;
-		channel1: string;
-		channel2: string;
-		channel3: string;
-		channel4: string;
+	interface Phrase {
+		"00"?: string;
+		"01"?: string;
+		"02"?: string;
+		"03"?: string;
+		"04"?: string;
 	}
 
 	$effect(() => {
-		if (activeNoteElementId && activeNoteElementId.value) {
-			console.log("active note element id", activeNoteElementId.value);
+		if (lastRowNote.value) {
 			queueMicrotask(() => {
-				document.querySelector<HTMLButtonElement>(`#nejime #${activeNoteElementId.value}`)!.focus();
+				document
+					.querySelector<HTMLButtonElement>(
+						`#nejime #note${lastRowNote.value}-channel${lastChannelNote.value}`
+					)!
+					.focus();
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
@@ -54,21 +53,31 @@
 			// activePattern.value = patternSelector.innerText;
 			// }
 		}
+		if (activeElement.innerText.length === 2) {
+			lastPhraseHex.value = activeElement.innerText;
+		}
 	});
-  // $inspect(playPositionState.value);
+
+	let activeElement = $state(<HTMLButtonElement>document.activeElement);
+	let activeScreenState = createActiveScreenState();
+	let lastPhraseHex = createLastPhraseHexState();
 </script>
 
+<p class="pl-1 text-lg font-semibold text-white">
+	{activeScreenState.value.toUpperCase()}
+	{lastPhraseHex.value}
+</p>
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
 	<div class="relative flex flex-col">
-    {#each rows as row, i}
-    <div id={`note${i}`} class="flex gap-4">
-      {#if isPlayingBackState.value && playPositionState.value === i}
-        <div class="text-xs absolute -left-4 py-[10px] text-white i-ph-play-fill"></div>
-      {/if}
-      {#each channels as channel, j}
+		{#each rows as row, i}
+			<div id={`note${i}`} class="flex gap-4">
+				{#if isPlayingBackState.value && playPositionState.value === i}
+					<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
+				{/if}
+				{#each channels as channel, j}
 					<NoteSelector
-						selectedNote={phrasesState.value?.[activePhrase.value as keyof typeof phrasesState.value]?.[toHex(j) as keyof Pattern]?.[toHex(i) as keyof Pattern] ?? "---"}
+						selectedNote={phrasesState.value?.[activeElement!.innerText]?.[toHex(j)]?.[toHex(i)] ?? "---"}
 						hex={toHex(i)}
 						channel={`channel${j}`}
 						id={`note${i}-channel${j}`} />

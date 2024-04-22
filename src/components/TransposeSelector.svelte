@@ -1,19 +1,13 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import {
-		createActivePatternElementIdState,
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
-		createActivePatternState,
-		createActivePhraseState,
-		createActivePhraseElementIdState
 	} from "./globalState.svelte";
 
 	let { id, hex, transpose }: { id: string; hex: string; transpose: string } = $props();
 	// let name = $state("--");
-	let activePhraseElementId = createActivePhraseElementIdState();
-	let activePhrase = createActivePhraseState();
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
@@ -24,8 +18,6 @@
 		try {
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
 			phraseSelector.focus();
-			activePhraseElementId.value = phraseSelector.id;
-			activePhrase.value = phraseSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
 		}
@@ -35,8 +27,6 @@
 		try {
 			const transposeSelector: HTMLButtonElement = document.querySelector(`#row${row}-transpose`)!;
 			transposeSelector.focus();
-			activePhraseElementId.value = transposeSelector.id;
-			activePhrase.value = transposeSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#row${row}`} not found, can't focus`);
 		}
@@ -61,7 +51,7 @@
 	}
 
 	function handleClick(e: MouseEvent) {
-		activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
+		// activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
 	}
 </script>
 
