@@ -24,7 +24,7 @@
 	let lastRowPhrase = createLastRowPhraseState();
 
 	$effect(() => {
-		if (lastRowPhrase.value) {
+		if (lastRowPhrase.value !== undefined) {
 			queueMicrotask(() => {
 				document
 					.querySelector<HTMLButtonElement>(`#nejime #row${lastRowPhrase.value}-pattern`)!

@@ -32,7 +32,7 @@
 	}
 
 	$effect(() => {
-		if (lastRowNote.value) {
+		if (lastRowNote.value !== undefined) {
 			queueMicrotask(() => {
 				document
 					.querySelector<HTMLButtonElement>(
