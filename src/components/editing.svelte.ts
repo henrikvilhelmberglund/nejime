@@ -45,7 +45,12 @@ export function add({ element }: addProps) {
 	}
 }
 
-export function preview({ element, instrument }) {
+type previewProps = {
+	element: HTMLButtonElement;
+	instrument: number;
+};
+
+export function preview({ element, instrument }: previewProps) {
 	const row = element.id.split("note")[1].split("-channel")[0];
 	const channel = element.id.split("note")[1].split("-channel")[1];
 	let selectedNote = phrases.value[lastPhrase.value]?.[toHex(+channel)]?.[toHex(+row)];
