@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { add, edit, preview } from "./editing.svelte";
 	import {
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
 		createLastRowNoteState,
-		createLastChannelNoteState
+		createLastChannelNoteState,
+		marimba,
+		createShouldPreviewState
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -21,6 +24,8 @@
 	let fPressed = createFPressedState();
 	let lastRowNote = createLastRowNoteState();
 	let lastChannelNote = createLastChannelNoteState();
+	let shouldPreview = createShouldPreviewState();
+	$inspect(shouldPreview.value);
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -29,6 +34,7 @@
 			const noteSelector: HTMLButtonElement = document.querySelector(
 				`#note${row}-channel${+channel}`
 			)!;
+			console.log("noteSelector", noteSelector);
 			noteSelector.focus();
 			lastRowNote.value = row;
 			lastChannelNote.value = channel;
@@ -42,10 +48,42 @@
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
 		e.preventDefault();
-		// if s, d or f are pressed, don't use below logic that switches cursor location
-		if (sPressed.value || dPressed.value || fPressed.value) return;
-
-		if (e.code === "ArrowLeft") {
+		// preview note when key is not movement
+		if (e.code === "KeyF") {
+			if ((<HTMLButtonElement>document.activeElement).innerText === "---") {
+				add({ element: <HTMLButtonElement>document.activeElement });
+				shouldPreview.value = true;
+			} else {
+				shouldPreview.value = true;
+			}
+		} else {
+			shouldPreview.value = false;
+		}
+		// if s or d are pressed, don't use below logic that switches cursor location
+		if (sPressed.value || dPressed.value) return;
+		if (!fPressed.value) {
+			if (shouldPreview.value) {
+				preview({ element: <HTMLButtonElement>document.activeElement });
+			}
+		}
+		if (fPressed.value) {
+			// preview({ element: <HTMLButtonElement>document.activeElement });
+			console.log("pressed");
+			shouldPreview.value = true;
+			if (e.code === "ArrowLeft") {
+				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowRight") {
+				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowUp") {
+				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowDown") {
+				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement });
+			}
+		} else if (e.code === "ArrowLeft") {
 			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
 		} else if (e.code === "ArrowRight") {
 			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
@@ -54,6 +92,10 @@
 		} else if (e.code === "ArrowDown") {
 			focusNoteSelector({ row: parseInt(row) + 1, channel: parseInt(channel) });
 		}
+	}
+
+	function handleKeyUp() {
+		shouldPreview.value = false;
 	}
 
 	function handleClick(e: MouseEvent) {
@@ -65,6 +107,7 @@
 	{id}
 	data-hex={hex}
 	onkeydown={handleKeyPress}
+	onkeyup={handleKeyUp}
 	onclick={handleClick}
 	class:text-lg={selectedNote !== "---"}
 	class:items-center={selectedNote !== "---"}
