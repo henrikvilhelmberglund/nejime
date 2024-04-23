@@ -47,6 +47,10 @@
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
+
+    // TODO add instrument field
+    const instrument = 53;
+
 		e.preventDefault();
 		// preview note when key is not movement
 		if (e.code === "KeyF") {
@@ -63,7 +67,7 @@
 		if (sPressed.value || dPressed.value) return;
 		if (!fPressed.value) {
 			if (shouldPreview.value) {
-				preview({ element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			}
 		}
 		if (fPressed.value) {
@@ -72,16 +76,16 @@
 			shouldPreview.value = true;
 			if (e.code === "ArrowLeft") {
 				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			} else if (e.code === "ArrowRight") {
 				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			} else if (e.code === "ArrowUp") {
 				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			} else if (e.code === "ArrowDown") {
 				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement });
+				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			}
 		} else if (e.code === "ArrowLeft") {
 			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
