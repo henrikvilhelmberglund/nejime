@@ -94,11 +94,11 @@
 						() => {
 							play(activeScreenState.value, lastPhraseHex.value);
 						},
-						1000 * 17 * (60 / (bpmState.value * 4))
+						1000 * 16 * (60 / (bpmState.value * 4))
 					);
 					intervalIdState.value = setInterval(
 						() => {
-							if (playPositionState.value < 16) {
+							if (playPositionState.value < 15) {
 								playPositionState.value += 1;
 							} else {
 								playPositionState.value = 0;
