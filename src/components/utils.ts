@@ -23,7 +23,7 @@ export function addSpace(input: string) {
 	return input;
 }
 
-function addSilentNotes(object) {
+function addSilentNotes(object: Record<string, Record<string, string>>) {
 	const notes = object;
 	const numberOfNotes = 16;
 	const channels = ["00", "01", "02", "03", "04"];
@@ -82,7 +82,7 @@ export function stop(state: string) {
 		let phrasesState = createPhrasesState();
 		// let activePhrase = createActivePhraseState();
 		const channels = ["00", "01", "02", "03", "04"];
-    const now = context.currentTime;
-    marimba.stop();
+		const now = context.currentTime;
+		marimba.stop();
 	}
 }
