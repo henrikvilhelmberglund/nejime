@@ -1,17 +1,38 @@
-UI:
-  ✔ add transpose field @done(24-04-19 16:59)
-  ☐ add phrase number after Phrase in Phrase
-  ☐ add Note above notes in Phrase
-  
 core:
     ☐ add instruments
     ☐ transpose can go from 00 to FF (to allow for negative transpose)
+    
+UI:
+  ✔ add transpose field @done(24-04-19 16:59)
+  ✔ add phrase number after Phrase in Phrase @done(24-04-23 16:58)
+  ✔ add pattern number after Patterns in Patterns @done(24-04-23 16:58)
+  ☐ add instrument field in Phrase
+  ☐ add Note above notes in Phrase
+  ☐ add Project screen with editable BPM value
+  ☐ add Instrument screen for configuring instruments
+  
 
 editing: 
   ☐ add way to add empty pattern, starting from 00
-  ☐ add way to change pattern, should go from 00 to FF
-  ☐ add way to add notes in Phrase for the current channel
+  ☐ add way to edit pattern, should go from 00 to FF
+  ☐ add way to preview pattern
+  ☐ add way to delete pattern
+  ☐ add way to copy patterns (similar to LSDj)
+  ☐ add way to paste patterns
+
+  ☐ add way to add empty phrase, starting from 00
+  ☐ add way to edit phrase, should go from 00 to FF
+  ☐ add way to preview phrase
+  ☐ add way to delete phrase
+  ☐ add way to copy phrases (similar to LSDj)
+  ☐ add way to paste phrases
+
+  ✔ add way to add notes in Phrase for the current channel @done(24-04-23 16:59)
+  ✔ add way to edit notes in Phrase for the current channel @done(24-04-23 16:59)
+  ✔ add way to preview notes in Phrase for the current channel @done(24-04-23 16:59)
   ☐ add way to delete notes in Phrase for the current channel
+  ☐ add way to copy notes (similar to LSDj)
+  ☐ add way to paste notes
 
 cancelled:
   ✘ fix ugly scrolling, should scroll per line instead of several at once (aka remove standard behavior) @cancelled(24-04-12 16:37) (actually this kind of seems ok now)
