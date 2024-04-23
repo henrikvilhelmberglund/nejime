@@ -7,6 +7,7 @@ export const marimba = new Soundfont(context, { instrument: "marimba" });
 let activeScreenState = $state("song");
 let lastPhraseHex = $state("");
 let lastPatternHex = $state("");
+let lastTouchedNote = $state("");
 
 let lastRowNote = $state(0);
 let lastChannelNote = $state(0);
@@ -18,6 +19,7 @@ let sPressed = $state(false);
 let dPressed = $state(false);
 let fPressed = $state(false);
 let isPlayingBack = $state(false);
+let shouldPreview = $state(false);
 
 let bpm = $state(120);
 let playPosition = $state(0);
@@ -116,6 +118,7 @@ export function createIntervalIdState() {
 		}
 	};
 }
+
 export function createIsPlayingBackState() {
 	return {
 		get value() {
@@ -123,6 +126,17 @@ export function createIsPlayingBackState() {
 		},
 		set value(newState) {
 			isPlayingBack = newState;
+		}
+	};
+}
+
+export function createShouldPreviewState() {
+	return {
+		get value() {
+			return shouldPreview;
+		},
+		set value(newState) {
+			shouldPreview = newState;
 		}
 	};
 }
@@ -269,6 +283,17 @@ export function createLastPatternHexState() {
 		},
 		set value(string: string) {
 			lastPatternHex = string;
+		}
+	};
+}
+
+export function createLastTouchedNoteState() {
+	return {
+		get value() {
+			return lastTouchedNote;
+		},
+		set value(string: string) {
+			lastTouchedNote = string;
 		}
 	};
 }
