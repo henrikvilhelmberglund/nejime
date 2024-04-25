@@ -6,7 +6,9 @@
 		createFPressedState,
 		createLastRowPatternState,
 		createLastChannelPatternState,
+		createLastTouchedPatternState,
 	} from "./globalState.svelte";
+	import { add, edit, remove } from "./editing.svelte";
 
 	let {
 		id,
@@ -20,6 +22,7 @@
 	let fPressed = createFPressedState();
   let lastRowPattern = createLastRowPatternState();
   let lastChannelPattern = createLastChannelPatternState();
+  let lastTouchedPattern = createLastTouchedPatternState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 
@@ -40,10 +43,40 @@
 		const row = id.split("row")[1].split("-channel")[0];
 		const channel = id.split("row")[1].split("-channel")[1];
 		e.preventDefault();
-		// if s, d or f are pressed, don't use below logic that switches cursor location
-		if (sPressed.value || dPressed.value || fPressed.value) {
-      console.log("a")
-    }
+
+    		// * add+preview
+		if (!dPressed.value && e.code === "KeyF") {
+			if ((<HTMLButtonElement>document.activeElement).innerText === "--") {
+				add({ element: <HTMLButtonElement>document.activeElement });
+			} else {
+				lastTouchedPattern.value = (<HTMLButtonElement>document.activeElement).innerText;
+			}
+		}
+
+		// * remove
+		if (dPressed.value && e.code === "KeyF") {
+			console.log("remove");
+			if ((<HTMLButtonElement>document.activeElement).innerText !== "--") {
+				remove({ element: <HTMLButtonElement>document.activeElement });
+			}
+		}
+
+		// if s or d are pressed, don't use below logic that switches cursor location
+		if (sPressed.value || dPressed.value) return;
+		// * edit
+		if (fPressed.value) {
+			// preview({ element: <HTMLButtonElement>document.activeElement });
+			console.log("pressed pattern");
+			if (e.code === "ArrowLeft") {
+				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowRight") {
+				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowUp") {
+				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowDown") {
+				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
+			}
+		}
 
 		else if (e.code === "ArrowLeft") {
 			focusPatternSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
