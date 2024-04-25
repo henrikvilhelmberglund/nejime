@@ -15,6 +15,10 @@ export function toHexSingle(input: number) {
 	return input.toString(16).toUpperCase().padStart(1, "0");
 }
 
+export function toInt(input: string) {
+	return parseInt(input, 16);
+}
+
 export function addSpace(input: string) {
 	if (input.length === 2) {
 		let newInput = `${input[0]}&nbsp;&nbsp;${input[1]}`;
@@ -43,7 +47,37 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 	return notes;
 }
 
-export function play(state: string, hex: string) {
+// ? this caused wrong notes to be played when you edited a pattern while playing back because the notes were queued when the interval started
+// export function play(state: string, hex: string) {
+// 	const bpmState = createBpmState();
+// 	const playPositionState = createPlayPositionState();
+// 	const intervalIdState = createIntervalIdState();
+// 	console.log("state", state);
+// 	if (state === "phrase") {
+// 		// marimba.start("C3");
+// 		let phrasesState = createPhrasesState();
+// 		const channels = ["00", "01", "02", "03", "04"];
+// 		const now = context.currentTime;
+// 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
+// 		notes = addSilentNotes(notes);
+// 		channels.forEach((channel) => {
+// 			for (let i = 0; i < 16; i++) {
+// 				const note = notes[channel][toHex(i)];
+// 				marimba.start({
+// 					note,
+// 					time: now + i * (60 / (bpmState.value * 4)),
+// 					duration: 60 / (bpmState.value * 4)
+// 					// onEnded: () => {
+// 					// 	// will be called after 1 second
+// 					// 	console.log("ended");
+// 					// }
+// 				});
+// 			}
+// 		});
+// 	}
+// }
+
+export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
 	const playPositionState = createPlayPositionState();
 	const intervalIdState = createIntervalIdState();
@@ -56,18 +90,12 @@ export function play(state: string, hex: string) {
 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
 		notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
-			for (let i = 0; i < 16; i++) {
-				const note = notes[channel][toHex(i)];
-				marimba.start({
-					note,
-					time: now + i * (60 / (bpmState.value * 4)),
-					duration: 60 / (bpmState.value * 4)
-					// onEnded: () => {
-					// 	// will be called after 1 second
-					// 	console.log("ended");
-					// }
-				});
-			}
+			const note = notes[channel][toHex(playPositionState.value)];
+			marimba.start({
+				note,
+				time: now,
+				duration: 60 / (bpmState.value * 4)
+			});
 		});
 	}
 }
