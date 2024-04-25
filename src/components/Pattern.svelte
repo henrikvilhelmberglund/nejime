@@ -42,7 +42,9 @@
 				phraseSelector.focus();
 			});
 		}
-		if (activeElement.innerText.length === 2) {
+
+		// this was set when BPM was changed, HMM
+		if (activeElement.id !== "bpm-selector" && activeElement.innerText.length === 2) {
 			lastPatternHex.value = activeElement.innerText;
 		}
 	});

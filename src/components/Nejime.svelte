@@ -148,7 +148,7 @@
 		<Phrase />
 	{:else if activeScreenState.value === "instrument"}
 		<Instrument />
-	{:else if activeScreenState.value === "project"}
+	{:else if activeScreenState.value === "project-song" || activeScreenState.value === "project-pattern"}
 		<Project />
 	{/if}
 </div>
