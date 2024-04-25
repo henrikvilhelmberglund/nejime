@@ -7,7 +7,9 @@ export const marimba = new Soundfont(context, { instrument: "marimba" });
 let activeScreenState = $state("song");
 let lastPhraseHex = $state("");
 let lastPatternHex = $state("");
-let lastTouchedNote = $state("");
+let lastTouchedPattern = $state("00");
+let lastTouchedPhrase = $state("00");
+let lastTouchedNote = $state("C3");
 
 let lastRowNote = $state(0);
 let lastChannelNote = $state(0);
@@ -283,6 +285,28 @@ export function createLastPatternHexState() {
 		},
 		set value(string: string) {
 			lastPatternHex = string;
+		}
+	};
+}
+
+export function createLastTouchedPatternState() {
+	return {
+		get value() {
+			return lastTouchedPhrase;
+		},
+		set value(string: string) {
+			lastTouchedPhrase = string;
+		}
+	};
+}
+
+export function createLastTouchedPhraseState() {
+	return {
+		get value() {
+			return lastTouchedPhrase;
+		},
+		set value(string: string) {
+			lastTouchedPhrase = string;
 		}
 	};
 }
