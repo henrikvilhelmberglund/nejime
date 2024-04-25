@@ -16,11 +16,9 @@
 		createBpmState,
 		createPhraseLoopIntervalIdState,
 		createPlayPositionState,
-
 		createLastPhraseHexState
-
 	} from "./globalState.svelte";
-	import { play, stop } from "./utils";
+	import { playPhrase, stop } from "./utils";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 	let activeScreenState = createActiveScreenState();
@@ -56,7 +54,7 @@
 	const intervalIdState = createIntervalIdState();
 	const phraseLoopIntervalIdState = createPhraseLoopIntervalIdState();
 	const playPositionState = createPlayPositionState();
-  let lastPhraseHex = createLastPhraseHexState();
+	let lastPhraseHex = createLastPhraseHexState();
 </script>
 
 <div
@@ -88,20 +86,33 @@
 		if (e.code === "Space") {
 			if (!isPlayingBack.value) {
 				if (activeScreenState.value === "phrase") {
-					play(activeScreenState.value, lastPhraseHex.value);
+					// ? caused issue when editing notes while phrase was playing
+					// play(activeScreenState.value, lastPhraseHex.value);
 					// after first play, start looping
-					phraseLoopIntervalIdState.value = setInterval(
-						() => {
-							play(activeScreenState.value, lastPhraseHex.value);
-						},
-						1000 * 16 * (60 / (bpmState.value * 4))
-					);
+					// phraseLoopIntervalIdState.value = setInterval(
+					// 	() => {
+					// 		play(activeScreenState.value, lastPhraseHex.value);
+					// 	},
+					// 	1000 * 16 * (60 / (bpmState.value * 4))
+					// );
+
+					if (e.ctrlKey) {
+						const position = document.activeElement!.id.split("-channel")[0].split("note")[1];
+						console.log("position", position);
+						playPositionState.value = parseInt(position);
+					} else {
+						playPositionState.value = 0;
+					}
+					playPhrase(activeScreenState.value, lastPhraseHex.value);
+
 					intervalIdState.value = setInterval(
 						() => {
 							if (playPositionState.value < 15) {
 								playPositionState.value += 1;
+								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							} else {
 								playPositionState.value = 0;
+								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							}
 						},
 						1000 * (60 / (bpmState.value * 4))
