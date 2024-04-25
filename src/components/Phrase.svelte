@@ -67,6 +67,11 @@
 	{activeScreenState.value.toUpperCase()}
 	{lastPhraseHex.value}
 </p>
+<div class="flex flex-row text-white text-sm pl-[39px]">
+	<p class="w-64">NOTE</p>
+	<p class="w-16">INSTR</p>
+	<p>CMD</p>
+</div>
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
 	<div class="relative flex flex-col">
