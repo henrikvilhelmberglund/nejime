@@ -3,9 +3,11 @@ import {
 	createLastPatternHexState,
 	createLastPhraseHexState,
 	createLastTouchedNoteState,
+	createLastTouchedPatternState,
 	createLastTouchedPhraseState,
 	createPatternsState,
 	createPhrasesState,
+	createSongState,
 	marimba
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
@@ -13,8 +15,10 @@ import { toHex, toInt } from "./utils";
 let activeScreen = createActiveScreenState();
 let lastPatternHex = createLastPatternHexState();
 let lastPhraseHex = createLastPhraseHexState();
+let lastTouchedPattern = createLastTouchedPatternState();
 let lastTouchedPhrase = createLastTouchedPhraseState();
 let lastTouchedNote = createLastTouchedNoteState();
+let song = createSongState();
 let patterns = createPatternsState();
 let phrases = createPhrasesState();
 const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -24,12 +28,42 @@ type addProps = {
 };
 
 export function add({ element }: addProps) {
+	if (activeScreen.value === "song") {
+		const row = element.id.split("row")[1].split("-channel")[0];
+		const channel = element.id.split("-")[1];
+		console.log("channel", channel);
+
+		if (element.innerText === "--") {
+			console.log("new pattern here");
+
+			// initialize empty object if they do not exist
+			if (!song.value) {
+				song.value = {};
+			}
+
+			if (!song.value[toHex(+row)]) {
+				song.value[toHex(+row)] = {};
+			}
+
+			if (!song.value[toHex(+row)][channel]) {
+				song.value[toHex(+row)][channel] = "";
+			}
+
+			// lastPhraseHex
+
+			// console.log(phrases.value[lastPatternHex.value]);
+
+			song.value[toHex(+row)][channel] = lastTouchedPattern.value;
+		} else {
+		}
+	}
+
 	if (activeScreen.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = element.id.split("row")[1].split("-pattern")[1];
 
 		if (element.innerText === "--") {
-			console.log("new pattern here");
+			console.log("new phrase here");
 
 			// initialize empty object if they do not exist
 			if (!patterns.value) {
@@ -94,6 +128,47 @@ type editProps = {
 };
 
 export function edit({ direction, element }: editProps) {
+	if (activeScreen.value === "song") {
+		const row = element.id.split("row")[1].split("-channel")[0];
+		const channel = element.id.split("-")[1];
+		let selectedPattern = element.innerText;
+		console.table({ row, channel, selectedPattern });
+		if (selectedPattern === undefined) return;
+		// const selectedPhraseTone = selectedPattern.split(selectedPattern[selectedPattern.length - 1])[0];
+		let newPhrase;
+		if (direction === "right") {
+			if (selectedPattern === "FF") {
+				selectedPattern = "00";
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern))}`;
+			} else {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 1)}`;
+			}
+		} else if (direction === "left") {
+			if (selectedPattern === "00") {
+				selectedPattern = "FF";
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern))}`;
+			} else {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 1)}`;
+			}
+		} else if (direction === "up") {
+			if (toInt(selectedPattern) > 243) {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 256 + 12)}`;
+			} else {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 12)}`;
+			}
+		} else if (direction === "down") {
+			if (toInt(selectedPattern) < 12) {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 256 - 12)}`;
+			} else {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 12)}`;
+			}
+		}
+		// ensure we get the updated value
+		setTimeout(() => {
+			lastTouchedPattern.value = (<HTMLButtonElement>document.activeElement).innerText;
+		}, 0);
+	}
+
 	if (activeScreen.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = lastPatternHex.value;
@@ -204,6 +279,12 @@ type deleteProps = {
 };
 
 export function remove({ element }: deleteProps) {
+  if (activeScreen.value === "song") {
+		const row = element.id.split("row")[1].split("-channel")[0];
+		const channel = element.id.split("-")[1];
+		song.value[toHex(+row)][channel] = `--`;
+	}
+
 	if (activeScreen.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = element.id.split("row")[1].split("-pattern")[1];
