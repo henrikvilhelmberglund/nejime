@@ -292,10 +292,10 @@ export function createLastPatternHexState() {
 export function createLastTouchedPatternState() {
 	return {
 		get value() {
-			return lastTouchedPhrase;
+			return lastTouchedPattern;
 		},
 		set value(string: string) {
-			lastTouchedPhrase = string;
+			lastTouchedPattern = string;
 		}
 	};
 }
