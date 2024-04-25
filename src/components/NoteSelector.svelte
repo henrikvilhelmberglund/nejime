@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { add, edit, preview } from "./editing.svelte";
+	import { add, edit, preview, remove } from "./editing.svelte";
 	import {
 		createSPressedState,
 		createDPressedState,
@@ -7,7 +7,8 @@
 		createLastRowNoteState,
 		createLastChannelNoteState,
 		marimba,
-		createShouldPreviewState
+		createShouldPreviewState,
+		createLastTouchedNoteState
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -24,6 +25,7 @@
 	let fPressed = createFPressedState();
 	let lastRowNote = createLastRowNoteState();
 	let lastChannelNote = createLastChannelNoteState();
+	let lastTouchedNote = createLastTouchedNoteState();
 	let shouldPreview = createShouldPreviewState();
 	$inspect(shouldPreview.value);
 
@@ -48,28 +50,46 @@
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
 
-    // TODO add instrument field
-    const instrument = 53;
+		// TODO add instrument field
+		const instrument = 53;
 
 		e.preventDefault();
 		// preview note when key is not movement
-		if (e.code === "KeyF") {
+		// * add+preview
+		if (!dPressed.value && e.code === "KeyF") {
 			if ((<HTMLButtonElement>document.activeElement).innerText === "---") {
 				add({ element: <HTMLButtonElement>document.activeElement });
 				shouldPreview.value = true;
 			} else {
+				lastTouchedNote.value = (<HTMLButtonElement>document.activeElement).innerText.replaceAll(
+          // ! this is probably stupid but it works (C  3 turns into C3 etc)
+					" ",
+					""
+				);
+				console.info("lastTouchedNote", lastTouchedNote.value);
 				shouldPreview.value = true;
 			}
 		} else {
 			shouldPreview.value = false;
 		}
+
+		// * remove
+		if (dPressed.value && e.code === "KeyF") {
+			console.log("remove");
+			if ((<HTMLButtonElement>document.activeElement).innerText !== "---") {
+				remove({ element: <HTMLButtonElement>document.activeElement });
+			}
+		}
+
 		// if s or d are pressed, don't use below logic that switches cursor location
 		if (sPressed.value || dPressed.value) return;
 		if (!fPressed.value) {
+			// * preview
 			if (shouldPreview.value) {
 				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			}
 		}
+		// * edit
 		if (fPressed.value) {
 			// preview({ element: <HTMLButtonElement>document.activeElement });
 			console.log("pressed");
@@ -87,7 +107,9 @@
 				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
 				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
 			}
-		} else if (e.code === "ArrowLeft") {
+		}
+		// * cursor movement
+		else if (e.code === "ArrowLeft") {
 			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
 		} else if (e.code === "ArrowRight") {
 			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
