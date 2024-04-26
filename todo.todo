@@ -1,5 +1,5 @@
 core:
-    ☐ add instruments
+    ✔ add instruments @done(24-04-26 16:58)
     ☐ transpose can go from 00 to FF (to allow for negative transpose)
     
 UI:
@@ -9,7 +9,8 @@ UI:
   ✔ add NOTE above notes in Phrase @done(24-04-25 16:31)
   ✔ add INSTR above instruments in Phrase @done(24-04-25 16:31)
   ✔ add CMD above commands in Phrase @done(24-04-25 16:31)
-  ☐ add instrument field in Phrase
+  ✔ add instrument field in Phrase @done(24-04-26 16:58)
+  ☐ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right)
   ☐ add Project screen with editable BPM value
   ☐ add Instrument screen for configuring instruments
   
