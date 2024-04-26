@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InstrumentSelector from "./InstrumentSelector.svelte";
 	import NoteSelector from "./NoteSelector.svelte";
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
@@ -8,6 +9,7 @@
 		createLastChannelNoteState,
 		createLastPhraseHexState,
 		createLastRowNoteState,
+		createPhraseInstrumentsState,
 		createPhrasesState,
 		createPlayPositionState,
 		createSongState
@@ -18,6 +20,7 @@
 	let rows = Array.from({ length: 16 });
 
 	let phrasesState = createPhrasesState();
+	let phraseInstrumentsState = createPhraseInstrumentsState();
 	let isPlayingBackState = createIsPlayingBackState();
 	let playPositionState = createPlayPositionState();
 	let lastChannelNote = createLastChannelNoteState();
@@ -87,6 +90,10 @@
 						channel={`channel${j}`}
 						id={`note${i}-channel${j}`} />
 				{/each}
+        <InstrumentSelector
+						selectedInstrument={phraseInstrumentsState.value?.[activeElement!.innerText]?.[toHex(i)] ?? "00"}
+						hex={toHex(i)}
+						id={`instrument-selector${i}`} />
 			</div>
 		{/each}
 	</div>
