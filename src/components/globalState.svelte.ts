@@ -1,5 +1,137 @@
-import { SplendidGrandPiano, Soundfont } from "smplr";
+import { SplendidGrandPiano, Soundfont, getSoundfontNames } from "smplr";
 import { type Pattern, type Patterns, type Phrase } from "../types/types";
+
+// const instrumentNames = getSoundfontNames();
+const instrumentNames = {
+	"00": "acoustic_grand_piano",
+	"01": "bright_acoustic_piano",
+	"02": "electric_grand_piano",
+	"03": "honkytonk_piano",
+	"04": "electric_piano_1",
+	"05": "electric_piano_2",
+	"06": "harpsichord",
+	"07": "clavinet",
+	"08": "celesta",
+	"09": "glockenspiel",
+	"0A": "music_box",
+	"0B": "vibraphone",
+	"0C": "marimba",
+	"0D": "xylophone",
+	"0E": "tubular_bells",
+	"0F": "dulcimer",
+	"10": "drawbar_organ",
+	"11": "percussive_organ",
+	"12": "rock_organ",
+	"13": "church_organ",
+	"14": "reed_organ",
+	"15": "accordion",
+	"16": "harmonica",
+	"17": "tango_accordion",
+	"18": "acoustic_guitar_nylon",
+	"19": "acoustic_guitar_steel",
+	"1A": "electric_guitar_jazz",
+	"1B": "electric_guitar_clean",
+	"1C": "electric_guitar_muted",
+	"1D": "overdriven_guitar",
+	"1E": "distortion_guitar",
+	"1F": "guitar_harmonics",
+	"20": "acoustic_bass",
+	"21": "electric_bass_finger",
+	"22": "electric_bass_pick",
+	"23": "fretless_bass",
+	"24": "slap_bass_1",
+	"25": "slap_bass_2",
+	"26": "synth_bass_1",
+	"27": "synth_bass_2",
+	"28": "violin",
+	"29": "viola",
+	"2A": "cello",
+	"2B": "contrabass",
+	"2C": "tremolo_strings",
+	"2D": "pizzicato_strings",
+	"2E": "orchestral_harp",
+	"2F": "timpani",
+	"30": "string_ensemble_1",
+	"31": "string_ensemble_2",
+	"32": "synth_strings_1",
+	"33": "synth_strings_2",
+	"34": "choir_aahs",
+	"35": "voice_oohs",
+	"36": "synth_choir",
+	"37": "orchestra_hit",
+	"38": "trumpet",
+	"39": "trombone",
+	"3A": "tuba",
+	"3B": "muted_trumpet",
+	"3C": "french_horn",
+	"3D": "brass_section",
+	"3E": "synth_brass_1",
+	"3F": "synth_brass_2",
+	"40": "soprano_sax",
+	"41": "alto_sax",
+	"42": "tenor_sax",
+	"43": "baritone_sax",
+	"44": "oboe",
+	"45": "english_horn",
+	"46": "bassoon",
+	"47": "clarinet",
+	"48": "piccolo",
+	"49": "flute",
+	"4A": "recorder",
+	"4B": "pan_flute",
+	"4C": "blown_bottle",
+	"4D": "shakuhachi",
+	"4E": "whistle",
+	"4F": "ocarina",
+	"50": "lead_1_square",
+	"51": "lead_2_sawtooth",
+	"52": "lead_3_calliope",
+	"53": "lead_4_chiff",
+	"54": "lead_5_charang",
+	"55": "lead_6_voice",
+	"56": "lead_7_fifths",
+	"57": "lead_8_bass__lead",
+	"58": "pad_1_new_age",
+	"59": "pad_2_warm",
+	"5A": "pad_3_polysynth",
+	"5B": "pad_4_choir",
+	"5C": "pad_5_bowed",
+	"5D": "pad_6_metallic",
+	"5E": "pad_7_halo",
+	"5F": "pad_8_sweep",
+	"60": "fx_1_rain",
+	"61": "fx_2_soundtrack",
+	"62": "fx_3_crystal",
+	"63": "fx_4_atmosphere",
+	"64": "fx_5_brightness",
+	"65": "fx_6_goblins",
+	"66": "fx_7_echoes",
+	"67": "fx_8_scifi",
+	"68": "sitar",
+	"69": "banjo",
+	"6A": "shamisen",
+	"6B": "koto",
+	"6C": "kalimba",
+	"6D": "bagpipe",
+	"6E": "fiddle",
+	"6F": "shanai",
+	"70": "tinkle_bell",
+	"71": "agogo",
+	"72": "steel_drums",
+	"73": "woodblock",
+	"74": "taiko_drum",
+	"75": "melodic_tom",
+	"76": "synth_drum",
+	"77": "reverse_cymbal",
+	"78": "guitar_fret_noise",
+	"79": "breath_noise",
+	"7A": "seashore",
+	"7B": "bird_tweet",
+	"7C": "telephone_ring",
+	"7D": "helicopter",
+	"7E": "applause",
+	"7F": "gunshot"
+};
 
 export const context = $state(new AudioContext());
 export const marimba = new Soundfont(context, { instrument: "marimba" });
@@ -89,6 +221,26 @@ let phrases = $state<Record<string, Phrase>>({
 		"00": { "00": "E4" },
 		"01": { "00": "F4" },
 		"02": { "00": "G4" }
+	}
+});
+
+let instruments = $state<Record<string, Soundfont>>({
+	"00": new Soundfont(context, { instrument: instrumentNames["3C"] }),
+	"01": new Soundfont(context, { instrument: instrumentNames["08"] })
+});
+
+let instrumentDurations = $state<Record<string, number>>({
+	"00": 0.3,
+	"01": 0.1
+});
+
+let phraseInstruments = $state<Record<string, Record<string, string>>>({
+	"10": {
+		"00": "00",
+		"01": "00",
+		"02": "01",
+		"03": "01",
+		"05": "01"
 	}
 });
 
@@ -368,6 +520,42 @@ export function createPhrasesState() {
 		},
 		set value(newState) {
 			phrases = newState;
+		}
+		// add(patternToAdd) {
+		// 	patterns.push(patternToAdd);
+		// }
+	};
+}
+
+export function createInstrumentsState() {
+	return {
+		get value() {
+			return instruments;
+		},
+		set value(newState) {
+			instruments = newState;
+		}
+	};
+}
+
+export function createInstrumentDurationsState() {
+	return {
+		get value() {
+			return instrumentDurations;
+		},
+		set value(newState) {
+			instrumentDurations = newState;
+		}
+	};
+}
+
+export function createPhraseInstrumentsState() {
+	return {
+		get value() {
+			return phraseInstruments;
+		},
+		set value(newState) {
+			phraseInstruments = newState;
 		}
 		// add(patternToAdd) {
 		// 	patterns.push(patternToAdd);
