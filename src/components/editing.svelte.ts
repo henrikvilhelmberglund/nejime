@@ -1,5 +1,8 @@
+import type { Soundfont } from "smplr";
 import {
 	createActiveScreenState,
+	createBpmState,
+	createInstrumentsState,
 	createLastPatternHexState,
 	createLastPhraseHexState,
 	createLastTouchedNoteState,
@@ -111,21 +114,35 @@ export function add({ element }: addProps) {
 
 type previewProps = {
 	element: HTMLButtonElement;
-	instrument: number;
+	instrument: Soundfont;
 };
 
 export function preview({ element, instrument }: previewProps) {
+	const bpmState = createBpmState();
 	const row = element.id.split("note")[1].split("-channel")[0];
 	const channel = element.id.split("note")[1].split("-channel")[1];
+
 	let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
 	if (selectedNote === undefined) return;
-	marimba.start({ note: selectedNote });
+	// marimba.start({ note: selectedNote });
+	instrument.stop();
+	instrument.start({ note: selectedNote });
+	// setTimeout(
+	//   () => {
+	//     instrument.stop();
+	//   },
+	//   (duration * 1000) / (bpmState.value * 4)
+	// );
 }
 
 type editProps = {
 	direction: string;
 	element: HTMLButtonElement;
 };
+
+export function stopNotePreview({ element, instrument }: previewProps) {
+	instrument.stop();
+}
 
 export function edit({ direction, element }: editProps) {
 	if (activeScreen.value === "song") {
@@ -212,7 +229,8 @@ export function edit({ direction, element }: editProps) {
 		}, 0);
 	}
 
-	if (activeScreen.value === "phrase") {
+  if (activeScreen.value === "phrase") {
+    // TODO support instrument selector here
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
@@ -279,7 +297,7 @@ type deleteProps = {
 };
 
 export function remove({ element }: deleteProps) {
-  if (activeScreen.value === "song") {
+	if (activeScreen.value === "song") {
 		const row = element.id.split("row")[1].split("-channel")[0];
 		const channel = element.id.split("-")[1];
 		song.value[toHex(+row)][channel] = `--`;
