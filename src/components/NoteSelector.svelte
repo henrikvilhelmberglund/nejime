@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { add, edit, preview, remove } from "./editing.svelte";
+	import { add, edit, preview, remove, stopNotePreview } from "./editing.svelte";
 	import {
 		createSPressedState,
 		createDPressedState,
@@ -8,7 +8,8 @@
 		createLastChannelNoteState,
 		marimba,
 		createShouldPreviewState,
-		createLastTouchedNoteState
+		createLastTouchedNoteState,
+		createInstrumentsState
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -27,9 +28,7 @@
 	let lastChannelNote = createLastChannelNoteState();
 	let lastTouchedNote = createLastTouchedNoteState();
 	let shouldPreview = createShouldPreviewState();
-	$inspect(shouldPreview.value);
-
-	// let el = document.getElementById("div-1").nextSibling;
+	let soundfonts = createInstrumentsState();
 
 	function focusNoteSelector({ row, channel }: { row: number; channel: number }) {
 		try {
@@ -51,7 +50,9 @@
 		const channel = id.split("note")[1].split("-channel")[1];
 
 		// TODO add instrument field
-		const instrument = 53;
+		// const instrument = 53;
+		const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
+			.innerText;
 
 		e.preventDefault();
 		// preview note when key is not movement
@@ -62,7 +63,7 @@
 				shouldPreview.value = true;
 			} else {
 				lastTouchedNote.value = (<HTMLButtonElement>document.activeElement).innerText.replaceAll(
-          // ! this is probably stupid but it works (C  3 turns into C3 etc)
+					// ! this is probably stupid but it works (C  3 turns into C3 etc)
 					" ",
 					""
 				);
@@ -86,7 +87,14 @@
 		if (!fPressed.value) {
 			// * preview
 			if (shouldPreview.value) {
-				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
+				// stopNotePreview({
+				// 	element: <HTMLButtonElement>document.activeElement,
+				// 	instrument: soundfonts.value[instrument]
+				// });
+				preview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 			}
 		}
 		// * edit
@@ -95,17 +103,45 @@
 			console.log("pressed");
 			shouldPreview.value = true;
 			if (e.code === "ArrowLeft") {
+				stopNotePreview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
+				preview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 			} else if (e.code === "ArrowRight") {
+				stopNotePreview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
+				preview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 			} else if (e.code === "ArrowUp") {
+				stopNotePreview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
+				preview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 			} else if (e.code === "ArrowDown") {
+				stopNotePreview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
-				preview({ element: <HTMLButtonElement>document.activeElement, instrument });
+				preview({
+					element: <HTMLButtonElement>document.activeElement,
+					instrument: soundfonts.value[instrument]
+				});
 			}
 		}
 		// * cursor movement
@@ -120,8 +156,19 @@
 		}
 	}
 
-	function handleKeyUp() {
+	function handleKeyUp(e) {
 		shouldPreview.value = false;
+		const row = id.split("note")[1].split("-channel")[0];
+		const channel = id.split("note")[1].split("-channel")[1];
+		const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
+			.innerText;
+
+		if (e.code === "KeyF") {
+			stopNotePreview({
+				element: <HTMLButtonElement>document.activeElement,
+				instrument: soundfonts.value[instrument]
+			});
+		}
 	}
 
 	function handleClick(e: MouseEvent) {
