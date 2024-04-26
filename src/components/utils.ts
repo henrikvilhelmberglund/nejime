@@ -1,7 +1,10 @@
 import {
 	context,
 	createBpmState,
+	createInstrumentDurationsState,
+	createInstrumentsState,
 	createIntervalIdState,
+	createPhraseInstrumentsState,
 	createPhrasesState,
 	createPlayPositionState,
 	marimba
@@ -31,7 +34,6 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 	const notes = object;
 	const numberOfNotes = 16;
 	const channels = ["00", "01", "02", "03", "04"];
-	console.log("before", notes);
 	channels.forEach((channel) => {
 		if (!notes[channel]) {
 			notes[channel] = {}; // Initialize the channel if it doesn't exist
@@ -43,7 +45,6 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 			}
 		}
 	});
-	console.log("after", notes);
 	return notes;
 }
 
@@ -81,6 +82,9 @@ export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
 	const playPositionState = createPlayPositionState();
 	const intervalIdState = createIntervalIdState();
+	const soundfonts = createInstrumentsState();
+	const instrumentDurations = createInstrumentDurationsState();
+	const phraseInstruments = createPhraseInstrumentsState();
 	console.log("state", state);
 	if (state === "phrase") {
 		// marimba.start("C3");
@@ -88,14 +92,30 @@ export function playPhrase(state: string, hex: string) {
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.currentTime;
 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
+		let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
 		notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
 			const note = notes[channel][toHex(playPositionState.value)];
-			marimba.start({
-				note,
-				time: now,
-				duration: 60 / (bpmState.value * 4)
-			});
+			const instrument = soundfonts.value[instruments?.[toHex(playPositionState.value)] ?? "00"];
+			const duration =
+				instrumentDurations.value[instruments?.[toHex(playPositionState.value)] ?? "00"];
+			console.log("duration", duration);
+			// console.info(instrument);
+			if (note !== "---") {
+				console.log("note", note);
+				// instrument.stop();
+				instrument.start({
+					note,
+					time: now,
+					duration: duration
+				});
+				// setTimeout(
+				// 	() => {
+				// 		stopNote();
+				// 	},
+				// 	duration / 1000 / (bpmState.value * 4)
+				// );
+			}
 		});
 	}
 }
@@ -104,6 +124,8 @@ export function stop(state: string) {
 	const bpmState = createBpmState();
 	const playPositionState = createPlayPositionState();
 	const intervalIdState = createIntervalIdState();
+	const soundfonts = createInstrumentsState();
+
 	console.log("state", state);
 	if (state === "phrase") {
 		// marimba.start("C3");
@@ -111,6 +133,10 @@ export function stop(state: string) {
 		// let activePhrase = createActivePhraseState();
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.currentTime;
-		marimba.stop();
+		// marimba.stop();
+		// instrument.start({ note: selectedNote });
+		Object.values(soundfonts.value).forEach((soundfont) => {
+			soundfont.stop();
+		});
 	}
 }
