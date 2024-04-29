@@ -4,9 +4,11 @@
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
 		createActiveScreenState,
+		createIsPlayingBackState,
 		createLastPatternHexState,
 		createLastRowPhraseState,
 		createPatternsState,
+		createPlayPositionPatternState,
 		createTransposePatternsState
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
@@ -22,6 +24,8 @@
 	let patternState = createPatternsState();
 	let transposePatternsState = createTransposePatternsState();
 	let lastRowPhrase = createLastRowPhraseState();
+	let isPlayingBack = createIsPlayingBackState();
+	let playPositionPattern = createPlayPositionPatternState();
 
 	$effect(() => {
 		if (lastRowPhrase.value !== undefined) {
@@ -61,11 +65,14 @@
 </p>
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
-	<div class="flex flex-col">
+	<div class="relative flex flex-col">
 		{#each rows as _, i}
-			<div class="flex flex-row gap-12">
-				<div id={`row${i}`} class="flex gap-2">
-					<PhraseSelector
+    <div class="flex flex-row gap-12">
+      <div id={`row${i}`} class="flex gap-2">
+        {#if isPlayingBack.value && playPositionPattern.value === i}
+          <div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
+        {/if}
+        <PhraseSelector
 						selectedPhrase={patternState.value[lastPatternHex.value as keyof typeof patternState.value]?.[toHex(i) as keyof typeof patternState.value] ?? "--"}
 						hex={toHex(i)}
 						id={`row${i}-pattern`} />
