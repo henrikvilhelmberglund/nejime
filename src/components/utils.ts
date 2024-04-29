@@ -25,6 +25,14 @@ export function toInt(input: string) {
 	return parseInt(input, 16);
 }
 
+export function toIntFromTranspose(input: string) {
+	if (parseInt(input, 16) > 128) {
+		return (256 - parseInt(input, 16)) * -1;
+	} else {
+		return parseInt(input, 16);
+	}
+}
+
 export function noteToInt(input: string) {
 	const octave = parseInt(input[input.length - 1]);
 	const note = input.split(octave.toString())[0];
@@ -125,7 +133,7 @@ export function playPhrase(state: string, hex: string) {
 					note:
 						transpose ?
 							noteToInt(note) +
-							toInt(
+							toIntFromTranspose(
 								transposePatterns.value[lastPatternHex.value][toHex(playPositionPattern.value)] ?? 0
 							)
 						:	noteToInt(note),
