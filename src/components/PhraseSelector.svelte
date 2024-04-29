@@ -28,6 +28,16 @@
 		}
 	}
 
+	function focusTransposeSelector({ row }: { row: number }) {
+		try {
+			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-transpose`)!;
+			phraseSelector.focus();
+			lastRowPhrase.value = row;
+		} catch (error) {
+			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
+		}
+	}
+
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("row")[1].split("-channel")[0];
 		console.log("row", row);
@@ -71,8 +81,7 @@
 		else if (e.code === "ArrowLeft") {
 			// focusTransposeSelector({ row: parseInt(row)});
 		} else if (e.code === "ArrowRight") {
-			// TODO move to right channel
-			// focusTransposeSelector({ row: parseInt(row) });
+			focusTransposeSelector({ row: parseInt(row) });
 		} else if (e.code === "ArrowUp") {
 			focusPhraseSelector({ row: parseInt(row) - 1 });
 		} else if (e.code === "ArrowDown") {
