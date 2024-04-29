@@ -22,7 +22,7 @@
 		createPlayPositionPhraseState,
 		createPlayPositionPatternState
 	} from "./globalState.svelte";
-	import { playPattern, playPhrase, stop, toHex } from "./utils";
+	import { playPhrase, stop, toHex } from "./utils";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 	let activeScreenState = createActiveScreenState();
@@ -111,13 +111,13 @@
 					}
 
 					// console.table(phrasesToPlay);
-					playPattern(activeScreenState.value, phrasesToPlay[toHex(playPositionPattern.value)]);
+					playPhrase(activeScreenState.value, phrasesToPlay[toHex(playPositionPattern.value)]);
 
 					intervalIdState.value = setInterval(
 						() => {
 							if (playPositionPhrase.value < 15) {
 								playPositionPhrase.value += 1;
-								playPattern(
+								playPhrase(
 									activeScreenState.value,
 									phrasesToPlay[toHex(playPositionPattern.value)]
 								);
@@ -128,7 +128,7 @@
 								}
 
 								playPositionPhrase.value = 0;
-								playPattern(
+								playPhrase(
 									activeScreenState.value,
 									phrasesToPlay[toHex(playPositionPattern.value)]
 								);
