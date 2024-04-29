@@ -11,7 +11,7 @@
 		createLastRowNoteState,
 		createPhraseInstrumentsState,
 		createPhrasesState,
-		createPlayPositionState,
+		createPlayPositionPhraseState,
 		createSongState
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
@@ -19,10 +19,10 @@
 	let channels = [0, 1, 2, 3, 4];
 	let rows = Array.from({ length: 16 });
 
-	let phrasesState = createPhrasesState();
-	let phraseInstrumentsState = createPhraseInstrumentsState();
-	let isPlayingBackState = createIsPlayingBackState();
-	let playPositionState = createPlayPositionState();
+	let phrases = createPhrasesState();
+	let phraseInstruments = createPhraseInstrumentsState();
+	let isPlayingBack = createIsPlayingBackState();
+	let playPositionPhrase = createPlayPositionPhraseState();
 	let lastChannelNote = createLastChannelNoteState();
 	let lastRowNote = createLastRowNoteState();
 
@@ -80,18 +80,18 @@
 	<div class="relative flex flex-col">
 		{#each rows as row, i}
 			<div id={`note${i}`} class="flex gap-4">
-				{#if isPlayingBackState.value && playPositionState.value === i}
+				{#if isPlayingBack.value && playPositionPhrase.value === i}
 					<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 				{/if}
 				{#each channels as channel, j}
 					<NoteSelector
-						selectedNote={phrasesState.value?.[activeElement!.innerText]?.[toHex(j)]?.[toHex(i)] ?? "---"}
+						selectedNote={phrases.value?.[activeElement!.innerText]?.[toHex(j)]?.[toHex(i)] ?? "---"}
 						hex={toHex(i)}
 						channel={`channel${j}`}
 						id={`note${i}-channel${j}`} />
 				{/each}
         <InstrumentSelector
-						selectedInstrument={phraseInstrumentsState.value?.[activeElement!.innerText]?.[toHex(i)] ?? "00"}
+						selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "00"}
 						hex={toHex(i)}
 						id={`instrument-selector${i}`} />
 			</div>
