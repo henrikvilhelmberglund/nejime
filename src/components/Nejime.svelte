@@ -15,10 +15,14 @@
 		createIntervalIdState,
 		createBpmState,
 		createPhraseLoopIntervalIdState,
-		createPlayPositionState,
-		createLastPhraseHexState
+		createLastPhraseHexState,
+		createLastPatternHexState,
+		createPatternsState,
+		createPhrasesState,
+		createPlayPositionPhraseState,
+		createPlayPositionPatternState
 	} from "./globalState.svelte";
-	import { playPhrase, stop } from "./utils";
+	import { playPattern, playPhrase, stop, toHex } from "./utils";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 	let activeScreenState = createActiveScreenState();
@@ -53,14 +57,14 @@
 	}
 	const intervalIdState = createIntervalIdState();
 	const phraseLoopIntervalIdState = createPhraseLoopIntervalIdState();
-	const playPositionState = createPlayPositionState();
 	let lastPhraseHex = createLastPhraseHexState();
-</script>
+	let lastPatternHex = createLastPatternHexState();
+	let patternsState = createPatternsState();
+	let phrasesState = createPhrasesState();
+	let playPositionPhrase = createPlayPositionPhraseState();
+	const playPositionPattern = createPlayPositionPatternState();
 
-<div
-	id="nejime"
-	role="presentation"
-	onkeydown={(e) => {
+	function handleKeyDown(e: KeyboardEvent) {
 		// console.log(e);
 		if (e.code === "KeyS") {
 			sPressed.value = true;
@@ -85,6 +89,54 @@
 		}
 		if (e.code === "Space") {
 			if (!isPlayingBack.value) {
+				if (activeScreenState.value === "pattern") {
+					// ? caused issue when editing notes while phrase was playing
+					// play(activeScreenState.value, lastPhraseHex.value);
+					// after first play, start looping
+					// phraseLoopIntervalIdState.value = setInterval(
+					// 	() => {
+					// 		play(activeScreenState.value, lastPhraseHex.value);
+					// 	},
+					// 	1000 * 16 * (60 / (bpmState.value * 4))
+					// );
+
+					const phrasesToPlay = patternsState.value[lastPatternHex.value];
+
+					if (e.ctrlKey) {
+						const position = document.activeElement!.id.split("row")[1].split("-pattern")[0];
+						console.log("position", position);
+						playPositionPattern.value = parseInt(position);
+					} else {
+						playPositionPattern.value = 0;
+					}
+
+					// console.table(phrasesToPlay);
+					playPattern(activeScreenState.value, phrasesToPlay[toHex(playPositionPattern.value)]);
+
+					intervalIdState.value = setInterval(
+						() => {
+							if (playPositionPhrase.value < 15) {
+								playPositionPhrase.value += 1;
+								playPattern(
+									activeScreenState.value,
+									phrasesToPlay[toHex(playPositionPattern.value)]
+								);
+							} else {
+								playPositionPattern.value += 1;
+								if (!phrasesToPlay[toHex(playPositionPattern.value)]) {
+									playPositionPattern.value = 0;
+								}
+
+								playPositionPhrase.value = 0;
+								playPattern(
+									activeScreenState.value,
+									phrasesToPlay[toHex(playPositionPattern.value)]
+								);
+							}
+						},
+						1000 * (60 / (bpmState.value * 4))
+					);
+				}
 				if (activeScreenState.value === "phrase") {
 					// ? caused issue when editing notes while phrase was playing
 					// play(activeScreenState.value, lastPhraseHex.value);
@@ -99,19 +151,19 @@
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("-channel")[0].split("note")[1];
 						console.log("position", position);
-						playPositionState.value = parseInt(position);
+						playPositionPhrase.value = parseInt(position);
 					} else {
-						playPositionState.value = 0;
+						playPositionPhrase.value = 0;
 					}
 					playPhrase(activeScreenState.value, lastPhraseHex.value);
 
 					intervalIdState.value = setInterval(
 						() => {
-							if (playPositionState.value < 15) {
-								playPositionState.value += 1;
+							if (playPositionPhrase.value < 15) {
+								playPositionPhrase.value += 1;
 								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							} else {
-								playPositionState.value = 0;
+								playPositionPhrase.value = 0;
 								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							}
 						},
@@ -126,7 +178,13 @@
 				phraseLoopIntervalIdState.stop();
 			}
 		}
-	}}
+	}
+</script>
+
+<div
+	id="nejime"
+	role="presentation"
+	onkeydown={(e) => handleKeyDown(e)}
 	onkeyup={(e) => {
 		// console.log(e);
 		if (e.code === "KeyS") {
