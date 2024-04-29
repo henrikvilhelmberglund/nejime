@@ -11,7 +11,7 @@ import {
 	createPatternsState,
 	createPhrasesState,
 	createSongState,
-  createTransposePatternsState
+	createTransposePatternsState
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
 
@@ -296,8 +296,8 @@ export function edit({ direction, element }: editProps) {
 export function editTranspose({ direction, element }: editProps) {
 	if (activeScreen.value === "pattern") {
 		const row = element.id.split("row")[1].split("-transpose")[0];
-    const pattern = lastPatternHex.value;
-    // const transposePatterns
+		const pattern = lastPatternHex.value;
+		// const transposePatterns
 		let selectedPhrase = element.innerText;
 		console.table({ row, pattern, selectedPhrase });
 		if (selectedPhrase === undefined) return;
@@ -306,30 +306,36 @@ export function editTranspose({ direction, element }: editProps) {
 		if (direction === "right") {
 			if (selectedPhrase === "FF") {
 				selectedPhrase = "00";
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase))}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase))}`;
 			} else {
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) + 1)}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase) + 1)}`;
 			}
 		} else if (direction === "left") {
 			if (selectedPhrase === "00") {
 				selectedPhrase = "FF";
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase))}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase))}`;
 			} else {
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) - 1)}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase) - 1)}`;
 			}
 		} else if (direction === "up") {
 			if (toInt(selectedPhrase) > 243) {
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase) - 256 + 12)}`;
 			} else {
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) + 12)}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase) + 12)}`;
 			}
 		} else if (direction === "down") {
 			if (toInt(selectedPhrase) < 12) {
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase) + 256 - 12)}`;
 			} else {
-				transposePatterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) - 12)}`;
+				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedPhrase) - 12)}`;
 			}
 		}
 		// ensure we get the updated value
@@ -360,5 +366,12 @@ export function remove({ element }: deleteProps) {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)] = `---`;
+	}
+}
+
+export function removeTranspose({ element }: deleteProps) {
+	if (activeScreen.value === "pattern") {
+		const row = element.id.split("row")[1].split("-transpose")[0];
+		transposePatterns.value[lastPatternHex.value][toHex(+row)] = `00`;
 	}
 }
