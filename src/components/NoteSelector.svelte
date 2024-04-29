@@ -6,7 +6,6 @@
 		createFPressedState,
 		createLastRowNoteState,
 		createLastChannelNoteState,
-		marimba,
 		createShouldPreviewState,
 		createLastTouchedNoteState,
 		createInstrumentsState
@@ -156,7 +155,7 @@
 		}
 	}
 
-	function handleKeyUp(e) {
+	function handleKeyUp(e: KeyboardEvent) {
 		shouldPreview.value = false;
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
