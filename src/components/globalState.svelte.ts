@@ -155,7 +155,9 @@ let isPlayingBack = $state(false);
 let shouldPreview = $state(false);
 
 let bpm = $state(120);
-let playPosition = $state(0);
+let playPositionPhrase = $state(0);
+let playPositionPattern = $state(0);
+let playPositionSong = $state(0);
 let intervalId = $state<Timer>();
 let phraseLoopIntervalId = $state<Timer>();
 
@@ -265,9 +267,10 @@ export function createIntervalIdState() {
 		set value(newState) {
 			intervalId = newState;
 		},
+		// not used
 		stop() {
 			clearInterval(intervalId);
-			playPosition = 0;
+			playPositionPhrase = 0;
 		}
 	};
 }
@@ -294,13 +297,33 @@ export function createShouldPreviewState() {
 	};
 }
 
-export function createPlayPositionState() {
+export function createPlayPositionPhraseState() {
 	return {
 		get value() {
-			return playPosition;
+			return playPositionPhrase;
 		},
 		set value(newState) {
-			playPosition = newState;
+			playPositionPhrase = newState;
+		}
+	};
+}
+export function createPlayPositionPatternState() {
+	return {
+		get value() {
+			return playPositionPattern;
+		},
+		set value(newState) {
+			playPositionPattern = newState;
+		}
+	};
+}
+export function createPlayPositionSongState() {
+	return {
+		get value() {
+			return playPositionSong;
+		},
+		set value(newState) {
+			playPositionSong = newState;
 		}
 	};
 }
