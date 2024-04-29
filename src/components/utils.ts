@@ -4,10 +4,11 @@ import {
 	createInstrumentDurationsState,
 	createInstrumentsState,
 	createIntervalIdState,
+	createLastPatternHexState,
+	createPatternsState,
 	createPhraseInstrumentsState,
 	createPhrasesState,
-	createPlayPositionState,
-	marimba
+	createPlayPositionPhraseState
 } from "./globalState.svelte";
 
 export function toHex(input: number) {
@@ -31,10 +32,13 @@ export function addSpace(input: string) {
 }
 
 function addSilentNotes(object: Record<string, Record<string, string>>) {
-	const notes = object;
+	let notes = object;
 	const numberOfNotes = 16;
 	const channels = ["00", "01", "02", "03", "04"];
-	channels.forEach((channel) => {
+  channels.forEach((channel) => {
+    if (!notes) {
+			notes = {}; // Initialize the channel if it doesn't exist
+		}
 		if (!notes[channel]) {
 			notes[channel] = {}; // Initialize the channel if it doesn't exist
 		}
@@ -80,13 +84,13 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 
 export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
-	const playPositionState = createPlayPositionState();
+	const playPositionPhrase = createPlayPositionPhraseState();
 	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
 	console.log("state", state);
-	if (state === "phrase") {
+	if (state === "phrase" || state === "pattern") {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
 		const channels = ["00", "01", "02", "03", "04"];
@@ -95,10 +99,10 @@ export function playPhrase(state: string, hex: string) {
 		let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
 		notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
-			const note = notes[channel][toHex(playPositionState.value)];
-			const instrument = soundfonts.value[instruments?.[toHex(playPositionState.value)] ?? "00"];
+			const note = notes[channel][toHex(playPositionPhrase.value)];
+			const instrument = soundfonts.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
 			const duration =
-				instrumentDurations.value[instruments?.[toHex(playPositionState.value)] ?? "00"];
+				instrumentDurations.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
 			console.log("duration", duration);
 			// console.info(instrument);
 			if (note !== "---") {
@@ -122,7 +126,7 @@ export function playPhrase(state: string, hex: string) {
 
 export function stop(state: string) {
 	const bpmState = createBpmState();
-	const playPositionState = createPlayPositionState();
+	const playPositionPhrase = createPlayPositionPhraseState();
 	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
 
