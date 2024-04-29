@@ -5,6 +5,7 @@
 		createDPressedState,
 		createFPressedState,
 	} from "./globalState.svelte";
+	import { editTranspose, removeTranspose } from "./editing.svelte";
 
 	let { id, hex, transpose }: { id: string; hex: string; transpose: string } = $props();
 	// let name = $state("--");
@@ -37,9 +38,32 @@
 		const channel = id.split("row")[1].split("-channel")[1];
 		e.preventDefault();
 		// if s, d or f are pressed, don't use below logic that switches cursor location
-		if (sPressed.value || dPressed.value || fPressed.value) return;
 
-		if (e.code === "ArrowLeft") {
+    		// * remove
+		if (dPressed.value && e.code === "KeyF") {
+			console.log("remove");
+			if ((<HTMLButtonElement>document.activeElement).innerText !== "--") {
+				removeTranspose({ element: <HTMLButtonElement>document.activeElement });
+			}
+		}
+
+		// if s or d are pressed, don't use below logic that switches cursor location
+		if (sPressed.value || dPressed.value) return;
+		// * edit
+		if (fPressed.value) {
+			// preview({ element: <HTMLButtonElement>document.activeElement });
+			if (e.code === "ArrowLeft") {
+				editTranspose({ direction: "left", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowRight") {
+				editTranspose({ direction: "right", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowUp") {
+				editTranspose({ direction: "up", element: <HTMLButtonElement>document.activeElement });
+			} else if (e.code === "ArrowDown") {
+				editTranspose({ direction: "down", element: <HTMLButtonElement>document.activeElement });
+			}
+		}
+
+		else if (e.code === "ArrowLeft") {
 			focusPhraseSelector({ row: parseInt(row) });
 		} else if (e.code === "ArrowRight") {
 			// focusPatternSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
