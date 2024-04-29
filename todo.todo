@@ -1,6 +1,6 @@
 core:
     ✔ add instruments @done(24-04-26 16:58)
-    ☐ transpose can go from 00 to FF (to allow for negative transpose)
+    ✔ transpose can go from 00 to FF (to allow for negative transpose) @done(24-04-29 16:21)
     
 UI:
   ✔ add transpose field @done(24-04-19 16:59)
@@ -11,28 +11,29 @@ UI:
   ✔ add CMD above commands in Phrase @done(24-04-25 16:31)
   ✔ add instrument field in Phrase @done(24-04-26 16:58)
   ☐ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right)
-  ☐ add Project screen with editable BPM value
+  ✔ add Project screen with editable BPM value @done(24-04-29 16:20)
   ☐ add Instrument screen for configuring instruments
   
 
 editing: 
+  ☐ add way to play back song
+
   ✔ add way to add empty pattern, starting from 00 @done(24-04-25 16:31)
   ✔ add way to edit pattern, should go from 00 to FF @done(24-04-25 16:31)
   ✔ add way to delete pattern @done(24-04-25 16:31)
-  ☐ add way to preview pattern
+  ✔ add way to play back pattern @done(24-04-29 16:20)
   ☐ add way to copy patterns (similar to LSDj)
   ☐ add way to paste patterns
 
   ✔ add way to add empty phrase, starting from 00 @done(24-04-25 16:31)
   ✔ add way to edit phrase, should go from 00 to FF @done(24-04-25 16:31)
   ✔ add way to delete phrase @done(24-04-25 16:31)
-  ☐ add way to preview phrase
+  ✔ add way to play back phrase @done(24-04-29 16:20)
   ☐ add way to copy phrases (similar to LSDj)
   ☐ add way to paste phrases
 
   ✔ add way to add notes in Phrase for the current channel @done(24-04-23 16:59)
   ✔ add way to edit notes in Phrase for the current channel @done(24-04-23 16:59)
-  ✔ add way to preview notes in Phrase for the current channel @done(24-04-23 16:59)
   ✔ add way to delete notes in Phrase for the current channel @done(24-04-25 16:31)
   ☐ add way to copy notes (similar to LSDj)
   ☐ add way to paste notes
