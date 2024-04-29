@@ -8,7 +8,9 @@ import {
 	createPatternsState,
 	createPhraseInstrumentsState,
 	createPhrasesState,
-	createPlayPositionPhraseState
+	createPlayPositionPatternState,
+	createPlayPositionPhraseState,
+	createTransposePatternsState
 } from "./globalState.svelte";
 
 export function toHex(input: number) {
@@ -23,6 +25,15 @@ export function toInt(input: string) {
 	return parseInt(input, 16);
 }
 
+export function noteToInt(input: string) {
+	const octave = parseInt(input[input.length - 1]);
+	const note = input.split(octave.toString())[0];
+	const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+	const offset = 12;
+	const output = notes.indexOf(note) + octave * 12 + offset;
+	return output;
+}
+
 export function addSpace(input: string) {
 	if (input.length === 2) {
 		let newInput = `${input[0]}&nbsp;&nbsp;${input[1]}`;
@@ -35,8 +46,8 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 	let notes = object;
 	const numberOfNotes = 16;
 	const channels = ["00", "01", "02", "03", "04"];
-  channels.forEach((channel) => {
-    if (!notes) {
+	channels.forEach((channel) => {
+		if (!notes) {
 			notes = {}; // Initialize the channel if it doesn't exist
 		}
 		if (!notes[channel]) {
@@ -45,7 +56,7 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 		for (let i = 0; i < numberOfNotes; i++) {
 			if (!notes[channel]?.[toHex(i)]) {
 				notes[channel][toHex(i)] = "---";
-				console.log(notes[channel]?.[toHex(i)]);
+				// console.log(notes[channel]?.[toHex(i)]);
 			}
 		}
 	});
@@ -85,14 +96,18 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
 	const playPositionPhrase = createPlayPositionPhraseState();
+	const playPositionPattern = createPlayPositionPatternState();
 	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
-	console.log("state", state);
+	const transposePatterns = createTransposePatternsState();
+	let lastPatternHex = createLastPatternHexState();
+	// console.log("state", state);
 	if (state === "phrase" || state === "pattern") {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
+		let transpose = state === "pattern" ? true : false;
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.currentTime;
 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
@@ -103,13 +118,18 @@ export function playPhrase(state: string, hex: string) {
 			const instrument = soundfonts.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
 			const duration =
 				instrumentDurations.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
-			console.log("duration", duration);
 			// console.info(instrument);
 			if (note !== "---") {
-				console.log("note", note);
 				// instrument.stop();
 				instrument.start({
-					note,
+					note:
+						transpose ?
+							noteToInt(note) +
+							toInt(
+								transposePatterns.value[lastPatternHex.value][toHex(playPositionPattern.value)] ?? 0
+							)
+						:	noteToInt(note),
+					// note,
 					time: now,
 					duration: duration
 				});
