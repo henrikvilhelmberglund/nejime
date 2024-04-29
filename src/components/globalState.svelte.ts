@@ -1,4 +1,4 @@
-import { SplendidGrandPiano, Soundfont, getSoundfontNames } from "smplr";
+import { Soundfont } from "smplr";
 import { type Pattern, type Patterns, type Phrase } from "../types/types";
 
 // const instrumentNames = getSoundfontNames();
@@ -134,7 +134,6 @@ const instrumentNames = {
 };
 
 export const context = $state(new AudioContext());
-export const marimba = new Soundfont(context, { instrument: "marimba" });
 
 let activeScreenState = $state("song");
 let lastPhraseHex = $state("");
@@ -333,9 +332,6 @@ export function createSPressedState() {
 		get value() {
 			return sPressed;
 		},
-		// initial() {
-		// 	return { x: 512, y: 300 };
-		// },
 		set value(newState) {
 			sPressed = newState;
 		}
@@ -482,9 +478,6 @@ export function createSongState() {
 		set value(newState) {
 			song = newState;
 		}
-		// add(patternToAdd) {
-		// 	patterns.push(patternToAdd);
-		// }
 	};
 }
 
@@ -496,9 +489,6 @@ export function createPatternsState() {
 		set value(newState) {
 			patterns = newState;
 		}
-		// add(patternToAdd) {
-		// 	patterns.push(patternToAdd);
-		// }
 	};
 }
 
@@ -521,9 +511,6 @@ export function createPhrasesState() {
 		set value(newState) {
 			phrases = newState;
 		}
-		// add(patternToAdd) {
-		// 	patterns.push(patternToAdd);
-		// }
 	};
 }
 
@@ -557,8 +544,5 @@ export function createPhraseInstrumentsState() {
 		set value(newState) {
 			phraseInstruments = newState;
 		}
-		// add(patternToAdd) {
-		// 	patterns.push(patternToAdd);
-		// }
 	};
 }

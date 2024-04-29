@@ -10,8 +10,7 @@ import {
 	createLastTouchedPhraseState,
 	createPatternsState,
 	createPhrasesState,
-	createSongState,
-	marimba
+	createSongState
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
 
@@ -229,8 +228,8 @@ export function edit({ direction, element }: editProps) {
 		}, 0);
 	}
 
-  if (activeScreen.value === "phrase") {
-    // TODO support instrument selector here
+	if (activeScreen.value === "phrase") {
+		// TODO support instrument selector here
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
