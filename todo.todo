@@ -14,6 +14,10 @@ UI:
   ✔ add Project screen with editable BPM value @done(24-04-29 16:20)
   ☐ add Instrument screen for configuring instruments
   
+saving songs:
+  ☐ save song data in local storage in case of crash
+  ☐ save song data as string (base64?)
+  ☐ load song data from string (base64?)
 
 editing: 
   ☐ add way to play back song
