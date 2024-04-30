@@ -1,19 +1,23 @@
-import type { Soundfont } from "smplr";
+import { Soundfont } from "smplr";
 import {
 	createActiveScreenState,
 	createBpmState,
 	createInstrumentsState,
 	createLastPatternHexState,
 	createLastPhraseHexState,
+	createLastTouchedInstrumentState,
 	createLastTouchedNoteState,
 	createLastTouchedPatternState,
 	createLastTouchedPhraseState,
 	createPatternsState,
+	createPhraseInstrumentsState,
 	createPhrasesState,
 	createSongState,
-	createTransposePatternsState
+	createTransposePatternsState,
+	instrumentNames
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
+import { context } from "./globalState.svelte";
 
 let activeScreen = createActiveScreenState();
 let lastPatternHex = createLastPatternHexState();
@@ -21,7 +25,10 @@ let lastPhraseHex = createLastPhraseHexState();
 let lastTouchedPattern = createLastTouchedPatternState();
 let lastTouchedPhrase = createLastTouchedPhraseState();
 let lastTouchedNote = createLastTouchedNoteState();
+let lastTouchedInstrument = createLastTouchedInstrumentState();
 let song = createSongState();
+let soundfonts = createInstrumentsState();
+let phraseInstruments = createPhraseInstrumentsState();
 let patterns = createPatternsState();
 let transposePatterns = createTransposePatternsState();
 let phrases = createPhrasesState();
@@ -107,6 +114,21 @@ export function add({ element }: addProps) {
 				phrases.value[lastPhraseHex.value][toHex(+channel)] = {};
 			}
 
+			if (!phraseInstruments.value) {
+				phraseInstruments.value = {};
+			}
+			if (!phraseInstruments.value[lastPhraseHex.value]) {
+				phraseInstruments.value[lastPhraseHex.value] = {};
+			}
+
+			phraseInstruments.value[lastPhraseHex.value][toHex(+row)] = lastTouchedInstrument.value;
+
+			// if (!soundfonts.value[lastTouchedInstrument.value]) {
+			// 	soundfonts.value[lastTouchedInstrument.value] = new Soundfont(context, {
+			// 		instrument: instrumentNames["00"]
+			// 	});
+			// }
+
 			phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)] = lastTouchedNote.value;
 		} else {
 		}
@@ -126,6 +148,7 @@ export function preview({ element, instrument }: previewProps) {
 	let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
 	if (selectedNote === undefined) return;
 	// marimba.start({ note: selectedNote });
+
 	instrument.stop();
 	instrument.start({ note: selectedNote });
 	// setTimeout(
@@ -142,7 +165,9 @@ type editProps = {
 };
 
 export function stopNotePreview({ element, instrument }: previewProps) {
-	instrument.stop();
+	if (instrument) {
+		instrument.stop();
+	}
 }
 
 export function edit({ direction, element }: editProps) {
@@ -231,7 +256,6 @@ export function edit({ direction, element }: editProps) {
 	}
 
 	if (activeScreen.value === "phrase") {
-		// TODO support instrument selector here
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
@@ -289,6 +313,76 @@ export function edit({ direction, element }: editProps) {
 				" ",
 				""
 			);
+		}, 0);
+	}
+}
+
+export function editInstrument({ direction, element }: editProps) {
+	if (activeScreen.value === "phrase") {
+		const row = element.id.split("instrument-selector")[1];
+		// if instrument value doesn't exist yet, create it
+		if (!phraseInstruments.value[lastPhraseHex.value]) {
+			phraseInstruments.value[lastPhraseHex.value] = {};
+		}
+		if (!phraseInstruments.value[lastPhraseHex.value][toHex(+row)]) {
+			phraseInstruments.value[lastPhraseHex.value][toHex(+row)] = "00";
+		}
+		if (phraseInstruments.value[lastPhraseHex.value][toHex(+row)] === "--") {
+			phraseInstruments.value[lastPhraseHex.value][toHex(+row)] = "00";
+		}
+
+		let selectedInstrument = phraseInstruments.value[lastPhraseHex.value]?.[toHex(+row)];
+		console.log("selected instrument", selectedInstrument);
+		if (selectedInstrument === undefined) return;
+		let newInstrument;
+
+		if (direction === "right") {
+			if (selectedInstrument === "FF") {
+				selectedInstrument = "00";
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument))}`;
+			} else {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) + 1)}`;
+			}
+		} else if (direction === "left") {
+			if (selectedInstrument === "00") {
+				selectedInstrument = "FF";
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument))}`;
+			} else {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) - 1)}`;
+			}
+		} else if (direction === "up") {
+			if (toInt(selectedInstrument) > 243) {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) - 256 + 12)}`;
+			} else {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) + 12)}`;
+			}
+		} else if (direction === "down") {
+			if (toInt(selectedInstrument) < 12) {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) + 256 - 12)}`;
+			} else {
+				phraseInstruments.value[lastPhraseHex.value][toHex(+row)] =
+					`${toHex(toInt(selectedInstrument) - 12)}`;
+			}
+		}
+
+		// ensure we get the updated value
+		setTimeout(() => {
+			if (!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]) {
+				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText] = new Soundfont(
+					context,
+					{
+						instrument: instrumentNames["00"]
+					}
+				);
+			}
+			lastTouchedInstrument.value = (<HTMLButtonElement>document.activeElement).innerText;
 		}, 0);
 	}
 }
@@ -366,6 +460,9 @@ export function remove({ element }: deleteProps) {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)] = `---`;
+		if (Object.values(phrases.value[lastPhraseHex.value]).every((a) => a[toHex(+row)] === "---")) {
+			phraseInstruments.value[lastPhraseHex.value][toHex(+row)] = `--`;
+		}
 	}
 }
 
