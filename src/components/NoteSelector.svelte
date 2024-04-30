@@ -8,7 +8,8 @@
 		createLastChannelNoteState,
 		createShouldPreviewState,
 		createLastTouchedNoteState,
-		createInstrumentsState
+		createInstrumentsState,
+		createLastTouchedInstrumentState
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -26,6 +27,7 @@
 	let lastRowNote = createLastRowNoteState();
 	let lastChannelNote = createLastChannelNoteState();
 	let lastTouchedNote = createLastTouchedNoteState();
+	let lastTouchedInstrument = createLastTouchedInstrumentState();
 	let shouldPreview = createShouldPreviewState();
 	let soundfonts = createInstrumentsState();
 
@@ -44,14 +46,24 @@
 		}
 	}
 
+	function focusInstrumentSelector({ row, channel }: { row: number; channel: number }) {
+		try {
+			const instrumentSelector: HTMLButtonElement = document.querySelector(
+				`#instrument-selector${row}`
+			)!;
+			console.log("instrumentSelector", instrumentSelector);
+			instrumentSelector.focus();
+			// lastRowNote.value = row;
+			// lastChannelNote.value = channel;
+			// activeNote.value = noteSelector.innerText;
+		} catch (error) {
+			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
+		}
+	}
+
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
-
-		// TODO add instrument field
-		// const instrument = 53;
-		const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
-			.innerText;
 
 		e.preventDefault();
 		// preview note when key is not movement
@@ -92,7 +104,7 @@
 				// });
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
+					instrument: soundfonts.value[lastTouchedInstrument.value]
 				});
 			}
 		}
@@ -101,6 +113,9 @@
 			// preview({ element: <HTMLButtonElement>document.activeElement });
 			console.log("pressed");
 			shouldPreview.value = true;
+			const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
+				.innerText;
+
 			if (e.code === "ArrowLeft") {
 				stopNotePreview({
 					element: <HTMLButtonElement>document.activeElement,
@@ -145,9 +160,17 @@
 		}
 		// * cursor movement
 		else if (e.code === "ArrowLeft") {
-			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
+			if (parseInt(channel) === 0) {
+				focusInstrumentSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
+			} else {
+				focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) - 1 });
+			}
 		} else if (e.code === "ArrowRight") {
-			focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
+			if (parseInt(channel) === 4) {
+				focusInstrumentSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
+			} else {
+				focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
+			}
 		} else if (e.code === "ArrowUp") {
 			focusNoteSelector({ row: parseInt(row) - 1, channel: parseInt(channel) });
 		} else if (e.code === "ArrowDown") {
