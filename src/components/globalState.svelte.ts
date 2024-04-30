@@ -2,7 +2,7 @@ import { Soundfont } from "smplr";
 import { type Pattern, type Patterns, type Phrase } from "../types/types";
 
 // const instrumentNames = getSoundfontNames();
-const instrumentNames = {
+export const instrumentNames = {
 	"00": "acoustic_grand_piano",
 	"01": "bright_acoustic_piano",
 	"02": "electric_grand_piano",
@@ -140,7 +140,8 @@ let lastPhraseHex = $state("");
 let lastPatternHex = $state("");
 let lastTouchedPattern = $state("00");
 let lastTouchedPhrase = $state("00");
-let lastTouchedNote = $state("C3");
+let lastTouchedNote = $state("C4");
+let lastTouchedInstrument = $state("00");
 
 let lastRowNote = $state(0);
 let lastChannelNote = $state(0);
@@ -489,6 +490,17 @@ export function createLastTouchedNoteState() {
 		},
 		set value(string: string) {
 			lastTouchedNote = string;
+		}
+	};
+}
+
+export function createLastTouchedInstrumentState() {
+	return {
+		get value() {
+			return lastTouchedInstrument;
+		},
+		set value(string: string) {
+			lastTouchedInstrument = string;
 		}
 	};
 }
