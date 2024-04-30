@@ -48,7 +48,11 @@
 		}
 
 		// this was set when BPM was changed, HMM
-		if (activeElement.id !== "bpm-selector" && activeElement.innerText.length === 2) {
+		if (
+			activeElement.id !== "bpm-selector" &&
+			!activeElement.id.includes("instrument-selector") &&
+			activeElement.innerText.length === 2
+		) {
 			lastPatternHex.value = activeElement.innerText;
 		}
 	});
@@ -67,12 +71,12 @@
 	<VerticalNumbers />
 	<div class="relative flex flex-col">
 		{#each rows as _, i}
-    <div class="flex flex-row gap-12">
-      <div id={`row${i}`} class="flex gap-2">
-        {#if isPlayingBack.value && playPositionPattern.value === i}
-          <div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
-        {/if}
-        <PhraseSelector
+			<div class="flex flex-row gap-12">
+				<div id={`row${i}`} class="flex gap-2">
+					{#if isPlayingBack.value && playPositionPattern.value === i}
+						<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
+					{/if}
+					<PhraseSelector
 						selectedPhrase={patternState.value[lastPatternHex.value as keyof typeof patternState.value]?.[toHex(i) as keyof typeof patternState.value] ?? "--"}
 						hex={toHex(i)}
 						id={`row${i}-pattern`} />
