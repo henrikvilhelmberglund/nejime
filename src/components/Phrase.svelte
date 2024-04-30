@@ -91,7 +91,7 @@
 						id={`note${i}-channel${j}`} />
 				{/each}
         <InstrumentSelector
-						selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "00"}
+						selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "--"}
 						hex={toHex(i)}
 						id={`instrument-selector${i}`} />
 			</div>
