@@ -9,7 +9,7 @@
 		createLastRowNoteState,
 		createLastChannelNoteState
 	} from "./globalState.svelte";
-	import { add, edit, remove } from "./editing.svelte";
+	import { editInstrument, remove } from "./editing.svelte";
 
 	let { id, hex, selectedInstrument }: { id: string; hex: string; selectedInstrument: string } =
 		$props();
@@ -40,16 +40,15 @@
 		}
 	}
 
-	function focusInstrumentSelector({ row, channel }: { row: number; channel: number }) {
+	function focusInstrumentSelector({ row }: { row: number }) {
 		try {
 			const instrumentSelector: HTMLButtonElement = document.querySelector(
-				`#row${row}-channel${+channel}`
+				`#instrument-selector${row}`
 			)!;
 			instrumentSelector.focus();
 			// lastRowPattern.value = row;
-			lastChannelPattern.value = channel;
 		} catch (error) {
-			console.error(`element ${`#row${row}-channel${+channel}`} not found, can't focus`);
+			console.error(`element ${`#instrument-selector${row}`} not found, can't focus`);
 		}
 	}
 
@@ -58,14 +57,14 @@
 		// const channel = id.split("row")[1].split("-channel")[1];
 		e.preventDefault();
 
-		// * add+preview
-		if (!dPressed.value && e.code === "KeyF") {
-			if ((<HTMLButtonElement>document.activeElement).innerText === "--") {
-				add({ element: <HTMLButtonElement>document.activeElement });
-			} else {
-				lastTouchedPattern.value = (<HTMLButtonElement>document.activeElement).innerText;
-			}
-		}
+		// // * add+preview
+		// if (!dPressed.value && e.code === "KeyF") {
+		// 	if ((<HTMLButtonElement>document.activeElement).innerText === "--") {
+		// 		add({ element: <HTMLButtonElement>document.activeElement });
+		// 	} else {
+		// 		lastTouchedPattern.value = (<HTMLButtonElement>document.activeElement).innerText;
+		// 	}
+		// }
 
 		// * remove
 		if (dPressed.value && e.code === "KeyF") {
@@ -80,20 +79,20 @@
 		// * edit
 		if (fPressed.value) {
 			// preview({ element: <HTMLButtonElement>document.activeElement });
-			console.log("pressed pattern");
+			// console.log("pressed pattern");
 			if (e.code === "ArrowLeft") {
-				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
+				editInstrument({ direction: "left", element: <HTMLButtonElement>document.activeElement });
 			} else if (e.code === "ArrowRight") {
-				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
+				editInstrument({ direction: "right", element: <HTMLButtonElement>document.activeElement });
 			} else if (e.code === "ArrowUp") {
-				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
+				editInstrument({ direction: "up", element: <HTMLButtonElement>document.activeElement });
 			} else if (e.code === "ArrowDown") {
-				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
+				editInstrument({ direction: "down", element: <HTMLButtonElement>document.activeElement });
 			}
 		} else if (e.code === "ArrowLeft") {
-			focusNoteSelector({ row: parseInt(row), channel: 5 });
+			focusNoteSelector({ row: parseInt(row), channel: 4 });
 		} else if (e.code === "ArrowRight") {
-			focusNoteSelector({ row: parseInt(row), channel: 1 });
+			focusNoteSelector({ row: parseInt(row), channel: 0 });
 		} else if (e.code === "ArrowUp") {
 			focusInstrumentSelector({ row: parseInt(row) - 1 });
 		} else if (e.code === "ArrowDown") {
