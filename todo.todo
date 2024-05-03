@@ -43,5 +43,9 @@ editing:
   ☐ add way to copy notes (similar to LSDj)
   ☐ add way to paste notes
 
+song format:
+  ☐ add title field
+  ☐ add name field
+
 cancelled:
   ✘ fix ugly scrolling, should scroll per line instead of several at once (aka remove standard behavior) @cancelled(24-04-12 16:37) (actually this kind of seems ok now)
