@@ -1,6 +1,6 @@
 import {
-	context,
 	createBpmState,
+	createContextState,
 	createInstrumentDurationsState,
 	createInstrumentsState,
 	createIntervalIdState,
@@ -10,6 +10,8 @@ import {
 	createPhrasesState,
 	createPlayPositionPatternState,
 	createPlayPositionPhraseState,
+	createPlayPositionsPatternsState,
+	createPlayPositionsPhrasesState,
 	createTransposePatternsState
 } from "./globalState.svelte";
 
@@ -101,6 +103,67 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 // 	}
 // }
 
+export function playPhraseFromSong(state: string, hex: string, i: number) {
+	const bpmState = createBpmState();
+	const playPositionsPhrases = createPlayPositionsPhrasesState();
+	const playPositionsPatterns = createPlayPositionsPatternsState();
+	const intervalIdState = createIntervalIdState();
+	const soundfonts = createInstrumentsState();
+	const instrumentDurations = createInstrumentDurationsState();
+	const phraseInstruments = createPhraseInstrumentsState();
+	const transposePatterns = createTransposePatternsState();
+	const context = createContextState();
+
+	let lastPatternHex = createLastPatternHexState();
+	// console.log("state", state);
+	if ((state === "phrase" || state === "pattern" || state === "song") && context.value) {
+		// marimba.start("C3");
+		let phrasesState = createPhrasesState();
+		let transpose = state === "pattern" || state === "song" ? true : false;
+		const channels = ["00", "01", "02", "03", "04"];
+		const now = context.value.currentTime;
+		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
+    let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
+    
+    // TODO play next pattern when pattern increases
+		// notes = addSilentNotes(notes);
+		channels.forEach((channel) => {
+			let note;
+			try {
+				note = notes[channel][toHex(playPositionsPhrases.value[i])];
+			} catch (error) {}
+			if (note && soundfonts.value) {
+				const instrument = soundfonts.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
+				const duration =
+					instrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
+				// console.info(instrument);
+				// instrument.stop();
+				instrument.start({
+					note:
+						transpose ?
+							noteToInt(note) +
+							toIntFromTranspose(
+								state === "song" ? "00" : (
+									transposePatterns.value[lastPatternHex.value][toHex(playPositionsPatterns.value[i])] ??
+										0
+								)
+							)
+						:	noteToInt(note),
+					// note,
+					time: now,
+					duration: duration
+				});
+				// setTimeout(
+				// 	() => {
+				// 		stopNote();
+				// 	},
+				// 	duration / 1000 / (bpmState.value * 4)
+				// );
+			}
+		});
+	}
+}
+
 export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
 	const playPositionPhrase = createPlayPositionPhraseState();
@@ -110,31 +173,39 @@ export function playPhrase(state: string, hex: string) {
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
 	const transposePatterns = createTransposePatternsState();
+	const context = createContextState();
+
 	let lastPatternHex = createLastPatternHexState();
 	// console.log("state", state);
-	if (state === "phrase" || state === "pattern") {
+	if ((state === "phrase" || state === "pattern" || state === "song") && context.value) {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
-		let transpose = state === "pattern" ? true : false;
+		let transpose = state === "pattern" || state === "song" ? true : false;
 		const channels = ["00", "01", "02", "03", "04"];
-		const now = context.currentTime;
+		const now = context.value.currentTime;
 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
 		let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
-		notes = addSilentNotes(notes);
+		// notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
-			const note = notes[channel][toHex(playPositionPhrase.value)];
-			const instrument = soundfonts.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
-			const duration =
-				instrumentDurations.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
-			// console.info(instrument);
-			if (note !== "---") {
+			let note;
+			try {
+				note = notes[channel][toHex(playPositionPhrase.value)];
+			} catch (error) {}
+			if (note && soundfonts.value) {
+				const instrument = soundfonts.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
+				const duration =
+					instrumentDurations.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
+				// console.info(instrument);
 				// instrument.stop();
 				instrument.start({
 					note:
 						transpose ?
 							noteToInt(note) +
 							toIntFromTranspose(
-								transposePatterns.value[lastPatternHex.value][toHex(playPositionPattern.value)] ?? 0
+								state === "song" ? "00" : (
+									transposePatterns.value[lastPatternHex.value][toHex(playPositionPattern.value)] ??
+										0
+								)
 							)
 						:	noteToInt(note),
 					// note,
@@ -157,14 +228,15 @@ export function stop(state: string) {
 	const playPositionPhrase = createPlayPositionPhraseState();
 	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
+	const context = createContextState();
 
 	console.log("state", state);
-	if (state === "phrase") {
+	if (state === "phrase" && context.value && soundfonts.value) {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
 		// let activePhrase = createActivePhraseState();
 		const channels = ["00", "01", "02", "03", "04"];
-		const now = context.currentTime;
+		const now = context.value.currentTime;
 		// marimba.stop();
 		// instrument.start({ note: selectedNote });
 		Object.values(soundfonts.value).forEach((soundfont) => {
