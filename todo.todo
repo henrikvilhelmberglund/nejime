@@ -10,14 +10,15 @@ UI:
   ✔ add INSTR above instruments in Phrase @done(24-04-25 16:31)
   ✔ add CMD above commands in Phrase @done(24-04-25 16:31)
   ✔ add instrument field in Phrase @done(24-04-26 16:58)
-  ☐ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right)
+  ✔ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right) @done(24-05-03 17:08)
   ✔ add Project screen with editable BPM value @done(24-04-29 16:20)
   ☐ add Instrument screen for configuring instruments
   
 saving songs:
   ☐ save song data in local storage in case of crash
-  ☐ save song data as string (base64?)
-  ☐ load song data from string (base64?)
+  ✔ save song data as string (base64?) @done(24-05-03 17:09)
+  ✔ load song data from string (base64?) @done(24-05-03 17:09)
+  ☐ create button which copies the song link to clipboard
 
 editing: 
   ☐ add way to play back song
