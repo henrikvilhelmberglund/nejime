@@ -1,7 +1,14 @@
 <script lang="ts">
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
-	import { createActiveScreenState, createLastChannelPatternState, createLastRowPatternState, createSongState } from "./globalState.svelte";
+	import {
+		createActiveScreenState,
+		createIsPlayingBackState,
+		createLastChannelPatternState,
+		createLastRowPatternState,
+		createPlayPositionsSongState,
+		createSongState
+	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
 	let channels = [0, 1, 2, 3, 4];
@@ -11,6 +18,9 @@
 	let lastRowPattern = createLastRowPatternState();
 	let lastChannelPattern = createLastChannelPatternState();
 	let activeScreenState = createActiveScreenState();
+	let isPlayingBack = createIsPlayingBackState();
+
+	let playPositionsSong = createPlayPositionsSongState();
 
 	interface Pattern {
 		channel0: string;
@@ -23,7 +33,11 @@
 	$effect(() => {
 		if (lastRowPattern.value !== undefined) {
 			queueMicrotask(() => {
-				document.querySelector<HTMLButtonElement>(`#nejime #row${lastRowPattern.value}-channel${lastChannelPattern.value}`)!.focus();
+				document
+					.querySelector<HTMLButtonElement>(
+						`#nejime #row${lastRowPattern.value}-channel${lastChannelPattern.value}`
+					)!
+					.focus();
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
@@ -45,8 +59,14 @@
 	<VerticalNumbers />
 	<div class="flex flex-col">
 		{#each rows as row, i}
-			<div id={`row${i}`} class="flex gap-4">
+			<div id={`row${i}`} class="relative flex gap-4">
 				{#each channels as channel, j}
+					{#if isPlayingBack.value && playPositionsSong.value[j] !== undefined && playPositionsSong.value[j] === i}
+						<div
+							style={`left: ${j * 40 -  16}px`}
+							class="i-ph-play-fill absolute py-[10px] text-xs text-white">
+						</div>
+					{/if}
 					<PatternSelector
 						selectedPattern={songState.value?.[toHex(i) as keyof typeof songState.value]?.[`channel${j}` as keyof Pattern] ?? "--"}
 						hex={toHex(i)}
