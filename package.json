@@ -16,7 +16,6 @@
     "buffer": "^6.0.3",
     "commit-and-tag-version": "^12.4.1",
     "isomorphic-dompurify": "^2.9.0",
-    "jsoncrush": "^1.1.8",
     "lz-string": "^1.5.0",
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.2.3",
