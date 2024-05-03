@@ -1,5 +1,9 @@
 import { Soundfont } from "smplr";
 import { type Pattern, type Patterns, type Phrase } from "../types/types";
+import { Buffer } from "buffer";
+globalThis.Buffer = Buffer;
+import LZString from "lz-string";
+import { browser } from "$app/environment";
 
 // const instrumentNames = getSoundfontNames();
 export const instrumentNames = {
@@ -133,7 +137,18 @@ export const instrumentNames = {
 	"7F": "gunshot"
 };
 
-export const context = $state(new AudioContext());
+let context = $state(browser ? new AudioContext() : undefined);
+
+export function createContextState() {
+	return {
+		get value() {
+			return context;
+		},
+		set value(newState) {
+			context = newState;
+		}
+	};
+}
 
 let activeScreenState = $state("song");
 let lastPhraseHex = $state("");
@@ -161,6 +176,140 @@ let playPositionPattern = $state(0);
 let playPositionSong = $state(0);
 let intervalId = $state<Timer>();
 let phraseLoopIntervalId = $state<Timer>();
+
+// for song playback
+let playPositionsPhrases = $state({
+	0: 0,
+	1: 0,
+	2: 0,
+	3: 0,
+	4: 0
+});
+
+export function createPlayPositionsPhrasesState() {
+	return {
+		get value() {
+			return playPositionsPhrases;
+		},
+		set value(newState) {
+			playPositionsPhrases = newState;
+		},
+		reset() {
+			playPositionsPhrases = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+		}
+	};
+}
+
+let playPositionsPatterns = $state({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
+
+export function createPlayPositionsPatternsState() {
+	return {
+		get value() {
+			return playPositionsPatterns;
+		},
+		set value(newState) {
+			playPositionsPatterns = newState;
+		},
+		reset() {
+			playPositionsPatterns = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+		}
+	};
+}
+
+let playPositionsSong = $state({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
+
+export function createPlayPositionsSongState() {
+	return {
+		get value() {
+			return playPositionsSong;
+		},
+		set value(newState) {
+			playPositionsSong = newState;
+		},
+		reset() {
+			playPositionsSong = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
+		}
+	};
+}
+
+let intervalIdsSong = $state<Record<number, Timer | undefined>>({
+	0: undefined,
+	1: undefined,
+	2: undefined,
+	3: undefined,
+	4: undefined
+});
+
+export function createIntervalIdsSongState() {
+	return {
+		get value() {
+			return intervalIdsSong;
+		},
+		set value(newState) {
+			intervalIdsSong = newState;
+		},
+
+		stopAllIntervals() {
+			for (const channel in intervalIdsSong) {
+				clearInterval(intervalIdsSong[channel]);
+				playPositionsSong[channel] = 0;
+				playPositionsPatterns[channel] = 0;
+				playPositionsPhrases[channel] = 0;
+			}
+		}
+	};
+}
+
+export function saveSong() {
+	const exportBpm = $state.snapshot(bpm);
+	const exportInstruments = $state.snapshot(instruments);
+	const exportInstrumentDurations = $state.snapshot(instrumentDurations);
+	const exportSong = $state.snapshot(song);
+	const exportPatterns = $state.snapshot(patterns);
+	const exportTransposePatterns = $state.snapshot(transposePatterns);
+	const exportPhrases = $state.snapshot(phrases);
+	const exportPhraseInstruments = $state.snapshot(phraseInstruments);
+
+	const allData = {
+		bpm: exportBpm,
+		// instruments: exportInstruments,
+		instrumentDurations: exportInstrumentDurations,
+		song: exportSong,
+		patterns: exportPatterns,
+		transposePatterns: exportTransposePatterns,
+		phrases: exportPhrases,
+		phraseInstruments: exportPhraseInstruments
+	};
+
+	console.log(allData);
+
+	let objJsonStr = JSON.stringify(allData);
+	// console.log(objJsonStr);
+	// let objJsonB64 = Buffer.from(objJsonStr).toString("base64");
+	let objJsonB64 = LZString.compressToEncodedURIComponent(objJsonStr);
+
+	return objJsonB64;
+}
+
+type songProps = {
+	bpm: number;
+	instrumentDurations: Record<string, number>;
+	song: Patterns;
+	patterns: Patterns;
+	transposePatterns: Patterns;
+	phrases: Record<string, Phrase>;
+	phraseInstruments: Record<string, Record<string, string>>;
+};
+
+export function loadSong(obj: songProps) {
+	bpm = obj.bpm;
+	instrumentDurations = obj.instrumentDurations;
+	song = obj.song;
+	patterns = obj.patterns;
+	transposePatterns = obj.transposePatterns;
+	phrases = obj.phrases;
+	phraseInstruments = obj.phraseInstruments;
+}
 
 let song = $state<Patterns>({
 	"00": {
@@ -226,10 +375,14 @@ let phrases = $state<Record<string, Phrase>>({
 	}
 });
 
-let instruments = $state<Record<string, Soundfont>>({
-	"00": new Soundfont(context, { instrument: instrumentNames["3C"] }),
-	"01": new Soundfont(context, { instrument: instrumentNames["08"] })
-});
+let instruments = $state<Record<string, Soundfont> | undefined>(
+	browser && context ?
+		{
+			"00": new Soundfont(context, { instrument: instrumentNames["3C"] }),
+			"01": new Soundfont(context, { instrument: instrumentNames["08"] })
+		}
+	:	undefined
+);
 
 let instrumentDurations = $state<Record<string, number>>({
 	"00": 0.3,
