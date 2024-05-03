@@ -2,6 +2,7 @@ import { Soundfont } from "smplr";
 import {
 	createActiveScreenState,
 	createBpmState,
+	createContextState,
 	createInstrumentsState,
 	createLastPatternHexState,
 	createLastPhraseHexState,
@@ -17,7 +18,6 @@ import {
 	instrumentNames
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
-import { context } from "./globalState.svelte";
 
 let activeScreen = createActiveScreenState();
 let lastPatternHex = createLastPatternHexState();
@@ -32,6 +32,7 @@ let phraseInstruments = createPhraseInstrumentsState();
 let patterns = createPatternsState();
 let transposePatterns = createTransposePatternsState();
 let phrases = createPhrasesState();
+let context = createContextState();
 const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 type addProps = {
@@ -374,9 +375,9 @@ export function editInstrument({ direction, element }: editProps) {
 
 		// ensure we get the updated value
 		setTimeout(() => {
-			if (!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]) {
+			if (soundfonts.value && context.value && !soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]) {
 				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText] = new Soundfont(
-					context,
+					context.value,
 					{
 						instrument: instrumentNames["00"]
 					}
@@ -459,8 +460,13 @@ export function remove({ element }: deleteProps) {
 	if (activeScreen.value === "phrase") {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
-		phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)] = `---`;
-		if (Object.values(phrases.value[lastPhraseHex.value]).every((a) => a[toHex(+row)] === "---")) {
+		delete phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)];
+		console.log(phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)]);
+		if (
+			Object.values(phrases.value[lastPhraseHex.value]).every(
+				(a) => a[toHex(+row)] === "---" || a[toHex(+row)] === undefined
+			)
+		) {
 			phraseInstruments.value[lastPhraseHex.value][toHex(+row)] = `--`;
 		}
 	}
