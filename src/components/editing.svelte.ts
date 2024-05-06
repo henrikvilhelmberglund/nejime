@@ -403,7 +403,11 @@ export function editTranspose({ direction, element }: editProps) {
 				selectedPhrase = "00";
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase))}`;
-			} else {
+      } else {
+        if (!transposePatterns.value[lastPatternHex.value]) {
+          transposePatterns.value[lastPatternHex.value] = {};
+        }
+        
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase) + 1)}`;
 			}
