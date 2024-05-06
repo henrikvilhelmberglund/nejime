@@ -1,3 +1,4 @@
+import type { Pattern } from "../types/types";
 import {
 	createBpmState,
 	createContextState,
@@ -12,6 +13,8 @@ import {
 	createPlayPositionPhraseState,
 	createPlayPositionsPatternsState,
 	createPlayPositionsPhrasesState,
+	createPlayPositionsSongState,
+	createSongState,
 	createTransposePatternsState
 } from "./globalState.svelte";
 
@@ -28,6 +31,7 @@ export function toInt(input: string) {
 }
 
 export function toIntFromTranspose(input: string) {
+	console.log("input", input);
 	if (parseInt(input, 16) > 128) {
 		return (256 - parseInt(input, 16)) * -1;
 	} else {
@@ -103,30 +107,23 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 // 	}
 // }
 
-export function playPhraseFromSong(state: string, hex: string, i: number) {
-	const bpmState = createBpmState();
+export function playPhraseFromSong(state: string, hex: string, i: number, transpose: Pattern) {
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
-	const playPositionsPatterns = createPlayPositionsPatternsState();
-	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
-	const transposePatterns = createTransposePatternsState();
 	const context = createContextState();
 
-	let lastPatternHex = createLastPatternHexState();
 	// console.log("state", state);
 	if ((state === "phrase" || state === "pattern" || state === "song") && context.value) {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
-		let transpose = state === "pattern" || state === "song" ? true : false;
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.value.currentTime;
 		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
 		let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
 
 		// TODO play next pattern when pattern increases
-		// TODO use transpose patterns here, aka change lastPatternHex to the real pattern
 		// notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
 			let note;
@@ -141,17 +138,7 @@ export function playPhraseFromSong(state: string, hex: string, i: number) {
 				// console.info(instrument);
 				// instrument.stop();
 				instrument.start({
-					note:
-						transpose ?
-							noteToInt(note) +
-							toIntFromTranspose(
-								state === "song" ? "00" : (
-									transposePatterns.value[lastPatternHex.value][
-										toHex(playPositionsPatterns.value[i])
-									] ?? 0
-								)
-							)
-						:	noteToInt(note),
+					note: noteToInt(note) + toIntFromTranspose(transpose ? transpose[channel] : "00"),
 					// note,
 					time: now,
 					duration: duration
@@ -205,7 +192,9 @@ export function playPhrase(state: string, hex: string) {
 						transpose ?
 							noteToInt(note) +
 							toIntFromTranspose(
-								transposePatterns.value[lastPatternHex.value][toHex(playPositionPattern.value)] ?? 0
+								transposePatterns.value?.[lastPatternHex.value]?.[
+									toHex(playPositionPattern.value)
+								] ?? "00"
 							)
 						:	noteToInt(note),
 					// note,

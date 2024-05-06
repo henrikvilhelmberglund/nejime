@@ -26,7 +26,9 @@
 		createPlayPositionsPhrasesState,
 		createPlayPositionsPatternsState,
 		createPlayPositionsSongState,
-		createIntervalIdsSongState
+		createIntervalIdsSongState,
+		createPlayPositionSongState,
+		createTransposePatternsState
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 
@@ -63,18 +65,20 @@
 	}
 	const intervalId = createIntervalIdState();
 	const phraseLoopIntervalId = createPhraseLoopIntervalIdState();
-	let lastPhraseHex = createLastPhraseHexState();
-	let lastPatternHex = createLastPatternHexState();
-	let song = createSongState();
-	let patterns = createPatternsState();
-	let phrases = createPhrasesState();
-	let playPositionPhrase = createPlayPositionPhraseState();
+	const lastPhraseHex = createLastPhraseHexState();
+	const lastPatternHex = createLastPatternHexState();
+	const song = createSongState();
+	const patterns = createPatternsState();
+	const transposePatterns = createTransposePatternsState();
+	const phrases = createPhrasesState();
+	const playPositionPhrase = createPlayPositionPhraseState();
 	const playPositionPattern = createPlayPositionPatternState();
+	const playPositionSong = createPlayPositionSongState();
 
-	let playPositionsPhrases = createPlayPositionsPhrasesState();
-	let playPositionsPatterns = createPlayPositionsPatternsState();
-	let playPositionsSong = createPlayPositionsSongState();
-	let intervalIdsSongState = createIntervalIdsSongState();
+	const playPositionsPhrases = createPlayPositionsPhrasesState();
+	const playPositionsPatterns = createPlayPositionsPatternsState();
+	const playPositionsSong = createPlayPositionsSongState();
+	const intervalIdsSongState = createIntervalIdsSongState();
 
 	function handleKeyDown(e: KeyboardEvent) {
 		// console.log(e);
@@ -113,24 +117,33 @@
 					// );
 
 					if (e.ctrlKey) {
-						const position = document.activeElement!.id.split("row")[1].split("-pattern")[0];
+						const position = document.activeElement!.id.split("row")[1].split("-channel")[0];
 						console.log("position", position);
-						playPositionPattern.value = parseInt(position);
+						const newPosition = parseInt(position);
+						playPositionsSong.value = {
+							0: newPosition,
+							1: newPosition,
+							2: newPosition,
+							3: newPosition,
+							4: newPosition
+						};
 					} else {
-						playPositionPattern.value = 0;
+						playPositionsSong.value = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
 					}
 
+					console.log("playPositions", playPositionsSong.value);
 					["channel0", "channel1", "channel2", "channel3", "channel4"].forEach((channel, i) => {
 						// console.table(phrasesToPlay);
-						console.log("i", i);
-						const patternsToPlay = song.value["00"];
+            // TODO these should be based on song position instead of a single initial value
+						const patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
 						const phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
-						console.log("phrasesToPlay", phrasesToPlay);
+						const transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
 						if (phrasesToPlay) {
 							playPhraseFromSong(
 								activeScreenState.value,
 								phrasesToPlay[toHex(playPositionsPatterns.value[i])],
-								i
+								i,
+								transposeToPlay
 							);
 
 							intervalIdsSongState.value[i] = setInterval(
@@ -140,19 +153,22 @@
 										playPhraseFromSong(
 											activeScreenState.value,
 											phrasesToPlay[toHex(playPositionsPatterns.value[i])],
-											i
+											i,
+											transposeToPlay
 										);
 									} else {
 										playPositionsPatterns.value[i] += 1;
 										if (!phrasesToPlay[toHex(playPositionsPatterns.value[i])]) {
 											playPositionsPatterns.value[i] = 0;
+											playPositionsSong.value[i] += 1;
 										}
 
 										playPositionsPhrases.value[i] = 0;
 										playPhraseFromSong(
 											activeScreenState.value,
 											phrasesToPlay[toHex(playPositionsPatterns.value[i])],
-											i
+											i,
+											transposeToPlay
 										);
 									}
 								},
@@ -263,7 +279,7 @@
 		console.log(savedSong);
 	}}>Save</button>
 <a
-	href="/N4IgRgDgtiBcCMAmADAGhASwHYGcAuATgK5QCmWeAIkQQIZ4YD2ucoyycyAdAMzrLxOXeAF90OZgHNWIdjIDGAC1pYspADYdYsjuiUq16wdoEg9y1RsRxZ18wY08byJ-cvqALM69jZx0PruWiAoZiCBhsYhgm6G1tqIduEWhk4JrskOnjaIPr4Q9HikBCywbFrlNvC6flUxtlVJLlUZyF7a8F78AKxVvfwAbFVdsgDsfWHIABxVNcgAnHWTAIKNkwBCLSC+pmU6Nh71uyAeTfEnrWknI20H-bK92h5Dg3eT408vsjNPR4tPTVWT1amyeeXQhBUOAgjBwpAACoViqVKns5CY5uc5Px2vsdv59hjJlFsQ0iSJ8oo6HCcDJqjJ0aiQABhG641mTH4gADiN2ZNl5234-gp6HgBMZhJAyzZNhlnIFPmFrB28WAopASAZFSlADFZdp9QrtABRPk2M1C2plVUq3zwNKopmUA0gF3GlngzXtJ1SwU4xUeo38fmGr3wR6+9EgS0B003LnujWHbWp7TM+7TC29ZNqwlM3WZrkmnO+DyO-NSyhFmwZ7Zln2V6PyuMgdYJ2ul9AeSNN4Ilya4-3fGzVyahnle55ppl11vDrPadvjwMUynU0gASVwhBI5DwtL29LRwVJxwAtOfJudL5MrreejYH7JcWeuWeJ3J7RLT3NX3N3w4e082jM9-w9D9nCAsUK1Av8oIg6DvTTfZWzfBCQwQ+1ezgwcMJHclux-ZwjlxZ9F1qTDtFvMsQNPUinyvfh3yOIEQHIicaO7WD6Lw6imIIyjZEoRiV34q0PEbUCGJMI4WLE9irzLHDeLQuSSIU0wyyGE8NLUiCjk-QQ1yAA"
+	href="/N4IgRgDgtiBcCMAmADAGhASwHYGcAuATgK5QCmWeAIkQQIZ4YD2ucoyycyAdAMzrLxOXeAF90OZgHNWIdjIDGAC1pYspADYdYsjuiUq16wdoEg9y1RsRxZ18wY08byJ-cvqALM69jZx0PruWiAoZiCBhsYhgm6G1tqIduEWhk4JrskOnjaIPr4Q9HikBCywoKFlOjbwun7VMbbVSS7VGche2vBe-ACs1X38AGzV3bIA7P1hyAAc1bXIAJz1UwCCTVMAQq0gvoj+VdoeDaaHzfEgHm1pF6PtNh4Dsn2Hw0P3j8gTL1Ozh8dLp1W9zaW0OPn4WjYwRqUyi8GO5yQU2u8DaHRAXSmzwxH2GnVuXxxPzmUwBGOOa06zVBGKcvhOUPuxyiHjOwOR91u6IeWPur1keIuH0JHn5MyZpPuzUpFxBnJ2vkIKhwEEYOFIAAVCsVSuVIQcnrDnB9zsgPtczVN0ZbesapoSbQK7fxfob+GTHcgZZ6aZbdvs5CYPlFPabzc7ZNaPtjPYLPQ6Pq7PR6Pt6Pr6+vT9YGqvxTfNrRx6QHgnJ+CH5vmFegIIo6OqcDIYZVA4ztABhLk2TvE7QAcVu7ZsA525dYIl88JkrYNKy72jnvZAI+L47z48n8TbbZAADF53vbq6AKKDmyn0d1Mr0rcT9Co6fZ4KUA8vpc9u8Yjrbg0j-jov9ZFdfcpiHbQQM-eBnh-HML3-c8jxsN9PyOR80I7RNz0zXxWXQndd0w7Rj2w9BLjwg1KEIkB2xIm5yJzRd4O0DZEIw6shXo4JiKtYdWJASjQN49jRU47sPgAviWME-s8nyOtaHVABJXBCBIcg8EbSpmx3MsrxAABafSpnOQyOW0UzbXMoymNzIDnHmMCqknEt7J4kx5iTIt7y3A1dLudylz8xy5EnNIdILVyXVcydv18iKAqihLZGCryiRbUt4ts8UApwlyTGOdELLs-LpIMoycJ8nNTBsorsrqfgZVqxzTJwsLfIKmxaqTY5KE66zkr6y8PFiqqOpKxL6oGqyhug9q3MmurqqmuocLxHSxoW7rStMCcRCAA"
 	>Twinkle Twinkle Little Star</a>
 <div
 	id="nejime"
