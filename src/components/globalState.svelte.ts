@@ -178,7 +178,7 @@ let intervalId = $state<Timer>();
 let phraseLoopIntervalId = $state<Timer>();
 
 // for song playback
-let playPositionsPhrases = $state({
+let playPositionsPhrases = $state<Record<number, number>>({
 	0: 0,
 	1: 0,
 	2: 0,
@@ -200,7 +200,7 @@ export function createPlayPositionsPhrasesState() {
 	};
 }
 
-let playPositionsPatterns = $state({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
+let playPositionsPatterns = $state<Record<number, number>>({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
 
 export function createPlayPositionsPatternsState() {
 	return {
@@ -216,7 +216,7 @@ export function createPlayPositionsPatternsState() {
 	};
 }
 
-let playPositionsSong = $state({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
+let playPositionsSong = $state<Record<number, number>>({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 });
 
 export function createPlayPositionsSongState() {
 	return {
