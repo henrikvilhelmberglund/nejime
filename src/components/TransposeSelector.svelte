@@ -8,12 +8,9 @@
 	import { editTranspose, removeTranspose } from "./editing.svelte";
 
 	let { id, hex, transpose }: { id: string; hex: string; transpose: string } = $props();
-	// let name = $state("--");
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
-
-	// let el = document.getElementById("div-1").nextSibling;
 
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {
@@ -74,16 +71,12 @@
 		}
 	}
 
-	function handleClick(e: MouseEvent) {
-		// activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
-	}
 </script>
 
 <button
 	{id}
 	data-hex={hex}
 	onkeydown={handleKeyPress}
-	onclick={handleClick}
 	class:text-lg={transpose !== "--"}
 	class:items-center={transpose !== "--"}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 justify-center border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">

@@ -17,10 +17,8 @@
 	let {
 		id,
 		hex,
-		channel,
 		selectedNote
 	}: { id: string; hex: string; channel: string; selectedNote: string } = $props();
-	// let name = $state("--");
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
@@ -40,7 +38,6 @@
 			noteSelector.focus();
 			lastRowNote.value = row;
 			lastChannelNote.value = channel;
-			// activeNote.value = noteSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
 		}
@@ -53,9 +50,6 @@
 			)!;
 			console.log("instrumentSelector", instrumentSelector);
 			instrumentSelector.focus();
-			// lastRowNote.value = row;
-			// lastChannelNote.value = channel;
-			// activeNote.value = noteSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
 		}
@@ -85,7 +79,7 @@
 			shouldPreview.value = false;
 		}
 
-		// * remove
+    // * remove
 		if (dPressed.value && e.code === "KeyF") {
 			console.log("remove");
 			if ((<HTMLButtonElement>document.activeElement).innerText !== "---") {
@@ -95,69 +89,42 @@
 
 		// if s or d are pressed, don't use below logic that switches cursor location
 		if (sPressed.value || dPressed.value) return;
-		if (!fPressed.value) {
-			// * preview
+
+    // * preview
+		if (!fPressed.value && soundfonts.value) {
 			if (shouldPreview.value) {
-				// stopNotePreview({
-				// 	element: <HTMLButtonElement>document.activeElement,
-				// 	instrument: soundfonts.value[instrument]
-				// });
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
 					instrument: soundfonts.value[lastTouchedInstrument.value]
 				});
 			}
 		}
-		// * edit
-		if (fPressed.value) {
-			// preview({ element: <HTMLButtonElement>document.activeElement });
-			console.log("pressed");
+
+    // * edit
+		if (fPressed.value && soundfonts.value) {
 			shouldPreview.value = true;
 			const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
 				.innerText;
 
-			if (e.code === "ArrowLeft") {
+			if (
+				e.code === "ArrowLeft" ||
+				e.code === "ArrowRight" ||
+				e.code === "ArrowUp" ||
+				e.code === "ArrowDown"
+			) {
+				const direction = e.code.split("Arrow")[1].toLowerCase();
 				stopNotePreview({
 					element: <HTMLButtonElement>document.activeElement,
 					instrument: soundfonts.value[instrument]
 				});
-				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
-				preview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-			} else if (e.code === "ArrowRight") {
-				stopNotePreview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-				edit({ direction: "right", element: <HTMLButtonElement>document.activeElement });
-				preview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-			} else if (e.code === "ArrowUp") {
-				stopNotePreview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-				edit({ direction: "up", element: <HTMLButtonElement>document.activeElement });
-				preview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-			} else if (e.code === "ArrowDown") {
-				stopNotePreview({
-					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
-				});
-				edit({ direction: "down", element: <HTMLButtonElement>document.activeElement });
+				edit({ direction: direction, element: <HTMLButtonElement>document.activeElement });
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
 					instrument: soundfonts.value[instrument]
 				});
 			}
 		}
+
 		// * cursor movement
 		else if (e.code === "ArrowLeft") {
 			if (parseInt(channel) === 0) {
@@ -185,7 +152,7 @@
 		const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
 			.innerText;
 
-		if (e.code === "KeyF") {
+		if (e.code === "KeyF" && soundfonts.value) {
 			stopNotePreview({
 				element: <HTMLButtonElement>document.activeElement,
 				instrument: soundfonts.value[instrument]
@@ -193,9 +160,6 @@
 		}
 	}
 
-	function handleClick(e: MouseEvent) {
-		// activeNoteElementId.value = (<HTMLButtonElement>e.target).id;
-	}
 </script>
 
 <button
@@ -203,7 +167,6 @@
 	data-hex={hex}
 	onkeydown={handleKeyPress}
 	onkeyup={handleKeyUp}
-	onclick={handleClick}
 	class:text-lg={selectedNote !== "---"}
 	class:items-center={selectedNote !== "---"}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-9 justify-center border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">

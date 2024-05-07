@@ -44,7 +44,7 @@
 		const channel = id.split("row")[1].split("-channel")[1];
 		e.preventDefault();
 
-    		// * add+preview
+    // * add+preview
 		if (!dPressed.value && e.code === "KeyF") {
 			if ((<HTMLButtonElement>document.activeElement).innerText === "--") {
 				add({ element: <HTMLButtonElement>document.activeElement });
@@ -63,6 +63,7 @@
 
 		// if s or d are pressed, don't use below logic that switches cursor location
 		if (sPressed.value || dPressed.value) return;
+
 		// * edit
 		if (fPressed.value) {
 			// preview({ element: <HTMLButtonElement>document.activeElement });
@@ -89,16 +90,12 @@
 		}
 	}
 
-	function handleClick(e: MouseEvent) {
-		// activePatternElementId.value = (<HTMLButtonElement>e.target).id;
-	}
 </script>
 
 <button
 	{id}
 	data-hex={hex}
 	onkeydown={handleKeyPress}
-	onclick={handleClick}
 	class:text-lg={selectedPattern !== "--"}
 	class:items-center={selectedPattern !== "--"}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 justify-center border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">

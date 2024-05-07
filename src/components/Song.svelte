@@ -40,11 +40,6 @@
 					.focus();
 			});
 		} else {
-			// console.log(document.querySelector("#nejime button"))
-			console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
-			// setTimeout(() => {
-			// 	document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
-			// }, 0);
 			const patternSelector = document.querySelector<HTMLButtonElement>("#nejime button")!;
 			queueMicrotask(() => {
 				patternSelector.focus();
@@ -58,12 +53,12 @@
 <main class="flex overflow-hidden">
 	<VerticalNumbers />
 	<div class="flex flex-col">
-		{#each rows as row, i}
+		{#each rows as _, i}
 			<div id={`row${i}`} class="relative flex gap-4">
-				{#each channels as channel, j}
+				{#each channels as _, j}
 					{#if isPlayingBack.value && playPositionsSong.value[j] !== undefined && playPositionsSong.value[j] === i}
 						<div
-							style={`left: ${j * 40 -  16}px`}
+							style={`left: ${j * 40 - 16}px`}
 							class="i-ph-play-fill absolute py-[10px] text-xs text-white">
 						</div>
 					{/if}

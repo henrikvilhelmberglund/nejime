@@ -16,8 +16,6 @@
 	let lastRowPhrase = createLastRowPhraseState();
 	let lastTouchedPhrase = createLastTouchedPhraseState();
 
-	// let el = document.getElementById("div-1").nextSibling;
-
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
@@ -41,7 +39,6 @@
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("row")[1].split("-channel")[0];
 		console.log("row", row);
-		// const channel = id.split("row-")[1].split("-channel-")[1];
 		e.preventDefault();
 
 		// * add+preview
@@ -88,16 +85,11 @@
 			focusPhraseSelector({ row: parseInt(row) + 1 });
 		}
 	}
-
-	function handleClick(e: MouseEvent) {
-		// activePhraseElementId.value = (<HTMLButtonElement>e.target).id;
-	}
 </script>
 
 <button
 	{id}
 	onkeydown={handleKeyPress}
-	onclick={handleClick}
 	class:text-lg={selectedPhrase !== "--"}
 	class:items-center={selectedPhrase !== "--"}
 	class="focus:ring-none focus-visible:ring-none focus:bg-selection-500 relative flex h-5 w-6 border-none p-0 text-3xl text-white focus:text-black focus:outline-transparent focus-visible:border-none focus-visible:outline-none">

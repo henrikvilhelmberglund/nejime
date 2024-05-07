@@ -3,9 +3,6 @@
 		createSPressedState,
 		createDPressedState,
 		createFPressedState,
-		createLastRowPatternState,
-		createLastChannelPatternState,
-		createLastTouchedPatternState,
 		createLastRowNoteState,
 		createLastChannelNoteState
 	} from "./globalState.svelte";
@@ -13,17 +10,11 @@
 
 	let { id, hex, selectedInstrument }: { id: string; hex: string; selectedInstrument: string } =
 		$props();
-	// let name = $state("--");
 	let sPressed = createSPressedState();
 	let dPressed = createDPressedState();
 	let fPressed = createFPressedState();
 	let lastRowNote = createLastRowNoteState();
 	let lastChannelNote = createLastChannelNoteState();
-	// let lastRowPattern = createLastRowPatternState();
-	let lastChannelPattern = createLastChannelPatternState();
-	let lastTouchedPattern = createLastTouchedPatternState();
-
-	// let el = document.getElementById("div-1").nextSibling;
 
 	function focusNoteSelector({ row, channel }: { row: number; channel: number }) {
 		try {
@@ -34,7 +25,6 @@
 			noteSelector.focus();
 			lastRowNote.value = row;
 			lastChannelNote.value = channel;
-			// activeNote.value = noteSelector.innerText;
 		} catch (error) {
 			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
 		}
@@ -46,7 +36,6 @@
 				`#instrument-selector${row}`
 			)!;
 			instrumentSelector.focus();
-			// lastRowPattern.value = row;
 		} catch (error) {
 			console.error(`element ${`#instrument-selector${row}`} not found, can't focus`);
 		}
