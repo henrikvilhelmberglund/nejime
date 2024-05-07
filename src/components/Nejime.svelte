@@ -134,10 +134,9 @@
 					console.log("playPositions", playPositionsSong.value);
 					["channel0", "channel1", "channel2", "channel3", "channel4"].forEach((channel, i) => {
 						// console.table(phrasesToPlay);
-            // TODO these should be based on song position instead of a single initial value
-						const patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
-						const phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
-						const transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
+						let patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
+						let phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
+						let transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
 						if (phrasesToPlay) {
 							playPhraseFromSong(
 								activeScreenState.value,
@@ -150,6 +149,11 @@
 								() => {
 									if (playPositionsPhrases.value[i] < 15) {
 										playPositionsPhrases.value[i] += 1;
+										// update data
+										patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
+										phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
+										transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
+
 										playPhraseFromSong(
 											activeScreenState.value,
 											phrasesToPlay[toHex(playPositionsPatterns.value[i])],
@@ -162,6 +166,10 @@
 											playPositionsPatterns.value[i] = 0;
 											playPositionsSong.value[i] += 1;
 										}
+										// update data
+										patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
+										phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
+										transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
 
 										playPositionsPhrases.value[i] = 0;
 										playPhraseFromSong(
