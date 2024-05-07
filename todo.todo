@@ -21,7 +21,7 @@ saving songs:
   ☐ create button which copies the song link to clipboard
 
 editing: 
-  ☐ add way to play back song
+  ✔ add way to play back song @done(24-05-07 15:06)
 
   ✔ add way to add empty pattern, starting from 00 @done(24-04-25 16:31)
   ✔ add way to edit pattern, should go from 00 to FF @done(24-04-25 16:31)
