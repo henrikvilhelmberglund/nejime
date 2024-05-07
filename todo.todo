@@ -49,3 +49,7 @@ song format:
 
 cancelled:
   ✘ fix ugly scrolling, should scroll per line instead of several at once (aka remove standard behavior) @cancelled(24-04-12 16:37) (actually this kind of seems ok now)
+
+long term:
+  ☐ MIDI export
+  ☐ touch input support (tap and move finger left/right etc)
