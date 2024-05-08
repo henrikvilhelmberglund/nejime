@@ -109,6 +109,7 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 
 export function playPhraseFromSong(state: string, hex: string, i: number, transpose: Pattern) {
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
+	const playPositionsPatterns = createPlayPositionsPatternsState();
 	const soundfonts = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
@@ -120,25 +121,25 @@ export function playPhraseFromSong(state: string, hex: string, i: number, transp
 		let phrasesState = createPhrasesState();
 		const channels = ["00", "01", "02", "03", "04"];
 		const now = context.value.currentTime;
-		let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
+    let notes = phrasesState.value?.[hex as keyof typeof phrasesState.value];
 		let instruments = phraseInstruments.value?.[hex as keyof typeof phrasesState.value];
-
+    
 		// TODO play next pattern when pattern increases
 		// notes = addSilentNotes(notes);
 		channels.forEach((channel) => {
-			let note;
+      let note;
 			try {
-				note = notes[channel][toHex(playPositionsPhrases.value[i])];
+        note = notes[channel][toHex(playPositionsPhrases.value[i])];
 			} catch (error) {}
 			if (note && soundfonts.value) {
 				const instrument =
 					soundfonts.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
 				const duration =
 					instrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
-				// console.info(instrument);
+				// console.info(transpose);
 				// instrument.stop();
 				instrument.start({
-					note: noteToInt(note) + toIntFromTranspose(transpose ? transpose[channel] : "00"),
+					note: noteToInt(note) + toIntFromTranspose(transpose[toHex(playPositionsPatterns.value[i])] ? transpose[toHex(playPositionsPatterns.value[i])] : "00"),
 					// note,
 					time: now,
 					duration: duration
