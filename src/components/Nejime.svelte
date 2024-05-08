@@ -154,36 +154,40 @@
 										phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
 										transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
 
-										playPhraseFromSong(
-											activeScreenState.value,
-											phrasesToPlay[toHex(playPositionsPatterns.value[i])],
-											i,
-											transposeToPlay
-										);
+										// don't try to play if there are no phrases to play in the pattern
+										if (phrasesToPlay?.[toHex(playPositionsPatterns.value[i])] !== undefined) {
+											playPhraseFromSong(
+												activeScreenState.value,
+												phrasesToPlay[toHex(playPositionsPatterns.value[i])],
+												i,
+												transposeToPlay
+											);
+										}
 									} else {
 										playPositionsPatterns.value[i] += 1;
-										if (phrasesToPlay[toHex(playPositionsPatterns.value[i])] === undefined) {
+										if (phrasesToPlay?.[toHex(playPositionsPatterns.value[i])] === undefined) {
 											playPositionsPatterns.value[i] = 0;
 											playPositionsSong.value[i] += 1;
 										}
 										// update data
 										patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
 										// if empty pattern, go back to start
-                    if (!patternsToPlay) {
-                      playPositionsSong.value[i] = 0;
-                      patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
+										if (!patternsToPlay) {
+											playPositionsSong.value[i] = 0;
+											patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
 										}
 										phrasesToPlay = patterns.value?.[patternsToPlay[channel]];
 										transposeToPlay = transposePatterns.value?.[patternsToPlay[channel]] ?? "00";
 
-
 										playPositionsPhrases.value[i] = 0;
-										playPhraseFromSong(
-											activeScreenState.value,
-											phrasesToPlay[toHex(playPositionsPatterns.value[i])],
-											i,
-											transposeToPlay
-										);
+										if (phrasesToPlay?.[toHex(playPositionsPatterns.value[i])] !== undefined) {
+											playPhraseFromSong(
+												activeScreenState.value,
+												phrasesToPlay[toHex(playPositionsPatterns.value[i])],
+												i,
+												transposeToPlay
+											);
+										}
 									}
 								},
 								1000 * (60 / (bpmState.value * 4))
