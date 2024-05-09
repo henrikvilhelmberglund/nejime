@@ -10,7 +10,7 @@ import {
 	createPhraseInstrumentsState,
 	createPhrasesState,
 	createPlayPositionPatternState,
-	createPlayPositionPhraseState,
+	// createPlayPositionPhraseState,
 	createPlayPositionsPatternsState,
 	createPlayPositionsPhrasesState,
 	createPlayPositionsSongState,
@@ -110,8 +110,8 @@ function addSilentNotes(object: Record<string, Record<string, string>>) {
 export function playPhraseFromSong(state: string, hex: string, i: number, transpose: Pattern) {
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
 	const playPositionsPatterns = createPlayPositionsPatternsState();
-	const soundfonts = createInstrumentsState();
-	const instrumentDurations = createInstrumentDurationsState();
+	const songInstruments = createInstrumentsState();
+	const songInstrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
 	const context = createContextState();
 
@@ -131,14 +131,14 @@ export function playPhraseFromSong(state: string, hex: string, i: number, transp
 			try {
         note = notes[channel][toHex(playPositionsPhrases.value[i])];
 			} catch (error) {}
-			if (note && soundfonts.value) {
+			if (note && songInstruments.value) {
 				const instrument =
-					soundfonts.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
+					songInstruments.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
 				const duration =
-					instrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
+					songInstrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
 				// console.info(transpose);
 				// instrument.stop();
-				instrument.start({
+				instrument.sound.start({
 					note: noteToInt(note) + toIntFromTranspose(transpose[toHex(playPositionsPatterns.value[i])] ? transpose[toHex(playPositionsPatterns.value[i])] : "00"),
 					// note,
 					time: now,
@@ -157,10 +157,11 @@ export function playPhraseFromSong(state: string, hex: string, i: number, transp
 
 export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
-	const playPositionPhrase = createPlayPositionPhraseState();
+	// const playPositionPhrase = createPlayPositionPhraseState();
+	const playPositionsPhrases = createPlayPositionsPhrasesState();
 	const playPositionPattern = createPlayPositionPatternState();
 	const intervalIdState = createIntervalIdState();
-	const soundfonts = createInstrumentsState();
+	const songInstruments = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
 	const phraseInstruments = createPhraseInstrumentsState();
 	const transposePatterns = createTransposePatternsState();
@@ -180,15 +181,15 @@ export function playPhrase(state: string, hex: string) {
 		channels.forEach((channel) => {
 			let note;
 			try {
-				note = notes[channel][toHex(playPositionPhrase.value)];
+				note = notes[channel][toHex(playPositionsPhrases.value["0"])];
 			} catch (error) {}
-			if (note && soundfonts.value) {
-				const instrument = soundfonts.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
+			if (note && songInstruments.value) {
+				const instrument = songInstruments.value[instruments?.[toHex(playPositionsPhrases.value["0"])] ?? "00"];
 				const duration =
-					instrumentDurations.value[instruments?.[toHex(playPositionPhrase.value)] ?? "00"];
+					instrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value["0"])] ?? "00"];
 				// console.info(instrument);
 				// instrument.stop();
-				instrument.start({
+				instrument.sound.start({
 					note:
 						transpose ?
 							noteToInt(note) +
@@ -215,7 +216,6 @@ export function playPhrase(state: string, hex: string) {
 
 export function stop(state: string) {
 	const bpmState = createBpmState();
-	const playPositionPhrase = createPlayPositionPhraseState();
 	const intervalIdState = createIntervalIdState();
 	const soundfonts = createInstrumentsState();
 	const context = createContextState();
@@ -230,7 +230,7 @@ export function stop(state: string) {
 		// marimba.stop();
 		// instrument.start({ note: selectedNote });
 		Object.values(soundfonts.value).forEach((soundfont) => {
-			soundfont.stop();
+			soundfont.sound.stop();
 		});
 	}
 }
