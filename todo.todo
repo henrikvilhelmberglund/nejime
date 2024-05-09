@@ -1,8 +1,8 @@
 core:
-    ✔ add instruments @done(24-04-26 16:58)
-    ✔ transpose can go from 00 to FF (to allow for negative transpose) @done(24-04-29 16:21)
-    ☐ add instrument type to instruments
-    ☐ add drum type and set it as default FF instrument
+  ✔ add instruments @done(24-04-26 16:58)
+  ✔ transpose can go from 00 to FF (to allow for negative transpose) @done(24-04-29 16:21)
+  ✔ add drum type and set it as default FF instrument @done(24-05-09 14:56)
+  ✔ add instrument type to instruments @done(24-05-09 14:56)
     
 UI:
   ✔ add transpose field @done(24-04-19 16:59)
@@ -15,16 +15,16 @@ UI:
   ✔ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right) @done(24-05-03 17:08)
   ✔ add Project screen with editable BPM value @done(24-04-29 16:20)
   ☐ add Instrument screen for configuring instruments
-  
+      
 saving songs:
   ☐ save song data in local storage in case of crash
   ✔ save song data as string (base64?) @done(24-05-03 17:09)
   ✔ load song data from string (base64?) @done(24-05-03 17:09)
+  ☐ add instrument type and number for saving and create instruments on load
   ☐ create button which copies the song link to clipboard
 
-editing: 
+editing:
   ✔ add way to play back song @done(24-05-07 15:06)
-
   ✔ add way to add empty pattern, starting from 00 @done(24-04-25 16:31)
   ✔ add way to edit pattern, should go from 00 to FF @done(24-04-25 16:31)
   ✔ add way to delete pattern @done(24-04-25 16:31)
