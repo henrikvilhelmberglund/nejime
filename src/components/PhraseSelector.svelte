@@ -38,7 +38,6 @@
 
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("row")[1].split("-channel")[0];
-		console.log("row", row);
 		e.preventDefault();
 
 		// * add+preview
