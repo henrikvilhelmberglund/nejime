@@ -375,11 +375,30 @@ let phrases = $state<Record<string, Phrase>>({
 	}
 });
 
-let instruments = $state<Record<string, Soundfont> | undefined>(
+export type instrumentType = {
+	type: string;
+	sound: Soundfont;
+};
+
+let instruments = $state<Record<string, instrumentType> | undefined>(
 	browser && context ?
 		{
-			"00": new Soundfont(context, { instrument: instrumentNames["3C"] }),
-			"01": new Soundfont(context, { instrument: instrumentNames["08"] })
+			"00": {
+				type: "soundfont",
+				sound: new Soundfont(context, { instrument: instrumentNames["3C"] })
+			},
+			"01": {
+				type: "soundfont",
+				sound: new Soundfont(context, { instrument: instrumentNames["08"] })
+			},
+			FF: {
+				type: "soundfontdrums",
+				sound: new Soundfont(context, {
+					instrumentUrl:
+						"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
+					volume: 80
+				})
+			}
 		}
 	:	undefined
 );

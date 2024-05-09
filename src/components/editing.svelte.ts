@@ -15,7 +15,8 @@ import {
 	createPhrasesState,
 	createSongState,
 	createTransposePatternsState,
-	instrumentNames
+	instrumentNames,
+	type instrumentType
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
 
@@ -138,7 +139,7 @@ export function add({ element }: addProps) {
 
 type previewProps = {
 	element: HTMLButtonElement;
-	instrument: Soundfont;
+	instrument: instrumentType;
 };
 
 export function preview({ element, instrument }: previewProps) {
@@ -150,8 +151,8 @@ export function preview({ element, instrument }: previewProps) {
 	if (selectedNote === undefined) return;
 	// marimba.start({ note: selectedNote });
 
-	instrument.stop();
-	instrument.start({ note: selectedNote });
+	instrument.sound.stop();
+	instrument.sound.start({ note: selectedNote });
 	// setTimeout(
 	//   () => {
 	//     instrument.stop();
@@ -167,7 +168,7 @@ type editProps = {
 
 export function stopNotePreview({ element, instrument }: previewProps) {
 	if (instrument) {
-		instrument.stop();
+		instrument.sound.stop();
 	}
 }
 
@@ -375,13 +376,15 @@ export function editInstrument({ direction, element }: editProps) {
 
 		// ensure we get the updated value
 		setTimeout(() => {
-			if (soundfonts.value && context.value && !soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]) {
-				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText] = new Soundfont(
-					context.value,
-					{
+			if (
+				soundfonts.value &&
+				context.value &&
+				!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText].sound
+			) {
+				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText].sound =
+					new Soundfont(context.value, {
 						instrument: instrumentNames["00"]
-					}
-				);
+					});
 			}
 			lastTouchedInstrument.value = (<HTMLButtonElement>document.activeElement).innerText;
 		}, 0);
@@ -403,11 +406,11 @@ export function editTranspose({ direction, element }: editProps) {
 				selectedPhrase = "00";
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase))}`;
-      } else {
-        if (!transposePatterns.value[lastPatternHex.value]) {
-          transposePatterns.value[lastPatternHex.value] = {};
-        }
-        
+			} else {
+				if (!transposePatterns.value[lastPatternHex.value]) {
+					transposePatterns.value[lastPatternHex.value] = {};
+				}
+
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase) + 1)}`;
 			}
