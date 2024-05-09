@@ -455,13 +455,13 @@ export function remove({ element }: deleteProps) {
 	if (activeScreen.value === "song") {
 		const row = element.id.split("row")[1].split("-channel")[0];
 		const channel = element.id.split("-")[1];
-		song.value[toHex(+row)][channel] = `--`;
+		delete song.value[toHex(+row)][channel];
 	}
 
 	if (activeScreen.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = element.id.split("row")[1].split("-pattern")[1];
-		patterns.value[lastPatternHex.value][toHex(+row)] = `--`;
+		delete patterns.value[lastPatternHex.value][toHex(+row)];
 	}
 
 	if (activeScreen.value === "phrase") {
