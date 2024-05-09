@@ -19,8 +19,6 @@
 		createLastPatternHexState,
 		createPatternsState,
 		createPhrasesState,
-		createPlayPositionPhraseState,
-		createPlayPositionPatternState,
 		saveSong,
 		createSongState,
 		createPlayPositionsPhrasesState,
@@ -71,8 +69,7 @@
 	const patterns = createPatternsState();
 	const transposePatterns = createTransposePatternsState();
 	const phrases = createPhrasesState();
-	const playPositionPhrase = createPlayPositionPhraseState();
-	const playPositionPattern = createPlayPositionPatternState();
+	// const playPositionPattern = createPlayPositionPatternState();
 	const playPositionSong = createPlayPositionSongState();
 
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
@@ -211,32 +208,32 @@
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("row")[1].split("-pattern")[0];
 						console.log("position", position);
-						playPositionPattern.value = parseInt(position);
+						playPositionsPatterns.value["0"] = parseInt(position);
 					} else {
-						playPositionPattern.value = 0;
+						playPositionsPatterns.value["0"] = 0;
 					}
 
 					// console.table(phrasesToPlay);
-					playPhrase(activeScreenState.value, phrasesToPlay[toHex(playPositionPattern.value)]);
+					playPhrase(activeScreenState.value, phrasesToPlay[toHex(playPositionsPatterns.value["0"])]);
 
 					intervalId.value = setInterval(
 						() => {
-							if (playPositionPhrase.value < 15) {
-								playPositionPhrase.value += 1;
+							if (playPositionsPhrases.value["0"] < 15) {
+								playPositionsPhrases.value["0"] += 1;
 								playPhrase(
 									activeScreenState.value,
-									phrasesToPlay[toHex(playPositionPattern.value)]
+									phrasesToPlay[toHex(playPositionsPatterns.value["0"])]
 								);
 							} else {
-								playPositionPattern.value += 1;
-								if (!phrasesToPlay[toHex(playPositionPattern.value)]) {
-									playPositionPattern.value = 0;
+								playPositionsPatterns.value["0"] += 1;
+								if (!phrasesToPlay[toHex(playPositionsPatterns.value["0"])]) {
+									playPositionsPatterns.value["0"] = 0;
 								}
 
-								playPositionPhrase.value = 0;
+								playPositionsPhrases.value["0"] = 0;
 								playPhrase(
 									activeScreenState.value,
-									phrasesToPlay[toHex(playPositionPattern.value)]
+									phrasesToPlay[toHex(playPositionsPatterns.value["0"])]
 								);
 							}
 						},
@@ -257,19 +254,19 @@
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("-channel")[0].split("note")[1];
 						console.log("position", position);
-						playPositionPhrase.value = parseInt(position);
+						playPositionsPhrases.value["0"] = parseInt(position);
 					} else {
-						playPositionPhrase.value = 0;
+						playPositionsPhrases.value["0"] = 0;
 					}
 					playPhrase(activeScreenState.value, lastPhraseHex.value);
 
 					intervalId.value = setInterval(
 						() => {
-							if (playPositionPhrase.value < 15) {
-								playPositionPhrase.value += 1;
+							if (playPositionsPhrases.value["0"] < 15) {
+								playPositionsPhrases.value["0"] += 1;
 								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							} else {
-								playPositionPhrase.value = 0;
+								playPositionsPhrases.value["0"] = 0;
 								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							}
 						},

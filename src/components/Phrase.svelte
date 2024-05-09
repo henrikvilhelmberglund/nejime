@@ -11,7 +11,7 @@
 		createLastRowNoteState,
 		createPhraseInstrumentsState,
 		createPhrasesState,
-		createPlayPositionPhraseState,
+		createPlayPositionsPhrasesState,
 		createSongState
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
@@ -22,7 +22,8 @@
 	let phrases = createPhrasesState();
 	let phraseInstruments = createPhraseInstrumentsState();
 	let isPlayingBack = createIsPlayingBackState();
-	let playPositionPhrase = createPlayPositionPhraseState();
+	// let playPositionPhrase = createPlayPositionPhraseState();
+	let playPositionsPhrase = createPlayPositionsPhrasesState();
 	let lastChannelNote = createLastChannelNoteState();
 	let lastRowNote = createLastRowNoteState();
 
@@ -70,7 +71,7 @@
 	{activeScreenState.value.toUpperCase()}
 	{lastPhraseHex.value}
 </p>
-<div class="flex flex-row text-white text-sm pl-[39px]">
+<div class="flex flex-row pl-[39px] text-sm text-white">
 	<p class="w-64">NOTE</p>
 	<p class="w-16">INSTR</p>
 	<p>CMD</p>
@@ -80,7 +81,8 @@
 	<div class="relative flex flex-col">
 		{#each rows as row, i}
 			<div id={`note${i}`} class="flex gap-4">
-				{#if isPlayingBack.value && playPositionPhrase.value === i}
+				<!-- TODO cursor shows even if current phrase is not being played -->
+				{#if isPlayingBack.value && playPositionsPhrase.value["0"] === i}
 					<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 				{/if}
 				{#each channels as channel, j}
@@ -90,10 +92,10 @@
 						channel={`channel${j}`}
 						id={`note${i}-channel${j}`} />
 				{/each}
-        <InstrumentSelector
-						selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "--"}
-						hex={toHex(i)}
-						id={`instrument-selector${i}`} />
+				<InstrumentSelector
+					selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "--"}
+					hex={toHex(i)}
+					id={`instrument-selector${i}`} />
 			</div>
 		{/each}
 	</div>

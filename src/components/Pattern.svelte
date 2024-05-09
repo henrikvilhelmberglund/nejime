@@ -8,7 +8,7 @@
 		createLastPatternHexState,
 		createLastRowPhraseState,
 		createPatternsState,
-		createPlayPositionPatternState,
+		createPlayPositionsPatternsState,
 		createTransposePatternsState
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
@@ -25,7 +25,7 @@
 	let transposePatternsState = createTransposePatternsState();
 	let lastRowPhrase = createLastRowPhraseState();
 	let isPlayingBack = createIsPlayingBackState();
-	let playPositionPattern = createPlayPositionPatternState();
+	let playPositionsPattern = createPlayPositionsPatternsState();
 
 	$effect(() => {
 		if (lastRowPhrase.value !== undefined) {
@@ -73,7 +73,9 @@
 		{#each rows as _, i}
 			<div class="flex flex-row gap-12">
 				<div id={`row${i}`} class="flex gap-2">
-					{#if isPlayingBack.value && playPositionPattern.value === i}
+					<!-- TODO cursor shows in patterns that are not playing atm -->
+          <!-- TODO check channel instead of assuming "0" -->
+					{#if isPlayingBack.value && playPositionsPattern.value["0"] === i}
 						<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 					{/if}
 					<PhraseSelector
