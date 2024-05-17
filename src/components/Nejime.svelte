@@ -26,7 +26,10 @@
 		createPlayPositionsSongState,
 		createIntervalIdsSongState,
 		createPlayPositionSongState,
-		createTransposePatternsState
+		createTransposePatternsState,
+
+		newSong
+
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 
@@ -214,7 +217,10 @@
 					}
 
 					// console.table(phrasesToPlay);
-					playPhrase(activeScreenState.value, phrasesToPlay[toHex(playPositionsPatterns.value["0"])]);
+					playPhrase(
+						activeScreenState.value,
+						phrasesToPlay[toHex(playPositionsPatterns.value["0"])]
+					);
 
 					intervalId.value = setInterval(
 						() => {
@@ -299,6 +305,7 @@
 <a
 	href="/N4IgRgDgtiBcCMAmADAGhASwHYGcAuATgK5QCmWeAIkQQIZ4YD2ucoyycyAdAMzrLxOXeAF90OZgHNWIdjIDGAC1pYspADYdYsjuiUq16wdoEg9y1RsRxZ18wY08byJ-cvqALM69jZx0PruWiAoZiCBhsYhgm6G1tqIduEWhk4JrskOnt4gIr4Q9HikBCywoKFlOjbwun7VMbbVSS7VGche2vBe-ACs1X38AGzV3bIA7P1hyAAc1bXIAJz1UwCCTVMAQq256Ij+VdoeDaaHzfEgHm1pF6PtNh4Dsn2Hw0P3j8gTL1Ozh8dLp1W9zaW0OPn4WjYwRqUyi8GO5yQU2u8DaHRAXSmzwxH2GnVuXxxPzmUwBGOOa06zVBGKcvhOUPuxyiHjOwOR91u6IeWPur1keIuH0JHn5MyZpPuzUpFxBnJ2sg6jO0PHmUVVU3OGv4121ipseuQ2MNgsNhMNvxAhrJhplhppGry6EIKhwEEYOFIAAVCsVSuVIQcnrDnB9zkaOSYPuiI71Q1NCbGBfH+Jak4sU7IZemaRHfHsZHIoyHi-xwx9rumYx9senBenEx80x8yensx9c316YGi1Uy855jGOPT9r25PwouPGiZh-lFHRPTgZDDKkXlSAAMJcmxb4naADitw3NkPCoZTvJhZ7wRW2+0t73IFPI9Y9PiwAvSNX15sADE7yA-6PgAokeNigWe-hvq+viole8HaJQAFIY+u6fkqBzrqe-DothsiWkB-DHtoQGfs8yrrhBOHgbclooReGrfghm7NHR1gvkxB4AMTNLhPGPvu-FESe-EXkcCHrhuTbgV2vishJQa-tJ2jAbJ6CXApvaUMpm5qTcmk3gBGy0Tuek8pxlHRieJmIR8xFPj4cl4hRQZSVMuE2SAxlTPZz4XhA860J6ACSuCECQ5B4EulQruuU4nCAAC0iWajYyWRklKVxto6XUTOj7xfZciwaOwTxUOBXDugX5xYOA6VT59WwWktXufVqZNdVGFjnV+UdX1shFVVRKcX2+oDeK+W+Ix66-r+bUkfN-WAUtg1-vNcmlc4xzorl+HbY1OUpXJ75BqYeWZQVFJpVla1HQqGmjed42Xctz3IJQN2HZdcndWVO0HW9xz2elcnkWdAMmMcabAwdTnMe9MbQ4Dd11HkIhAA"
 	>Twinkle Twinkle Little Star Drums</a>
+<button onclick={()=> newSong()}>New song</button>
 <div
 	tabindex="-1"
 	id="nejime"

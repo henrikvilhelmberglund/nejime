@@ -753,3 +753,37 @@ export function createPhraseInstrumentsState() {
 		}
 	};
 }
+
+export function newSong() {
+	song = {};
+
+	patterns = {};
+
+	transposePatterns = {};
+
+	phrases = {};
+
+	instruments =
+		browser && context ?
+			{
+				"00": {
+					type: "soundfont",
+					sound: new Soundfont(context, { instrument: instrumentNames["00"] })
+				},
+				FF: {
+					type: "soundfontdrums",
+					sound: new Soundfont(context, {
+						instrumentUrl:
+							"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
+						volume: 80
+					})
+				}
+			}
+		:	undefined;
+
+	instrumentDurations = {
+		"00": 0.3
+	};
+
+	phraseInstruments = {};
+}
