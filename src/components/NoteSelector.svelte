@@ -93,9 +93,12 @@
     // * preview
 		if (!fPressed.value && soundfonts.value) {
 			if (shouldPreview.value) {
+        const rowNumber = document.activeElement!.id.split("note")[1].split("-")[0];
+        const instrumentSelectorOnRow = <HTMLButtonElement>document.querySelector(`#instrument-selector${rowNumber}`)!;
+        const instrumentOnRow = instrumentSelectorOnRow.innerText;
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[lastTouchedInstrument.value]
+					instrument: soundfonts.value[instrumentOnRow] ?? soundfonts.value[lastTouchedInstrument.value]
 				});
 			}
 		}
