@@ -58,6 +58,10 @@
 	function handleKeyPress(e: KeyboardEvent) {
 		const row = id.split("note")[1].split("-channel")[0];
 		const channel = id.split("note")[1].split("-channel")[1];
+		const instrumentSelectorOnRow = <HTMLButtonElement>(
+			document.querySelector(`#instrument-selector${row}`)!
+		);
+		const instrumentOnRow = instrumentSelectorOnRow.innerText;
 
 		e.preventDefault();
 		// preview note when key is not movement
@@ -67,6 +71,7 @@
 				add({ element: <HTMLButtonElement>document.activeElement });
 				shouldPreview.value = true;
 			} else {
+        lastTouchedInstrument.value = instrumentOnRow;
 				lastTouchedNote.value = (<HTMLButtonElement>document.activeElement).innerText.replaceAll(
 					// ! this is probably stupid but it works (C  3 turns into C3 etc)
 					" ",
@@ -79,7 +84,7 @@
 			shouldPreview.value = false;
 		}
 
-    // * remove
+		// * remove
 		if (dPressed.value && e.code === "KeyF") {
 			console.log("remove");
 			if ((<HTMLButtonElement>document.activeElement).innerText !== "---") {
@@ -90,20 +95,18 @@
 		// if s or d are pressed, don't use below logic that switches cursor location
 		if (sPressed.value || dPressed.value) return;
 
-    // * preview
+		// * preview
 		if (!fPressed.value && soundfonts.value) {
 			if (shouldPreview.value) {
-        const rowNumber = document.activeElement!.id.split("note")[1].split("-")[0];
-        const instrumentSelectorOnRow = <HTMLButtonElement>document.querySelector(`#instrument-selector${rowNumber}`)!;
-        const instrumentOnRow = instrumentSelectorOnRow.innerText;
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrumentOnRow] ?? soundfonts.value[lastTouchedInstrument.value]
+					instrument:
+						soundfonts.value[instrumentOnRow] ?? soundfonts.value[lastTouchedInstrument.value]
 				});
 			}
 		}
 
-    // * edit
+		// * edit
 		if (fPressed.value && soundfonts.value) {
 			shouldPreview.value = true;
 			const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
@@ -162,7 +165,6 @@
 			});
 		}
 	}
-
 </script>
 
 <button
