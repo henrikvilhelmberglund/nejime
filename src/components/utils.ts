@@ -159,7 +159,8 @@ export function playPhrase(state: string, hex: string) {
 	const bpmState = createBpmState();
 	// const playPositionPhrase = createPlayPositionPhraseState();
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
-	const playPositionPattern = createPlayPositionPatternState();
+	const playPositionsPatterns = createPlayPositionsPatternsState();
+	// const playPositionPattern = createPlayPositionPatternState();
 	const intervalIdState = createIntervalIdState();
 	const songInstruments = createInstrumentsState();
 	const instrumentDurations = createInstrumentDurationsState();
@@ -188,14 +189,15 @@ export function playPhrase(state: string, hex: string) {
 				const duration =
 					instrumentDurations.value[instruments?.[toHex(playPositionsPhrases.value["0"])] ?? "00"];
 				// console.info(instrument);
-				// instrument.stop();
+        // instrument.stop();
+        console.table([transposePatterns.value, lastPatternHex.value, playPositionsPatterns.value[0]])
 				instrument.sound.start({
 					note:
 						transpose ?
 							noteToInt(note) +
 							toIntFromTranspose(
 								transposePatterns.value?.[lastPatternHex.value]?.[
-									toHex(playPositionPattern.value)
+									toHex(playPositionsPatterns.value[0])
 								] ?? "00"
 							)
 						:	noteToInt(note),
