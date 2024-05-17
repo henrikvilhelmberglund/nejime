@@ -3,6 +3,7 @@ core:
   ✔ transpose can go from 00 to FF (to allow for negative transpose) @done(24-04-29 16:21)
   ✔ add drum type and set it as default FF instrument @done(24-05-09 14:56)
   ✔ add instrument type to instruments @done(24-05-09 14:56)
+  ☐ init instrument when a new instrument is added
     
 UI:
   ✔ add transpose field @done(24-04-19 16:59)
