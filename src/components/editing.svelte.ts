@@ -379,12 +379,14 @@ export function editInstrument({ direction, element }: editProps) {
 			if (
 				soundfonts.value &&
 				context.value &&
-				!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText].sound
+				!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]?.sound
 			) {
-				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText].sound =
-					new Soundfont(context.value, {
+				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText] = {
+					type: "soundfont",
+					sound: new Soundfont(context.value, {
 						instrument: instrumentNames["00"]
-					});
+					})
+				};
 			}
 			lastTouchedInstrument.value = (<HTMLButtonElement>document.activeElement).innerText;
 		}, 0);
