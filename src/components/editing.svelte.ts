@@ -403,16 +403,17 @@ export function editTranspose({ direction, element }: editProps) {
 		if (selectedPhrase === undefined) return;
 		// const selectedPhraseTone = selectedPhrase.split(selectedPhrase[selectedPhrase.length - 1])[0];
 		let newPhrase;
+		// init object if not available yet
+    if (!transposePatterns.value[lastPatternHex.value]) {
+			transposePatterns.value[lastPatternHex.value] = {};
+    }
+    
 		if (direction === "right") {
 			if (selectedPhrase === "FF") {
 				selectedPhrase = "00";
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase))}`;
 			} else {
-				if (!transposePatterns.value[lastPatternHex.value]) {
-					transposePatterns.value[lastPatternHex.value] = {};
-				}
-
 				transposePatterns.value[lastPatternHex.value][toHex(+row)] =
 					`${toHex(toInt(selectedPhrase) + 1)}`;
 			}
@@ -442,10 +443,6 @@ export function editTranspose({ direction, element }: editProps) {
 					`${toHex(toInt(selectedPhrase) - 12)}`;
 			}
 		}
-		// ensure we get the updated value
-		setTimeout(() => {
-			lastTouchedPhrase.value = (<HTMLButtonElement>document.activeElement).innerText;
-		}, 0);
 	}
 }
 
