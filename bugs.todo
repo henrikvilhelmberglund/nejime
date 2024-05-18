@@ -1,1 +1,1 @@
-☐ going left on transpose when transpose pattern doesn't exist gives error but going right works
+✔ going left on transpose when transpose pattern doesn't exist gives error but going right works @done(24-05-18 22:54)
