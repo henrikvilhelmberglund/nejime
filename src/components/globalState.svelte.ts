@@ -378,6 +378,7 @@ let phrases = $state<Record<string, Phrase>>({
 export type instrumentType = {
 	type: string;
 	sound: Soundfont;
+	hex: string;
 };
 
 let instruments = $state<Record<string, instrumentType> | undefined>(
@@ -385,11 +386,13 @@ let instruments = $state<Record<string, instrumentType> | undefined>(
 		{
 			"00": {
 				type: "soundfont",
-				sound: new Soundfont(context, { instrument: instrumentNames["3C"] })
+				sound: new Soundfont(context, { instrument: instrumentNames["3C"] }),
+				hex: "3C"
 			},
 			"01": {
 				type: "soundfont",
-				sound: new Soundfont(context, { instrument: instrumentNames["08"] })
+				sound: new Soundfont(context, { instrument: instrumentNames["08"] }),
+				hex: "08"
 			},
 			FF: {
 				type: "soundfontdrums",
@@ -397,7 +400,8 @@ let instruments = $state<Record<string, instrumentType> | undefined>(
 					instrumentUrl:
 						"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
 					volume: 80
-				})
+				}),
+				hex: "00"
 			}
 		}
 	:	undefined
@@ -768,7 +772,8 @@ export function newSong() {
 			{
 				"00": {
 					type: "soundfont",
-					sound: new Soundfont(context, { instrument: instrumentNames["00"] })
+					sound: new Soundfont(context, { instrument: instrumentNames["00"] }),
+					hex: "00"
 				},
 				FF: {
 					type: "soundfontdrums",
@@ -776,7 +781,8 @@ export function newSong() {
 						instrumentUrl:
 							"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
 						volume: 80
-					})
+					}),
+					hex: "00"
 				}
 			}
 		:	undefined;
