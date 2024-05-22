@@ -41,6 +41,8 @@ Mitt främsta mål var att göra en app för att enkelt skapa musik i en webblä
 
 Min utvecklingsmiljö var [Svelte 5](https://svelte-5-preview.vercel.app/docs/introduction) och appramverket [SvelteKit](https://kit.svelte.dev/) vilket använder [Vite](https://vitejs.dev/) som är känt för snabba uppdateringar efter kodändringar.
 
+Jag använder också Typescript för att lättare se om jag gör fel.
+
 Jag använder VSCode som fungerar perfekt för mig för webbutveckling.
 
 ## Krav
@@ -142,9 +144,13 @@ Detta gör det också enklare att spara sången med allt data eftersom jag kan b
 
 ### Spara/ladda sångdata
 
-Som sagt sparar jag sången genom att skapa ett stort objekt. Sedan komprimerar jag detta objekt med [lz-string](https://github.com/pieroxy/lz-string) till en sträng som sedan kan bli en länk. För att ladda sången behöver man bara öppna länken som blir den dynamiska routen som tar strängen och dekomprimerar den och laddar sången igen. Jag tror detta fungerar bra för enkla sånger men tror också att det kan bli för mycket data för långa sånger[^Maxgränsen för en länk i t.ex Chrome är 2083 tecken.]. På grund av detta kan jag behöva tänka om datastrukturen eller göra en egen komprimering innan `lz-string` på något sätt.
+Som sagt sparar jag sången genom att skapa ett stort objekt. Sedan komprimerar jag detta objekt med [lz-string](https://github.com/pieroxy/lz-string) till en sträng som sedan kan bli en länk. För att ladda sången behöver man bara öppna länken som blir den dynamiska routen som tar strängen och dekomprimerar den och laddar sången igen. Jag tror detta fungerar bra för enkla sånger men trodde först att det kan bli för mycket data för långa sånger. När jag googlade efter maxgränsen för en länk i Chrome var resultatet 2083 tecken vilket skulle vara för lite, men efter att ha testat verkar detta inte stämma, gränsen verkar istället vara 32779 tecken vilket borde räcka.
 
-Annars om man bara vill spara lokalt skulle det fungera att använda localstorage för sångerna men det skulle inte gå att skicka dem som länkar då.
+Jag började tänka på andra lösningar om URL inte skulle fungera för att spara sånger men de verkar inte behövas, jag lämnar dem här ändå.
+
+#### Alternativa lösningar
+
+Om man bara vill spara lokalt skulle det fungera att använda localstorage för sångerna men det skulle inte gå att skicka dem som länkar då. Fördelen med att spara i localstorage är att man kan visa användarens sånger i en fin lista.
 
 En annan möjlig lösning för att kunna dela sånger är att använda någon sorts databas där användare kan spara sina sånger. Det skulle dock betyda att man behöver någon sorts auth så att man inte kan skriva över andras sånger.
 
@@ -152,22 +158,40 @@ Jag vet inte exakt vilken lösning som är bäst men tror att localstorage där 
 
 #### Komprimering av data (ta bort istället för --- etc)
 
+Det var viktigt att spara så lite data som möjligt för att minska storleken av det komprimerade datat. I början fyllde jag tomma noter med `---` och när jag tog bort noter bytte jag värdet till `---` (så det blir som en tom not) men märkte att detta gjorde att den tomma noten också sparades när man sparade sången. För att förbättra komprimeringen bytte jag till att använda `delete` som tar bort propertyn helt vilket gör att det inte behöver sparas.
+
+Detta gjorde datamängden mycket mindre för om man bara har 4 noter i en phrase blir det 4 properties istället för 16. Jag har aldrig använt t.ex `lz-string` tidigare så att tänka på komprimering var helt nytt för mig. I början när jag trodde att gränsen var runt 2000 karaktärer funderade jag på hur mycket jag kunde komprimera olika saker för att få karaktärerna att räcka till men med en gräns på 32779 tecken borde långa sånger också få plats. Jag borde egentligen räkna ut hur mycket olika data påverkar storleken när man sparar för att vara säker att komplicerade sånger får plats.
+
 ## Utmaningar
 
-Sjuk
+Den största utmaningen var att jag aldrig har gjort något liknande förut. Appen är väldigt olik en vanlig webbsida för man använder piltangenter och speciella tangentbordskommandon för att skapa sånger. Dessutom använde jag Svelte 5 som har ny funktionalitet, t.ex runes, som jag inte hade sett förut.
 
-Svårt att testa
+En annan utmaning var att appen kändes svår att testa eftersom den spelar upp ljud. Eller rättare sagt, det kändes enklare att bara testa själv genom att trycka på en knapp för att göra något och se om resultatet blev det man förväntade sig. Innan jag börjar refaktorera kommer jag skriva test så jag vet att jag inte förstör funktionalitet med mina ändringar.
+
+Den sista utmaningen var att jag blev sjuk i en vecka vilket inte hjälpte direkt, det ledde till att jag inte hann lägga in copy/paste-funktionalitet. Copy paste är lite komplicerat för det ska ske i flera steg, t.ex om man trycker en gång får man en not, om man trycker två gånger får man en kolumn, om man trycker tre gånger får man alla kolumner (dvs. alla kolumner och rader). I mitt fall blir det ännu mer komplicerat för jag har har flera rader för noter åt sidan. Det betyder att jag behöver en version som börjar nedåt (not, kolumn) och en som börjar åt sidan (not, rad). För paste-funktionen behövs det en version som byter ut allt data som man har markerat och en som "mergar" dvs. lämnar kvar data som finns redan och lägger in det nya på det.
+
+Det var svårt men det kändes aldrig omöjligt att jag kände att det var väldigt givande. Personligen gör jag hellre något för svårt än något för lätt för jag känner att det är lättare att lära sig nya saker när man utmanar sig själv. På det sättet var dessa utmaningar inte negativa (förutom att jag blev sjuk) eftersom de leder till utveckling.
 
 ## Framtid av appen
 
-Lägga till funktioner som saknas, t.ex kommandon för arpeggion/volym
+Det jag känner är intressant i appen är att man kan lägga till så mycket funktionalitet och ta appen vidare i olika riktningar.
 
-förbättra komprimering/datastruktur så man kan spara långa/komplicerade sånger
+Det första man skulle kunna göra är att lägga till funktioner som saknas, t.ex copypaste som jag nämnde ovan eller kommandon. Kommandon skulle vara en rad längst till höger i phraseskärmen där man kan lägga till kommandon som t.ex ett kommando för att byta volym eller ett kommando för att höja eller sänka en ton. Jag skulle dock behöva implementera funktionaliteten själv och lägga in den i `smplr` genom pull requests. Dessa kommandon är dock viktiga för att göra mer musikaliska sånger så jag tror att det blir rätt hög prioritet. 
 
-lägga till stöd för mobil
+En annan sak man kan lägga till är stöd för mobil. Storleken av själva UI:t är nog ganska bra för mobil just nu men det finns inget sätt att trycka på tangentbordsknappar eller piltangenter. Det behövs en ny inputmetod som stödjer touch, men originalprogrammet är bara på Gameboy så det finns ingen touch där så jag skulle behöva designa denna touchinput själv. Det skulle nog fungera okej, t.ex att man kan trycka på en not för att skapa eller trycka och swipea till höger för att höja notvärdet. Däremot behövs det nog mycket experimentation för att hitta något som fungerar lika bra som på tangentbord.
 
-multiplayer?
+Jag är även intresserad av att lägga till är stöd för multiplayer, dvs. flera användare samtidigt för att skapa sånger tillsammans. Varje användare skulle få en egen muspekare och se var de andra ändrar saker. Man behöver bara skicka sina ändringar till alla andra så att state är synkroniserat. Jag har aldrig gjort detta tidigare så jag skulle behöva prova mig fram men det är något som verkar realistiskt.
+
+En sista sak jag skulle vilja ha är möjlighet att exportera sin sång till MIDI som är ett filformat som används för att representera musik. Det skulle göra det möjligt att göra en skiss i appen och sedan exportera den till en .mid-fil som kan användas i andra program för att skapa musik. Detta är inte heller något jag har gjort tidigare men det känns rimligt att man kan skapa en sådan fil om man har information om alla noter vilket jag har eftersom jag kan spela upp en sång. Jag skulle bara behöva översätta mitt format till det formatet på något sätt.
+
+Sammanfattat känner jag att det finns mycket intressant man skulle kunna göra för att förbättra appen vilket jag känner är kul. Det skulle kanske varit bättre att ha valt ett projekt som blev helt klart efter kursen men jag känner att det är roligare att ha ett "riktigt" projekt som kan utvecklas vidare och kan bli ett riktigt sidoprojekt som jag kan fortsätta med.
 
 ## Avslutning och reflektion
 
-Svårt men kul
+Mitt examensarbete var att skapa en app Nejime som kan användas för att skapa musik i en browser. Jag känner att jag har lyckats till en grad, det finns vissa saker som fattas eller skulle kunna förbättras men jag känner att jag har skapat en intressant app. Jag är nöjd med att ha skapat en app som faktiskt kan förbättras på olika sätt som jag har nämnt ovan och skulle kunna användas av andra och bli ett riktigt opensource-projekt där andra kan bidra.
+
+Det var svårt eftersom jag inte hade gjort något liknande tidigare och för att jag använde Svelte 5 som jag inte hade använt tidigare. Det var dock inte bara svårt, det var kul för jag fick lära mig helt nya saker och lära mig Svelte 5 och fortsätta lära mig Typescript.
+
+Det gick inte helt som jag hade tänkt mig eller planerat men det kanske är förväntat för det är det första stora projektet jag har arbetat på helt själv. Det var dock inte omöjligt utan jag kunde stöta på problem som jag faktiskt kunde lösa själv. Jag känner att det hjälpte mycket att skriva kod som var enkel att förstå istället för att fokusera på att göra så mycket abstraktioner som möjligt i början.
+
+Det var väldigt roligt att göra en app som är relaterad till ett av mina intressen (musik) och att göra ett projekt som från nu kan byggas vidare till det blir något som jag kan vara stolt över.
