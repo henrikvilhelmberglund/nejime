@@ -1,7 +1,7 @@
 ---
 title: "Examensarbete 30p: Nejime"
 abstract: "Jag har skapat en app kallad Nejime för att skapa musik i en webbläsare."
-author: "Henrik Berglund (FEND22)"
+author: "Henrik Berglund (FEND22, Nackademin)"
 toc: true
 number-sections: true
 documentclass: bxjsarticle
