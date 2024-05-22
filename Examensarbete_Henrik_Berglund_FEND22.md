@@ -156,7 +156,7 @@ En annan möjlig lösning för att kunna dela sånger är att använda någon so
 
 Jag vet inte exakt vilken lösning som är bäst men tror att localstorage där man kan spara flera sånger är den enklaste lösningen att implementera för lokalt användande.
 
-#### Komprimering av data (ta bort istället för --- etc)
+#### Komprimering av data
 
 Det var viktigt att spara så lite data som möjligt för att minska storleken av det komprimerade datat. I början fyllde jag tomma noter med `---` och när jag tog bort noter bytte jag värdet till `---` (så det blir som en tom not) men märkte att detta gjorde att den tomma noten också sparades när man sparade sången. För att förbättra komprimeringen bytte jag till att använda `delete` som tar bort propertyn helt vilket gör att det inte behöver sparas.
 
