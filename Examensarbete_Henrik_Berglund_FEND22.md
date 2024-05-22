@@ -1,6 +1,6 @@
 ---
 title: "Examensarbete 30p: Nejime"
-abstract: "Nejime är en app för att skapa musik i en webbläsare. Appen är en mycket simplifierad version av programmet LSDj på Gameboy."
+abstract: "Jag har skapat en app kallad Nejime för att skapa musik i en webbläsare."
 author: "Henrik Berglund (FEND22)"
 toc: true
 number-sections: true
@@ -16,6 +16,8 @@ include-in-header:
 ## Inledning
 
 Denna uppsats handlar om mitt examensarbete där jag gjorde en webbapp kallad Nejime^[Japanska 音締め, att stämma ett instrument, speciellt shamisen. Direkt översatt "dra åt ljud".] som är till för att göra musik i en browser. Appen är en mycket simplifierad version av programmet LSDj på Gameboy som är en tracker^[En tracker är mjukvara för att skapa musik där användaren placerar ljud i rutnät. Varje rad representerar en tidsenhet och varje kolumn representerar en ljudkanal.].
+
+![Nejime](image.png)
 
 ## Bakgrund
 
@@ -59,7 +61,7 @@ En annan anledning var att jag inte visste hur långt jag skulle hinna och det k
 
 ### Kort beskrivning av appen
 
-Appen är uppbyggd av sidor och komponenter. Det finns två sidor eller routes (definierade av `+page.svelte`), en index-route och en dynamisk route för att ladda sångdata från länkar. Appen använder biblioteket (smplr)[https://github.com/danigb/smplr] för att spela upp ljud genom Web Audio API.
+Appen är uppbyggd av sidor och komponenter. Det finns två sidor eller routes (definierade av `+page.svelte`), en index-route och en dynamisk route för att ladda sångdata från länkar. Appen använder biblioteket [smplr](https://github.com/danigb/smplr) för att spela upp ljud genom Web Audio API.
 
 Sidan importerar och visar en komponent som heter Nejime.svelte. Denna komponent är en ruta som alltid visas som hanterar funktioner som playback med spacebar och navigation mellan olika view-states som `song`, `pattern` och `phrase`. När view-statet ändras visas komponenten för det statet, t.ex Song.svelte för song, Pattern.svelte för pattern osv.
 
@@ -115,8 +117,6 @@ Det finns även samma indelning mellan view-states. Om man spelar upp `song` spe
 Genom att skapa patterns och phrases med noter kan man skapa en sång. Man börjar genom att trycka `F` för att skapa ett nytt pattern, sedan gå in i det, skapa phrases, gå in i dem och lägga till noter. Genom att repetera denna process för flera kanaler och kolumner kan man göra sången längre och mer komplicerad. När man är nöjd med sin sång kan man trycka på `Save`-knappen för att få en länk så man kan gå tillbaka till den senare.
 
 Poängen med denna app är att det ska vara enkelt och snabbt när man förstår hur det fungerar. Eftersom tangentbordskommandon är konsekventa borde det gå snabbt att lära sig.
-
-#### Tangentbordskommandon
 
 För att navigera kan man använda `piltangenter`.
 
@@ -176,7 +176,7 @@ Det var svårt men det kändes aldrig omöjligt att jag kände att det var väld
 
 Det jag känner är intressant i appen är att man kan lägga till så mycket funktionalitet och ta appen vidare i olika riktningar.
 
-Det första man skulle kunna göra är att lägga till funktioner som saknas, t.ex copypaste som jag nämnde ovan eller kommandon. Kommandon skulle vara en rad längst till höger i phraseskärmen där man kan lägga till kommandon som t.ex ett kommando för att byta volym eller ett kommando för att höja eller sänka en ton. Jag skulle dock behöva implementera funktionaliteten själv och lägga in den i `smplr` genom pull requests. Dessa kommandon är dock viktiga för att göra mer musikaliska sånger så jag tror att det blir rätt hög prioritet. 
+Det första man skulle kunna göra är att lägga till funktioner som saknas, t.ex copypaste som jag nämnde ovan eller kommandon. Kommandon skulle vara en rad längst till höger i phraseskärmen där man kan lägga till kommandon som t.ex ett kommando för att byta volym eller ett kommando för att höja eller sänka en ton. Jag skulle dock behöva implementera funktionaliteten själv och lägga in den i `smplr` genom pull requests. Dessa kommandon är dock viktiga för att göra mer musikaliska sånger så jag tror att det blir rätt hög prioritet.
 
 En annan sak man kan lägga till är stöd för mobil. Storleken av själva UI:t är nog ganska bra för mobil just nu men det finns inget sätt att trycka på tangentbordsknappar eller piltangenter. Det behövs en ny inputmetod som stödjer touch, men originalprogrammet är bara på Gameboy så det finns ingen touch där så jag skulle behöva designa denna touchinput själv. Det skulle nog fungera okej, t.ex att man kan trycka på en not för att skapa eller trycka och swipea till höger för att höja notvärdet. Däremot behövs det nog mycket experimentation för att hitta något som fungerar lika bra som på tangentbord.
 
