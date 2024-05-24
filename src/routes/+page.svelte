@@ -4,7 +4,7 @@
 	import Nejime from "../components/Nejime.svelte";
 </script>
 
-<main class="flex flex-col h-screen justify-center items-center">
+<main class="flex flex-col h-screen justify-center items-center dark:bg-black dark:text-white">
 <header>
 	<ThemeSwitcher />
 	<DarkModeToggle />
