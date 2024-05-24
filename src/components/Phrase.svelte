@@ -57,14 +57,17 @@
 			// activePattern.value = patternSelector.innerText;
 			// }
 		}
-		if (activeElement.innerText.length === 2) {
+		// init once if not set
+		if (!lastPhraseHex.value) {
 			lastPhraseHex.value = activeElement.innerText;
 		}
 	});
 
-	let activeElement = $state(<HTMLButtonElement>document.activeElement);
+	// let activeElement = $state(<HTMLButtonElement>document.activeElement);
+	// console.log("activeElement:", activeElement);
 	let activeScreenState = createActiveScreenState();
 	let lastPhraseHex = createLastPhraseHexState();
+	let activeElement = <HTMLButtonElement>document.activeElement;
 </script>
 
 <p class="pl-1 text-lg font-semibold text-white">
@@ -87,13 +90,13 @@
 				{/if}
 				{#each channels as channel, j}
 					<NoteSelector
-						selectedNote={phrases.value?.[activeElement!.innerText]?.[toHex(j)]?.[toHex(i)] ?? "---"}
+						selectedNote={phrases.value?.[lastPhraseHex.value]?.[toHex(j)]?.[toHex(i)] ?? "---"}
 						hex={toHex(i)}
 						channel={`channel${j}`}
 						id={`note${i}-channel${j}`} />
 				{/each}
 				<InstrumentSelector
-					selectedInstrument={phraseInstruments.value?.[activeElement!.innerText]?.[toHex(i)] ?? "--"}
+					selectedInstrument={phraseInstruments.value?.[lastPhraseHex.value]?.[toHex(i)] ?? "--"}
 					hex={toHex(i)}
 					id={`instrument-selector${i}`} />
 			</div>
