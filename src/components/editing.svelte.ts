@@ -196,16 +196,16 @@ export function edit({ direction, element }: editProps) {
 				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 1)}`;
 			}
 		} else if (direction === "up") {
-			if (toInt(selectedPattern) > 243) {
-				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 256 + 12)}`;
+			if (toInt(selectedPattern) > 239) {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 256 + 16)}`;
 			} else {
-				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 12)}`;
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 16)}`;
 			}
 		} else if (direction === "down") {
-			if (toInt(selectedPattern) < 12) {
-				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 256 - 12)}`;
+			if (toInt(selectedPattern) < 16) {
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) + 256 - 16)}`;
 			} else {
-				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 12)}`;
+				song.value[toHex(+row)][channel] = `${toHex(toInt(selectedPattern) - 16)}`;
 			}
 		}
 		// ensure we get the updated value
@@ -237,18 +237,18 @@ export function edit({ direction, element }: editProps) {
 				patterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) - 1)}`;
 			}
 		} else if (direction === "up") {
-			if (toInt(selectedPhrase) > 243) {
+			if (toInt(selectedPhrase) > 239) {
 				patterns.value[lastPatternHex.value][toHex(+row)] =
-					`${toHex(toInt(selectedPhrase) - 256 + 12)}`;
+					`${toHex(toInt(selectedPhrase) - 256 + 16)}`;
 			} else {
-				patterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) + 12)}`;
+				patterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) + 16)}`;
 			}
 		} else if (direction === "down") {
-			if (toInt(selectedPhrase) < 12) {
+			if (toInt(selectedPhrase) < 16) {
 				patterns.value[lastPatternHex.value][toHex(+row)] =
-					`${toHex(toInt(selectedPhrase) + 256 - 12)}`;
+					`${toHex(toInt(selectedPhrase) + 256 - 16)}`;
 			} else {
-				patterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) - 12)}`;
+				patterns.value[lastPatternHex.value][toHex(+row)] = `${toHex(toInt(selectedPhrase) - 16)}`;
 			}
 		}
 		// ensure we get the updated value
