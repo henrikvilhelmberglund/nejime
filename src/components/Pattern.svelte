@@ -46,13 +46,8 @@
 				phraseSelector.focus();
 			});
 		}
-
-		// this was set when BPM was changed, HMM
-		if (
-			activeElement.id !== "bpm-selector" &&
-			!activeElement.id.includes("instrument-selector") &&
-			activeElement.innerText.length === 2
-		) {
+		// init once if not set
+		if (!lastPatternHex.value) {
 			lastPatternHex.value = activeElement.innerText;
 		}
 	});
@@ -74,7 +69,7 @@
 			<div class="flex flex-row gap-12">
 				<div id={`row${i}`} class="flex gap-2">
 					<!-- TODO cursor shows in patterns that are not playing atm -->
-          <!-- TODO check channel instead of assuming "0" -->
+					<!-- TODO check channel instead of assuming "0" -->
 					{#if isPlayingBack.value && playPositionsPattern.value["0"] === i}
 						<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 					{/if}
