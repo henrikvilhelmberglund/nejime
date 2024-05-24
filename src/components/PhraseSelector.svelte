@@ -5,7 +5,10 @@
 		createDPressedState,
 		createFPressedState,
 		createLastRowPhraseState,
-		createLastTouchedPhraseState
+		createLastTouchedPhraseState,
+
+		createLastPhraseHexState
+
 	} from "./globalState.svelte";
 
 	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
@@ -15,11 +18,13 @@
 	let fPressed = createFPressedState();
 	let lastRowPhrase = createLastRowPhraseState();
 	let lastTouchedPhrase = createLastTouchedPhraseState();
+  let lastPhraseHex = createLastPhraseHexState();
 
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
 			phraseSelector.focus();
+      lastPhraseHex.value = (<HTMLButtonElement>document.activeElement)!.innerText;
 			lastRowPhrase.value = row;
 		} catch (error) {
 			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
