@@ -116,7 +116,7 @@ export function playPhraseFromSong(state: string, hex: string, i: number, transp
 	const context = createContextState();
 
 	// console.log("state", state);
-	if ((state === "phrase" || state === "pattern" || state === "song" || state === "project-song") && context.value) {
+	if ((state === "phrase" || state === "pattern" || state === "song" || state === "project-song" || state === "instrument") && context.value) {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
 		const channels = ["00", "01", "02", "03", "04"];
@@ -170,7 +170,7 @@ export function playPhrase(state: string, hex: string) {
 
 	let lastPatternHex = createLastPatternHexState();
 	// console.log("state", state);
-	if ((state === "phrase" || state === "pattern") && context.value) {
+	if ((state === "phrase" || state === "pattern" || state === "instrument") && context.value) {
 		// marimba.start("C3");
 		let phrasesState = createPhrasesState();
 		let transpose = state === "pattern" ? true : false;
