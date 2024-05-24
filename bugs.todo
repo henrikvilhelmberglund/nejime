@@ -1,1 +1,2 @@
 ✔ going left on transpose when transpose pattern doesn't exist gives error but going right works @done(24-05-18 22:54)
+✔ phrase - instrument - phrase ends up with empty phrase @done(24-05-24 19:09)
