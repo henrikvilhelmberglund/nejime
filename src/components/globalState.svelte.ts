@@ -6,7 +6,7 @@ import LZString from "lz-string";
 import { browser } from "$app/environment";
 
 // const instrumentNames = getSoundfontNames();
-export const instrumentNames = {
+export const instrumentNames = <Record<string, string>>{
 	"00": "acoustic_grand_piano",
 	"01": "bright_acoustic_piano",
 	"02": "electric_grand_piano",
@@ -157,6 +157,7 @@ let lastTouchedPattern = $state("00");
 let lastTouchedPhrase = $state("00");
 let lastTouchedNote = $state("C4");
 let lastTouchedInstrument = $state("00");
+let openedInstrument = $state("");
 
 let lastRowNote = $state(0);
 let lastChannelNote = $state(0);
@@ -677,6 +678,17 @@ export function createLastTouchedInstrumentState() {
 		},
 		set value(string: string) {
 			lastTouchedInstrument = string;
+		}
+	};
+}
+
+export function createOpenedInstrumentState() {
+	return {
+		get value() {
+			return openedInstrument;
+		},
+		set value(string: string) {
+			openedInstrument = string;
 		}
 	};
 }
