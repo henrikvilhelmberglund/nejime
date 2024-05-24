@@ -27,7 +27,8 @@
 		createIntervalIdsSongState,
 		createPlayPositionSongState,
 		createTransposePatternsState,
-		newSong
+		newSong,
+		createOpenedInstrumentState
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 
@@ -39,6 +40,7 @@
 	let fPressed = createFPressedState();
 	let isPlayingBack = createIsPlayingBackState();
 	let bpmState = createBpmState();
+	let openedInstrument = createOpenedInstrumentState();
 
 	function changeState(direction: string) {
 		let activeElement = <HTMLButtonElement>document.activeElement!;
@@ -60,6 +62,23 @@
 			activeScreenState.value = "pattern";
 		} else if (activeScreenState.value === "phrase" && direction === "left") {
 			activeScreenState.value = "pattern";
+		} else if (activeScreenState.value === "phrase" && direction === "up") {
+			const instrumentOnRow =
+				activeElement.id.includes("instrument-selector") ?
+					activeElement
+				:	<HTMLButtonElement>(
+						document.querySelector(
+							`#instrument-selector${activeElement.id.split("note")[1].split("-")[0]}`
+						)
+					);
+
+			if (instrumentOnRow) {
+				const instrumentNumberOnRow = instrumentOnRow.innerText;
+				openedInstrument.value = instrumentNumberOnRow;
+				activeScreenState.value = "instrument";
+			}
+		} else if (activeScreenState.value === "instrument" && direction === "down") {
+			activeScreenState.value = "phrase";
 		}
 	}
 	const intervalId = createIntervalIdState();
@@ -77,6 +96,8 @@
 	const playPositionsPatterns = createPlayPositionsPatternsState();
 	const playPositionsSong = createPlayPositionsSongState();
 	const intervalIdsSongState = createIntervalIdsSongState();
+
+  $inspect(lastPhraseHex.value);
 
 	function handleKeyDown(e: KeyboardEvent) {
 		// console.log(e);
@@ -321,7 +342,7 @@
 			fPressed.value = false;
 		}
 	}}
-	class="bg-primary-400 flex h-[500px] w-[500px] flex-col rounded-lg border-2 border-black text-black dark:text-white">
+	class="bg-primary-400 dark:bg-primary-950 flex h-[500px] w-[500px] flex-col rounded-lg border-2 border-black text-black dark:text-white">
 	{#if activeScreenState.value === "song"}
 		<Song />
 	{:else if activeScreenState.value === "pattern"}
