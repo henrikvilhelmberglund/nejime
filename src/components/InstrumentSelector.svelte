@@ -1,20 +1,9 @@
 <script lang="ts">
-	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createLastRowNoteState,
-		createLastChannelNoteState
-	} from "./globalState.svelte";
+	import { dPressed, fPressed, lastChannelNote, lastRowNote, sPressed } from "./globalState.svelte";
 	import { editInstrument, remove } from "./editing.svelte";
 
 	let { id, hex, selectedInstrument }: { id: string; hex: string; selectedInstrument: string } =
 		$props();
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let lastRowNote = createLastRowNoteState();
-	let lastChannelNote = createLastChannelNoteState();
 
 	function focusNoteSelector({ row, channel }: { row: number; channel: number }) {
 		try {

@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { createActiveScreenState } from "./globalState.svelte";
+	import { activeScreenState } from "./globalState.svelte";
 	import { toHex, toHexSingle } from "./utils";
 
-	let activeScreenState = createActiveScreenState();
 	let songRows = Array.from({ length: 64 });
 	let otherRows = Array.from({ length: 16 });
 

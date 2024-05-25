@@ -1,24 +1,8 @@
 <script lang="ts">
 	import { add, edit, remove } from "./editing.svelte";
-	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createLastRowPhraseState,
-		createLastTouchedPhraseState,
-
-		createLastPhraseHexState
-
-	} from "./globalState.svelte";
+	import { dPressed, fPressed, lastPhraseHex, lastRowPhrase, lastTouchedPhrase, sPressed } from "./globalState.svelte";
 
 	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
-
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let lastRowPhrase = createLastRowPhraseState();
-	let lastTouchedPhrase = createLastTouchedPhraseState();
-  let lastPhraseHex = createLastPhraseHexState();
 
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {

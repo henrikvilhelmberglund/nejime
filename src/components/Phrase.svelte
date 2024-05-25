@@ -4,28 +4,21 @@
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
-		createActiveScreenState,
-		createIsPlayingBackState,
-		createLastChannelNoteState,
-		createLastPhraseHexState,
-		createLastRowNoteState,
-		createPhraseInstrumentsState,
-		createPhrasesState,
+		activeScreenState,
+		isPlayingBack,
+		lastChannelNote,
+		lastPhraseHex,
+		lastRowNote,
+		phraseInstruments,
+		phrases,
 		createPlayPositionsPhrasesState,
-		createSongState
+		song
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
 	let channels = [0, 1, 2, 3, 4];
 	let rows = Array.from({ length: 16 });
-
-	let phrases = createPhrasesState();
-	let phraseInstruments = createPhraseInstrumentsState();
-	let isPlayingBack = createIsPlayingBackState();
-	// let playPositionPhrase = createPlayPositionPhraseState();
-	let playPositionsPhrase = createPlayPositionsPhrasesState();
-	let lastChannelNote = createLastChannelNoteState();
-	let lastRowNote = createLastRowNoteState();
+  let playPositionsPhrases = createPlayPositionsPhrasesState();
 
 	interface Phrase {
 		"00"?: string;
@@ -65,8 +58,6 @@
 
 	// let activeElement = $state(<HTMLButtonElement>document.activeElement);
 	// console.log("activeElement:", activeElement);
-	let activeScreenState = createActiveScreenState();
-	let lastPhraseHex = createLastPhraseHexState();
 	let activeElement = <HTMLButtonElement>document.activeElement;
 </script>
 
@@ -85,7 +76,7 @@
 		{#each rows as row, i}
 			<div id={`note${i}`} class="flex gap-4">
 				<!-- TODO cursor shows even if current phrase is not being played -->
-				{#if isPlayingBack.value && playPositionsPhrase.value["0"] === i}
+				{#if isPlayingBack.value && playPositionsPhrases.value["0"] === i}
 					<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 				{/if}
 				{#each channels as channel, j}

@@ -1,19 +1,8 @@
 <script lang="ts">
 	import { add, edit, remove } from "./editing.svelte";
-	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createBpmState
-	} from "./globalState.svelte";
+	import { bpm, dPressed, fPressed, sPressed } from "./globalState.svelte";
 
 	let { id }: { id: string } = $props();
-
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let bpm = createBpmState();
-
 	// let el = document.getElementById("div-1").nextSibling;
 
 	function focusPhraseSelector({ row }: { row: number }) {

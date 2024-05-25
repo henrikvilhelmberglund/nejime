@@ -1,28 +1,17 @@
 <script lang="ts">
 	import { Soundfont } from "smplr";
 	import {
-		createActiveScreenState,
-		createContextState,
-		createDPressedState,
-		createFPressedState,
-		createInstrumentsState,
-		createOpenedInstrumentState,
-		createSPressedState,
-		instrumentNames
+		activeScreenState,
+		dPressed,
+		fPressed,
+		instrumentNames,
+		openedInstrument,
+		sPressed,
+    instruments, context
 	} from "./globalState.svelte";
 	import { toHex, toInt } from "./utils";
 
-	let activeScreenState = createActiveScreenState();
-	let openedInstrument = createOpenedInstrumentState();
-	let instruments = createInstrumentsState();
-
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-
-	let context = createContextState();
-
-	let instrumentHex = $state(instruments.value[openedInstrument.value].hex);
+	let instrumentHex = $state(instruments.value![openedInstrument.value].hex);
 
 	function handleKeyPress(e: KeyboardEvent) {
 		// const channel = id.split("row-")[1].split("-channel-")[1];

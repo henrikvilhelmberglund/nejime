@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { add, edit, preview, remove, stopNotePreview } from "./editing.svelte";
 	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createLastRowNoteState,
-		createLastChannelNoteState,
-		createShouldPreviewState,
-		createLastTouchedNoteState,
-		createInstrumentsState,
-		createLastTouchedInstrumentState
+    instruments,
+		dPressed,
+		fPressed,
+		lastChannelNote,
+		lastRowNote,
+		lastTouchedInstrument,
+		lastTouchedNote,
+		sPressed,
+		shouldPreview
 	} from "./globalState.svelte";
 	import { addSpace } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
@@ -19,15 +19,6 @@
 		hex,
 		selectedNote
 	}: { id: string; hex: string; channel: string; selectedNote: string } = $props();
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let lastRowNote = createLastRowNoteState();
-	let lastChannelNote = createLastChannelNoteState();
-	let lastTouchedNote = createLastTouchedNoteState();
-	let lastTouchedInstrument = createLastTouchedInstrumentState();
-	let shouldPreview = createShouldPreviewState();
-	let soundfonts = createInstrumentsState();
 
 	function focusNoteSelector({ row, channel }: { row: number; channel: number }) {
 		try {
@@ -71,7 +62,7 @@
 				add({ element: <HTMLButtonElement>document.activeElement });
 				shouldPreview.value = true;
 			} else {
-        lastTouchedInstrument.value = instrumentOnRow;
+				lastTouchedInstrument.value = instrumentOnRow;
 				lastTouchedNote.value = (<HTMLButtonElement>document.activeElement).innerText.replaceAll(
 					// ! this is probably stupid but it works (C  3 turns into C3 etc)
 					" ",
@@ -96,18 +87,18 @@
 		if (sPressed.value || dPressed.value) return;
 
 		// * preview
-		if (!fPressed.value && soundfonts.value) {
+		if (!fPressed.value && instruments.value) {
 			if (shouldPreview.value) {
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
 					instrument:
-						soundfonts.value[instrumentOnRow] ?? soundfonts.value[lastTouchedInstrument.value]
+						instruments.value[instrumentOnRow] ?? instruments.value[lastTouchedInstrument.value]
 				});
 			}
 		}
 
 		// * edit
-		if (fPressed.value && soundfonts.value) {
+		if (fPressed.value && instruments.value) {
 			shouldPreview.value = true;
 			const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
 				.innerText;
@@ -121,12 +112,12 @@
 				const direction = e.code.split("Arrow")[1].toLowerCase();
 				stopNotePreview({
 					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
+					instrument: instruments.value[instrument]
 				});
 				edit({ direction: direction, element: <HTMLButtonElement>document.activeElement });
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
-					instrument: soundfonts.value[instrument]
+					instrument: instruments.value[instrument]
 				});
 			}
 		}
@@ -158,10 +149,10 @@
 		const instrument = (<HTMLButtonElement>document.querySelector(`#instrument-selector${row}`))!
 			.innerText;
 
-		if (e.code === "KeyF" && soundfonts.value) {
+		if (e.code === "KeyF" && instruments.value) {
 			stopNotePreview({
 				element: <HTMLButtonElement>document.activeElement,
-				instrument: soundfonts.value[instrument]
+				instrument: instruments.value[instrument]
 			});
 		}
 	}

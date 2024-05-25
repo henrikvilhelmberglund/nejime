@@ -2,23 +2,17 @@
 	import PatternSelector from "./PatternSelector.svelte";
 	import VerticalNumbers from "./VerticalNumbers.svelte";
 	import {
-		createActiveScreenState,
-		createIsPlayingBackState,
-		createLastChannelPatternState,
-		createLastRowPatternState,
+		activeScreenState,
+		isPlayingBack,
+		lastChannelPattern,
+		lastRowPattern,
 		createPlayPositionsSongState,
-		createSongState
+		song
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
 	let channels = [0, 1, 2, 3, 4];
 	let rows = Array.from({ length: 64 });
-
-	let songState = createSongState();
-	let lastRowPattern = createLastRowPatternState();
-	let lastChannelPattern = createLastChannelPatternState();
-	let activeScreenState = createActiveScreenState();
-	let isPlayingBack = createIsPlayingBackState();
 
 	let playPositionsSong = createPlayPositionsSongState();
 
@@ -63,7 +57,7 @@
 						</div>
 					{/if}
 					<PatternSelector
-						selectedPattern={songState.value?.[toHex(i) as keyof typeof songState.value]?.[`channel${j}` as keyof Pattern] ?? "--"}
+						selectedPattern={song.value?.[toHex(i) as keyof typeof song.value]?.[`channel${j}` as keyof Pattern] ?? "--"}
 						hex={toHex(i)}
 						channel={`channel${j}`}
 						id={`row${i}-channel${j}`} />

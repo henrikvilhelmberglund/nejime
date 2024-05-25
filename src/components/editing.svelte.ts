@@ -1,39 +1,24 @@
 import { Soundfont } from "smplr";
 import {
-	createActiveScreenState,
-	createBpmState,
-	createContextState,
-	createInstrumentsState,
-	createLastPatternHexState,
-	createLastPhraseHexState,
-	createLastTouchedInstrumentState,
-	createLastTouchedNoteState,
-	createLastTouchedPatternState,
-	createLastTouchedPhraseState,
-	createPatternsState,
-	createPhraseInstrumentsState,
-	createPhrasesState,
-	createSongState,
-	createTransposePatternsState,
+	activeScreenState,
 	instrumentNames,
-	type instrumentType
+	lastPatternHex,
+	lastPhraseHex,
+	lastTouchedInstrument,
+	lastTouchedNote,
+	lastTouchedPattern,
+	lastTouchedPhrase,
+	song,
+	instruments,
+	type instrumentType,
+	phraseInstruments,
+	patterns,
+	transposePatterns,
+	phrases,
+ context,
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
 
-let activeScreen = createActiveScreenState();
-let lastPatternHex = createLastPatternHexState();
-let lastPhraseHex = createLastPhraseHexState();
-let lastTouchedPattern = createLastTouchedPatternState();
-let lastTouchedPhrase = createLastTouchedPhraseState();
-let lastTouchedNote = createLastTouchedNoteState();
-let lastTouchedInstrument = createLastTouchedInstrumentState();
-let song = createSongState();
-let soundfonts = createInstrumentsState();
-let phraseInstruments = createPhraseInstrumentsState();
-let patterns = createPatternsState();
-let transposePatterns = createTransposePatternsState();
-let phrases = createPhrasesState();
-let context = createContextState();
 const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 type addProps = {
@@ -41,7 +26,7 @@ type addProps = {
 };
 
 export function add({ element }: addProps) {
-	if (activeScreen.value === "song") {
+	if (activeScreenState.value === "song") {
 		const row = element.id.split("row")[1].split("-channel")[0];
 		const channel = element.id.split("-")[1];
 		console.log("channel", channel);
@@ -71,7 +56,7 @@ export function add({ element }: addProps) {
 		}
 	}
 
-	if (activeScreen.value === "pattern") {
+	if (activeScreenState.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = element.id.split("row")[1].split("-pattern")[1];
 
@@ -98,7 +83,7 @@ export function add({ element }: addProps) {
 		}
 	}
 
-	if (activeScreen.value === "phrase") {
+	if (activeScreenState.value === "phrase") {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 
@@ -143,7 +128,6 @@ type previewProps = {
 };
 
 export function preview({ element, instrument }: previewProps) {
-	const bpmState = createBpmState();
 	const row = element.id.split("note")[1].split("-channel")[0];
 	const channel = element.id.split("note")[1].split("-channel")[1];
 
@@ -173,7 +157,7 @@ export function stopNotePreview({ element, instrument }: previewProps) {
 }
 
 export function edit({ direction, element }: editProps) {
-	if (activeScreen.value === "song") {
+	if (activeScreenState.value === "song") {
 		const row = element.id.split("row")[1].split("-channel")[0];
 		const channel = element.id.split("-")[1];
 		let selectedPattern = element.innerText;
@@ -214,7 +198,7 @@ export function edit({ direction, element }: editProps) {
 		}, 0);
 	}
 
-	if (activeScreen.value === "pattern") {
+	if (activeScreenState.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = lastPatternHex.value;
 		let selectedPhrase = element.innerText;
@@ -257,7 +241,7 @@ export function edit({ direction, element }: editProps) {
 		}, 0);
 	}
 
-	if (activeScreen.value === "phrase") {
+	if (activeScreenState.value === "phrase") {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		let selectedNote = phrases.value[lastPhraseHex.value]?.[toHex(+channel)]?.[toHex(+row)];
@@ -320,7 +304,10 @@ export function edit({ direction, element }: editProps) {
 }
 
 export function editInstrument({ direction, element }: editProps) {
-	if (activeScreen.value === "phrase") {
+  // const instruments = createInstrumentsState();
+  // const context = createContextState();
+
+	if (activeScreenState.value === "phrase") {
 		const row = element.id.split("instrument-selector")[1];
 		// if instrument value doesn't exist yet, create it
 		if (!phraseInstruments.value[lastPhraseHex.value]) {
@@ -377,15 +364,16 @@ export function editInstrument({ direction, element }: editProps) {
 		// ensure we get the updated value
 		setTimeout(() => {
 			if (
-				soundfonts.value &&
+				instruments.value &&
 				context.value &&
-				!soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText]?.sound
+				!instruments.value[(<HTMLButtonElement>document.activeElement)!.innerText]?.sound
 			) {
-				soundfonts.value[(<HTMLButtonElement>document.activeElement)!.innerText] = {
+				instruments.value[(<HTMLButtonElement>document.activeElement)!.innerText] = {
 					type: "soundfont",
 					sound: new Soundfont(context.value, {
 						instrument: instrumentNames["00"]
-					})
+					}),
+					hex: "00"
 				};
 			}
 			lastTouchedInstrument.value = (<HTMLButtonElement>document.activeElement).innerText;
@@ -394,7 +382,7 @@ export function editInstrument({ direction, element }: editProps) {
 }
 
 export function editTranspose({ direction, element }: editProps) {
-	if (activeScreen.value === "pattern") {
+	if (activeScreenState.value === "pattern") {
 		const row = element.id.split("row")[1].split("-transpose")[0];
 		const pattern = lastPatternHex.value;
 		// const transposePatterns
@@ -404,10 +392,10 @@ export function editTranspose({ direction, element }: editProps) {
 		// const selectedPhraseTone = selectedPhrase.split(selectedPhrase[selectedPhrase.length - 1])[0];
 		let newPhrase;
 		// init object if not available yet
-    if (!transposePatterns.value[lastPatternHex.value]) {
+		if (!transposePatterns.value[lastPatternHex.value]) {
 			transposePatterns.value[lastPatternHex.value] = {};
-    }
-    
+		}
+
 		if (direction === "right") {
 			if (selectedPhrase === "FF") {
 				selectedPhrase = "00";
@@ -451,19 +439,19 @@ type deleteProps = {
 };
 
 export function remove({ element }: deleteProps) {
-	if (activeScreen.value === "song") {
+	if (activeScreenState.value === "song") {
 		const row = element.id.split("row")[1].split("-channel")[0];
 		const channel = element.id.split("-")[1];
 		delete song.value[toHex(+row)][channel];
 	}
 
-	if (activeScreen.value === "pattern") {
+	if (activeScreenState.value === "pattern") {
 		const row = element.id.split("row")[1].split("-pattern")[0];
 		const pattern = element.id.split("row")[1].split("-pattern")[1];
 		delete patterns.value[lastPatternHex.value][toHex(+row)];
 	}
 
-	if (activeScreen.value === "phrase") {
+	if (activeScreenState.value === "phrase") {
 		const row = element.id.split("note")[1].split("-channel")[0];
 		const channel = element.id.split("note")[1].split("-channel")[1];
 		delete phrases.value[lastPhraseHex.value][toHex(+channel)][toHex(+row)];
@@ -479,7 +467,7 @@ export function remove({ element }: deleteProps) {
 }
 
 export function removeTranspose({ element }: deleteProps) {
-	if (activeScreen.value === "pattern") {
+	if (activeScreenState.value === "pattern") {
 		const row = element.id.split("row")[1].split("-transpose")[0];
 		transposePatterns.value[lastPatternHex.value][toHex(+row)] = `00`;
 	}

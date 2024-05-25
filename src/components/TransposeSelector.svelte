@@ -1,16 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-	} from "./globalState.svelte";
+	import { sPressed, dPressed, fPressed } from "./globalState.svelte";
 	import { editTranspose, removeTranspose } from "./editing.svelte";
 
 	let { id, hex, transpose }: { id: string; hex: string; transpose: string } = $props();
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
 
 	function focusPhraseSelector({ row }: { row: number }) {
 		try {

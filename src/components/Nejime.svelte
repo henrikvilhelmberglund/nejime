@@ -7,40 +7,31 @@
 	import Project from "./Project.svelte";
 	import Song from "./Song.svelte";
 	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createActiveScreenState,
-		createIsPlayingBackState,
+		activeScreenState,
 		createIntervalIdState,
-		createBpmState,
 		createPhraseLoopIntervalIdState,
-		createLastPhraseHexState,
-		createLastPatternHexState,
-		createPatternsState,
-		createPhrasesState,
 		saveSong,
-		createSongState,
 		createPlayPositionsPhrasesState,
 		createPlayPositionsPatternsState,
 		createPlayPositionsSongState,
 		createIntervalIdsSongState,
-		createPlayPositionSongState,
-		createTransposePatternsState,
+		transposePatterns,
 		newSong,
-		createOpenedInstrumentState
+		sPressed,
+		dPressed,
+		fPressed,
+		isPlayingBack,
+		bpm,
+		openedInstrument,
+		lastPhraseHex,
+		lastPatternHex,
+		song,
+		patterns,
+		phrases
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
-	let activeScreenState = createActiveScreenState();
-
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let isPlayingBack = createIsPlayingBackState();
-	let bpmState = createBpmState();
-	let openedInstrument = createOpenedInstrumentState();
 
 	function changeState(direction: string) {
 		let activeElement = <HTMLButtonElement>document.activeElement!;
@@ -81,23 +72,13 @@
 			activeScreenState.value = "phrase";
 		}
 	}
+
 	const intervalId = createIntervalIdState();
 	const phraseLoopIntervalId = createPhraseLoopIntervalIdState();
-	const lastPhraseHex = createLastPhraseHexState();
-	const lastPatternHex = createLastPatternHexState();
-	const song = createSongState();
-	const patterns = createPatternsState();
-	const transposePatterns = createTransposePatternsState();
-	const phrases = createPhrasesState();
-	// const playPositionPattern = createPlayPositionPatternState();
-	const playPositionSong = createPlayPositionSongState();
-
 	const playPositionsPhrases = createPlayPositionsPhrasesState();
 	const playPositionsPatterns = createPlayPositionsPatternsState();
 	const playPositionsSong = createPlayPositionsSongState();
 	const intervalIdsSongState = createIntervalIdsSongState();
-
-  $inspect(lastPhraseHex.value);
 
 	function handleKeyDown(e: KeyboardEvent) {
 		// console.log(e);
@@ -209,7 +190,7 @@
 										}
 									}
 								},
-								1000 * (60 / (bpmState.value * 4))
+								1000 * (60 / (bpm.value * 4))
 							);
 						}
 					});
@@ -262,7 +243,7 @@
 								);
 							}
 						},
-						1000 * (60 / (bpmState.value * 4))
+						1000 * (60 / (bpm.value * 4))
 					);
 				}
 				if (activeScreenState.value === "phrase") {
@@ -295,7 +276,7 @@
 								playPhrase(activeScreenState.value, lastPhraseHex.value);
 							}
 						},
-						1000 * (60 / (bpmState.value * 4))
+						1000 * (60 / (bpm.value * 4))
 					);
 				}
 				isPlayingBack.value = true;

@@ -1,14 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import {
-		createSPressedState,
-		createDPressedState,
-		createFPressedState,
-		createLastRowPatternState,
-		createLastChannelPatternState,
-		createLastTouchedPatternState,
-		createLastPatternHexState
-	} from "./globalState.svelte";
+	import { dPressed, fPressed, lastChannelPattern, lastPatternHex, lastRowPattern, lastTouchedPattern, sPressed } from "./globalState.svelte";
 	import { add, edit, remove } from "./editing.svelte";
 
 	let {
@@ -18,13 +10,6 @@
 		selectedPattern
 	}: { id: string; hex: string; channel: string; selectedPattern: string } = $props();
 	// let name = $state("--");
-	let sPressed = createSPressedState();
-	let dPressed = createDPressedState();
-	let fPressed = createFPressedState();
-	let lastRowPattern = createLastRowPatternState();
-	let lastChannelPattern = createLastChannelPatternState();
-	let lastTouchedPattern = createLastTouchedPatternState();
-	let lastPatternHex = createLastPatternHexState();
 
 	// let el = document.getElementById("div-1").nextSibling;
 

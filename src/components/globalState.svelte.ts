@@ -5,6 +5,18 @@ globalThis.Buffer = Buffer;
 import LZString from "lz-string";
 import { browser } from "$app/environment";
 
+function ref<Type>(initial: Type) {
+	let value = $state(initial);
+	return {
+		get value() {
+			return value;
+		},
+		set value(v) {
+			value = v;
+		}
+	};
+}
+
 // const instrumentNames = getSoundfontNames();
 export const instrumentNames = <Record<string, string>>{
 	"00": "acoustic_grand_piano",
@@ -137,44 +149,156 @@ export const instrumentNames = <Record<string, string>>{
 	"7F": "gunshot"
 };
 
-let context = $state(browser ? new AudioContext() : undefined);
+export let context = ref(browser ? new AudioContext() : undefined);
 
-export function createContextState() {
-	return {
-		get value() {
-			return context;
+// export function createContextState() {
+// 	return {
+// 		get value() {
+// 			return context;
+// 		},
+// 		set value(newState) {
+// 			context = newState;
+// 		}
+// 	};
+// }
+
+export const activeScreenState = ref("song");
+export const lastPhraseHex = ref("");
+export const lastPatternHex = ref("");
+export const lastTouchedPattern = ref("00");
+export const lastTouchedPhrase = ref("00");
+export const lastTouchedNote = ref("C4");
+export const lastTouchedInstrument = ref("00");
+export const openedInstrument = ref("");
+
+export const lastRowNote = ref(0);
+export const lastChannelNote = ref(0);
+export const lastRowPhrase = ref(0);
+export const lastRowPattern = ref(0);
+export const lastChannelPattern = ref(0);
+
+export const sPressed = ref(false);
+export const dPressed = ref(false);
+export const fPressed = ref(false);
+export const isPlayingBack = ref(false);
+export const shouldPreview = ref(false);
+
+export const bpm = ref(120);
+
+export let song = ref<Patterns>({
+	"00": {
+		channel0: "00",
+		channel1: "01",
+		channel2: "02",
+		channel3: "03",
+		channel4: "04"
+	},
+	"01": {
+		channel0: "20",
+		channel1: "21",
+		channel2: "22",
+		channel3: "23",
+		channel4: "24"
+	}
+});
+
+export let patterns = ref<Record<string, Pattern>>({
+	"00": {
+		"00": "10",
+		"01": "11",
+		"02": "12"
+	},
+	"01": {
+		"00": "41",
+		"01": "42",
+		"02": "43"
+	}
+});
+
+export let transposePatterns = ref<Record<string, Pattern>>({
+	"00": {
+		"00": "01",
+		"02": "02"
+	},
+	"01": {
+		"00": "01",
+		"01": "02",
+		"02": "03"
+	}
+});
+
+export let phrases = ref<Record<string, Phrase>>({
+	"10": {
+		"00": {
+			"00": "C1",
+			"01": "C2",
+			"02": "C3",
+			"03": "C#3",
+			"05": "F3"
 		},
-		set value(newState) {
-			context = newState;
+		"01": {
+			"00": "G3"
 		}
-	};
-}
+	},
+	"11": {
+		"00": { "00": "E3" },
+		"01": { "00": "F3" },
+		"02": { "00": "G3" }
+	},
+	"12": {
+		"00": { "00": "E4" },
+		"01": { "00": "F4" },
+		"02": { "00": "G4" }
+	}
+});
 
-let activeScreenState = $state("song");
-let lastPhraseHex = $state("");
-let lastPatternHex = $state("");
-let lastTouchedPattern = $state("00");
-let lastTouchedPhrase = $state("00");
-let lastTouchedNote = $state("C4");
-let lastTouchedInstrument = $state("00");
-let openedInstrument = $state("");
+export type instrumentType = {
+	type: string;
+	sound: Soundfont;
+	hex: string;
+};
 
-let lastRowNote = $state(0);
-let lastChannelNote = $state(0);
-let lastRowPhrase = $state(0);
-let lastRowPattern = $state(0);
-let lastChannelPattern = $state(0);
+export let instruments = ref<Record<string, instrumentType> | undefined>(
+	browser && context.value ?
+		{
+			"00": {
+				type: "soundfont",
+				sound: new Soundfont(context.value, { instrument: instrumentNames["3C"] }),
+				hex: "3C"
+			},
+			"01": {
+				type: "soundfont",
+				sound: new Soundfont(context.value, { instrument: instrumentNames["08"] }),
+				hex: "08"
+			},
+			FF: {
+				type: "soundfontdrums",
+				sound: new Soundfont(context.value, {
+					instrumentUrl:
+						"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
+					volume: 80
+				}),
+				hex: "00"
+			}
+		}
+	:	undefined
+);
 
-let sPressed = $state(false);
-let dPressed = $state(false);
-let fPressed = $state(false);
-let isPlayingBack = $state(false);
-let shouldPreview = $state(false);
+export let instrumentDurations = ref<Record<string, number>>({
+	"00": 0.3,
+	"01": 0.1
+});
 
-let bpm = $state(120);
-let playPositionPhrase = $state(0);
-let playPositionPattern = $state(0);
-let playPositionSong = $state(0);
+export let phraseInstruments = ref<Record<string, Record<string, string>>>({
+	"10": {
+		"00": "00",
+		"01": "00",
+		"02": "01",
+		"03": "01",
+		"05": "01"
+	}
+});
+
 let intervalId = $state<Timer>();
 let phraseLoopIntervalId = $state<Timer>();
 
@@ -262,14 +386,14 @@ export function createIntervalIdsSongState() {
 }
 
 export function saveSong() {
-	const exportBpm = $state.snapshot(bpm);
-	const exportInstruments = $state.snapshot(instruments);
-	const exportInstrumentDurations = $state.snapshot(instrumentDurations);
-	const exportSong = $state.snapshot(song);
-	const exportPatterns = $state.snapshot(patterns);
-	const exportTransposePatterns = $state.snapshot(transposePatterns);
-	const exportPhrases = $state.snapshot(phrases);
-	const exportPhraseInstruments = $state.snapshot(phraseInstruments);
+	const exportBpm = $state.snapshot(bpm.value);
+	const exportInstruments = $state.snapshot(instruments.value);
+	const exportInstrumentDurations = $state.snapshot(instrumentDurations.value);
+	const exportSong = $state.snapshot(song.value);
+	const exportPatterns = $state.snapshot(patterns.value);
+	const exportTransposePatterns = $state.snapshot(transposePatterns.value);
+	const exportPhrases = $state.snapshot(phrases.value);
+	const exportPhraseInstruments = $state.snapshot(phraseInstruments.value);
 
 	const allData = {
 		bpm: exportBpm,
@@ -303,125 +427,14 @@ type songProps = {
 };
 
 export function loadSong(obj: songProps) {
-	bpm = obj.bpm;
-	instrumentDurations = obj.instrumentDurations;
-	song = obj.song;
-	patterns = obj.patterns;
-	transposePatterns = obj.transposePatterns;
-	phrases = obj.phrases;
-	phraseInstruments = obj.phraseInstruments;
+	bpm.value = obj.bpm;
+	instrumentDurations.value = obj.instrumentDurations;
+	song.value = obj.song;
+	patterns.value = obj.patterns;
+	transposePatterns.value = obj.transposePatterns;
+	phrases.value = obj.phrases;
+	phraseInstruments.value = obj.phraseInstruments;
 }
-
-let song = $state<Patterns>({
-	"00": {
-		channel0: "00",
-		channel1: "01",
-		channel2: "02",
-		channel3: "03",
-		channel4: "04"
-	},
-	"01": {
-		channel0: "20",
-		channel1: "21",
-		channel2: "22",
-		channel3: "23",
-		channel4: "24"
-	}
-});
-let patterns = $state<Record<string, Pattern>>({
-	"00": {
-		"00": "10",
-		"01": "11",
-		"02": "12"
-	},
-	"01": {
-		"00": "41",
-		"01": "42",
-		"02": "43"
-	}
-});
-let transposePatterns = $state<Record<string, Pattern>>({
-	"00": {
-		"00": "01",
-		"02": "02"
-	},
-	"01": {
-		"00": "01",
-		"01": "02",
-		"02": "03"
-	}
-});
-let phrases = $state<Record<string, Phrase>>({
-	"10": {
-		"00": {
-			"00": "C1",
-			"01": "C2",
-			"02": "C3",
-			"03": "C#3",
-			"05": "F3"
-		},
-		"01": {
-			"00": "G3"
-		}
-	},
-	"11": {
-		"00": { "00": "E3" },
-		"01": { "00": "F3" },
-		"02": { "00": "G3" }
-	},
-	"12": {
-		"00": { "00": "E4" },
-		"01": { "00": "F4" },
-		"02": { "00": "G4" }
-	}
-});
-
-export type instrumentType = {
-	type: string;
-	sound: Soundfont;
-	hex: string;
-};
-
-let instruments = $state<Record<string, instrumentType> | undefined>(
-	browser && context ?
-		{
-			"00": {
-				type: "soundfont",
-				sound: new Soundfont(context, { instrument: instrumentNames["3C"] }),
-				hex: "3C"
-			},
-			"01": {
-				type: "soundfont",
-				sound: new Soundfont(context, { instrument: instrumentNames["08"] }),
-				hex: "08"
-			},
-			FF: {
-				type: "soundfontdrums",
-				sound: new Soundfont(context, {
-					instrumentUrl:
-						"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
-					volume: 80
-				}),
-				hex: "00"
-			}
-		}
-	:	undefined
-);
-
-let instrumentDurations = $state<Record<string, number>>({
-	"00": 0.3,
-	"01": 0.1
-});
-
-let phraseInstruments = $state<Record<string, Record<string, string>>>({
-	"10": {
-		"00": "00",
-		"01": "00",
-		"02": "01",
-		"03": "01",
-		"05": "01"
-	}
-});
 
 export function createPhraseLoopIntervalIdState() {
 	return {
@@ -445,351 +458,37 @@ export function createIntervalIdState() {
 		set value(newState) {
 			intervalId = newState;
 		},
-		// not used
 		stop() {
 			clearInterval(intervalId);
-			playPositionPhrase = 0;
-		}
-	};
-}
-
-export function createIsPlayingBackState() {
-	return {
-		get value() {
-			return isPlayingBack;
-		},
-		set value(newState) {
-			isPlayingBack = newState;
-		}
-	};
-}
-
-export function createShouldPreviewState() {
-	return {
-		get value() {
-			return shouldPreview;
-		},
-		set value(newState) {
-			shouldPreview = newState;
-		}
-	};
-}
-
-export function createPlayPositionPhraseState() {
-	return {
-		get value() {
-			return playPositionPhrase;
-		},
-		set value(newState) {
-			playPositionPhrase = newState;
-		}
-	};
-}
-export function createPlayPositionPatternState() {
-	return {
-		get value() {
-			return playPositionPattern;
-		},
-		set value(newState) {
-			playPositionPattern = newState;
-		}
-	};
-}
-export function createPlayPositionSongState() {
-	return {
-		get value() {
-			return playPositionSong;
-		},
-		set value(newState) {
-			playPositionSong = newState;
-		}
-	};
-}
-
-export function createBpmState() {
-	return {
-		get value() {
-			return bpm;
-		},
-		set value(newBpm) {
-			bpm = newBpm;
-		}
-	};
-}
-
-export function createActiveScreenState() {
-	return {
-		get value() {
-			return activeScreenState;
-		},
-		set value(newState) {
-			activeScreenState = newState;
-		}
-	};
-}
-
-export function createSPressedState() {
-	return {
-		get value() {
-			return sPressed;
-		},
-		set value(newState) {
-			sPressed = newState;
-		}
-	};
-}
-
-export function createDPressedState() {
-	return {
-		get value() {
-			return dPressed;
-		},
-		set value(newState) {
-			dPressed = newState;
-		}
-	};
-}
-
-export function createFPressedState() {
-	return {
-		get value() {
-			return fPressed;
-		},
-		set value(newState) {
-			fPressed = newState;
-		}
-	};
-}
-
-export function createLastRowNoteState() {
-	return {
-		get value() {
-			return lastRowNote;
-		},
-		set value(number) {
-			lastRowNote = number;
-		}
-	};
-}
-
-export function createLastRowPhraseState() {
-	return {
-		get value() {
-			return lastRowPhrase;
-		},
-		set value(number) {
-			lastRowPhrase = number;
-		}
-	};
-}
-
-export function createLastRowPatternState() {
-	return {
-		get value() {
-			return lastRowPattern;
-		},
-		set value(number) {
-			lastRowPattern = number;
-		}
-	};
-}
-
-export function createLastChannelPatternState() {
-	return {
-		get value() {
-			return lastChannelPattern;
-		},
-		set value(number) {
-			lastChannelPattern = number;
-		}
-	};
-}
-
-export function createLastChannelNoteState() {
-	return {
-		get value() {
-			return lastChannelNote;
-		},
-		set value(number) {
-			lastChannelNote = number;
-		}
-	};
-}
-
-export function createLastPhraseHexState() {
-	return {
-		get value() {
-			return lastPhraseHex;
-		},
-		set value(string: string) {
-			lastPhraseHex = string;
-		}
-	};
-}
-
-export function createLastPatternHexState() {
-	return {
-		get value() {
-			return lastPatternHex;
-		},
-		set value(string: string) {
-			lastPatternHex = string;
-		}
-	};
-}
-
-export function createLastTouchedPatternState() {
-	return {
-		get value() {
-			return lastTouchedPattern;
-		},
-		set value(string: string) {
-			lastTouchedPattern = string;
-		}
-	};
-}
-
-export function createLastTouchedPhraseState() {
-	return {
-		get value() {
-			return lastTouchedPhrase;
-		},
-		set value(string: string) {
-			lastTouchedPhrase = string;
-		}
-	};
-}
-
-export function createLastTouchedNoteState() {
-	return {
-		get value() {
-			return lastTouchedNote;
-		},
-		set value(string: string) {
-			lastTouchedNote = string;
-		}
-	};
-}
-
-export function createLastTouchedInstrumentState() {
-	return {
-		get value() {
-			return lastTouchedInstrument;
-		},
-		set value(string: string) {
-			lastTouchedInstrument = string;
-		}
-	};
-}
-
-export function createOpenedInstrumentState() {
-	return {
-		get value() {
-			return openedInstrument;
-		},
-		set value(string: string) {
-			openedInstrument = string;
-		}
-	};
-}
-
-export function createSongState() {
-	return {
-		get value() {
-			return song;
-		},
-		set value(newState) {
-			song = newState;
-		}
-	};
-}
-
-export function createPatternsState() {
-	return {
-		get value() {
-			return patterns;
-		},
-		set value(newState) {
-			patterns = newState;
-		}
-	};
-}
-
-export function createTransposePatternsState() {
-	return {
-		get value() {
-			return transposePatterns;
-		},
-		set value(newState) {
-			transposePatterns = newState;
-		}
-	};
-}
-
-export function createPhrasesState() {
-	return {
-		get value() {
-			return phrases;
-		},
-		set value(newState) {
-			phrases = newState;
-		}
-	};
-}
-
-export function createInstrumentsState() {
-	return {
-		get value() {
-			return instruments;
-		},
-		set value(newState) {
-			instruments = newState;
-		}
-	};
-}
-
-export function createInstrumentDurationsState() {
-	return {
-		get value() {
-			return instrumentDurations;
-		},
-		set value(newState) {
-			instrumentDurations = newState;
-		}
-	};
-}
-
-export function createPhraseInstrumentsState() {
-	return {
-		get value() {
-			return phraseInstruments;
-		},
-		set value(newState) {
-			phraseInstruments = newState;
+			playPositionsPhrases[0] = 0;
+			playPositionsPhrases[1] = 0;
+			playPositionsPhrases[2] = 0;
+			playPositionsPhrases[3] = 0;
+			playPositionsPhrases[4] = 0;
 		}
 	};
 }
 
 export function newSong() {
-	song = {};
+	song.value = {};
 
-	patterns = {};
+	patterns.value = {};
 
-	transposePatterns = {};
+	transposePatterns.value = {};
 
-	phrases = {};
+	phrases.value = {};
 
-	instruments =
-		browser && context ?
+	instruments.value =
+		browser && context.value ?
 			{
 				"00": {
 					type: "soundfont",
-					sound: new Soundfont(context, { instrument: instrumentNames["00"] }),
+					sound: new Soundfont(context.value, { instrument: instrumentNames["00"] }),
 					hex: "00"
 				},
 				FF: {
 					type: "soundfontdrums",
-					sound: new Soundfont(context, {
+					sound: new Soundfont(context.value, {
 						instrumentUrl:
 							"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
 						volume: 80
@@ -799,9 +498,9 @@ export function newSong() {
 			}
 		:	undefined;
 
-	instrumentDurations = {
+	instrumentDurations.value = {
 		"00": 0.3
 	};
 
-	phraseInstruments = {};
+	phraseInstruments.value = {};
 }

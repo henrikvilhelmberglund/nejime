@@ -1,8 +1,6 @@
 <script lang="ts">
 	import BpmSelector from "./BPMSelector.svelte";
-	import { createActiveScreenState } from "./globalState.svelte";
-
-	let activeScreenState = createActiveScreenState();
+	import { activeScreenState } from "./globalState.svelte";
 </script>
 
 <p class="pl-1 text-lg font-semibold text-white">
