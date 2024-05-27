@@ -13,16 +13,22 @@ export default defineConfig({
 		// ...Array.from({ length: 26 }, (_, i) => String.fromCharCode("a".charCodeAt(0) + i)).map(
 		// 	(char) => `font-${char}`
 		// ),
-		...createSafeList(),
+		...createSafeList()
 		// `font-thin font-extralight font-light font-normal font-medium font-semibold font-bold font-extrabold font-black
-    //     btn-primary btn-secondary`,
+		//     btn-primary btn-secondary`,
 	],
-	theme: {},
+	theme: {
+		animation: {
+			keyframes: {
+				"custom-fade": "{0%{opacity:0}25%{opacity:100}85%{opacity:100}100%{opacity:0}}"
+			}
+		}
+	},
 	presets: [
 		presetUno({ dark: "class" }),
 		presetForms(),
 		// fix types later
-    // @ts-ignore
+		// @ts-ignore
 		presetTheme({
 			theme: themes
 		}),

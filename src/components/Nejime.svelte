@@ -1,6 +1,7 @@
 <script lang="ts">
 	import DarkModeToggle from "$lib/theme/DarkModeToggle.svelte";
 	import ThemeSwitcher from "$lib/theme/ThemeSwitcher.svelte";
+	import { page } from "$app/stores";
 	import Instrument from "./Instrument.svelte";
 	import Pattern from "./Pattern.svelte";
 	import Phrase from "./Phrase.svelte";
@@ -30,6 +31,7 @@
 		phrases
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
+	import { fade } from "svelte/transition";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 
@@ -289,16 +291,26 @@
 			}
 		}
 	}
+
+	function handlePopover() {
+		setTimeout(() => {
+			this.hidePopover();
+		}, 1000);
+	}
 </script>
 
 <button
+	popovertarget="save-song-text"
 	onclick={() => {
 		let start = performance.now();
 		const savedSong = saveSong();
 		let timeTaken = performance.now() - start;
 		console.log("Total time taken : " + timeTaken + " milliseconds");
 		console.log(savedSong);
+		const currentURL = $page.url.href;
+		navigator.clipboard.writeText(`${currentURL}${savedSong}`);
 	}}>Save</button>
+	<p id="save-song-text" class="mx-auto mt-80 text-center border-green-500 border-2 rounded-md animate-custom-fade animate-duration-1050" popover="auto" ontoggle={handlePopover}>Saved song!</p>
 <a
 	href="/N4IgRgDgtiBcCMAmADAGhASwHYGcAuATgK5QCmWeAIkQQIZ4YD2ucoyycyAdAMzrLxOXeAF90OZgHNWIdjIDGAC1pYspADYdYsjuiUq16wdoEg9y1RsRxZ18wY08byJ-cvqALM69jZx0PruWiAoZiCBhsYhgm6G1tqIduEWhk4JrskOnjaIPr4Q9HikBCywoKFlOjbwun7VMbbVSS7VGche2vBe-ACs1X38AGzV3bIA7P1hyAAc1bXIAJz1UwCCTVMAQq0gvoj+VdoeDaaHzfEgHm1pF6PtNh4Dsn2Hw0P3j8gTL1Ozh8dLp1W9zaW0OPn4WjYwRqUyi8GO5yQU2u8DaHRAXSmzwxH2GnVuXxxPzmUwBGOOa06zVBGKcvhOUPuxyiHjOwOR91u6IeWPur1keIuH0JHn5MyZpPuzUpFxBnJ2vkIKhwEEYOFIAAVCsVSuVIQcnrDnB9zsgPtczVN0ZbesapoSbQK7fxfob+GTHcgZZ6aZbdvs5CYPlFPabzc7ZNaPtjPYLPQ6Pq7PR6Pt6Pr6+vT9YGqvxTfNrRx6QHgnJ+CH5vmFegIIo6OqcDIYZVA4ztABhLk2TvE7QAcVu7ZsA525dYIl88JkrYNKy72jnvZAI+L47z48n8TbbZAADF53vbq6AKKDmyn0d1Mr0rcT9Co6fZ4KUA8vpc9u8Yjrbg0j-jov9ZFdfcpiHbQQM-eBnh-HML3-c8jxsN9PyOR80I7RNz0zXxWXQndd0w7Rj2w9BLjwg1KEIkB2xIm5yJzRd4O0DZEIw6shXo4JiKtYdWJASjQN49jRU47sPgAviWME-s8nyOtaHVABJXBCBIcg8EbSpmx3MsrxAABafSpnOQyOW0UzbXMoymNzIDnHmMCqknEt7J4kx5iTIt7y3A1dLudylz8xy5EnNIdILVyXVcydv18iKAqihLZGCryiRbUt4ts8UApwlyTGOdELLs-LpIMoycJ8nNTBsorsrqfgZVqxzTJwsLfIKmxaqTY5KE66zkr6y8PFiqqOpKxL6oGqyhug9q3MmurqqmuocLxHSxoW7rStMCcRCAA"
 	>Twinkle Twinkle Little Star</a>
