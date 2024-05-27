@@ -49,8 +49,6 @@
 			});
 		}
 	});
-
-	let activeElement = <HTMLButtonElement>document.activeElement;
 </script>
 
 <p class="pl-1 text-lg font-semibold text-white">
