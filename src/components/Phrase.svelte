@@ -18,7 +18,7 @@
 
 	let channels = [0, 1, 2, 3, 4];
 	let rows = Array.from({ length: 16 });
-  let playPositionsPhrases = createPlayPositionsPhrasesState();
+	let playPositionsPhrases = createPlayPositionsPhrasesState();
 
 	interface Phrase {
 		"00"?: string;
@@ -47,17 +47,9 @@
 			queueMicrotask(() => {
 				noteSelector.focus();
 			});
-			// activePattern.value = patternSelector.innerText;
-			// }
-		}
-		// init once if not set
-		if (!lastPhraseHex.value) {
-			lastPhraseHex.value = activeElement.innerText;
 		}
 	});
 
-	// let activeElement = $state(<HTMLButtonElement>document.activeElement);
-	// console.log("activeElement:", activeElement);
 	let activeElement = <HTMLButtonElement>document.activeElement;
 </script>
 

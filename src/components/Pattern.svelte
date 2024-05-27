@@ -9,7 +9,8 @@
 		lastRowPhrase,
 		patterns,
 		createPlayPositionsPatternsState,
-		transposePatterns
+		transposePatterns,
+		lastPhraseHex
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
@@ -29,6 +30,7 @@
 				document
 					.querySelector<HTMLButtonElement>(`#nejime #row${lastRowPhrase.value}-pattern`)!
 					.focus();
+				lastPhraseHex.value = (<HTMLButtonElement>document.activeElement).innerText;
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
@@ -40,15 +42,11 @@
 			queueMicrotask(() => {
 				// lastRowPhrase.value = 0;
 				phraseSelector.focus();
+				lastPhraseHex.value = (<HTMLButtonElement>document.activeElement).innerText;
 			});
-		}
-		// init once if not set
-		if (!lastPatternHex.value) {
-			lastPatternHex.value = activeElement.innerText;
 		}
 	});
 
-	let activeElement = <HTMLButtonElement>document.activeElement;
 	$inspect(lastPatternHex.value);
 </script>
 

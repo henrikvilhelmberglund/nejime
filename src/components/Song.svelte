@@ -7,7 +7,8 @@
 		lastChannelPattern,
 		lastRowPattern,
 		createPlayPositionsSongState,
-		song
+		song,
+		lastPatternHex
 	} from "./globalState.svelte";
 	import { toHex } from "./utils";
 
@@ -32,13 +33,14 @@
 						`#nejime #row${lastRowPattern.value}-channel${lastChannelPattern.value}`
 					)!
 					.focus();
+				lastPatternHex.value = (<HTMLButtonElement>document.activeElement).innerText;
 			});
 		} else {
 			const patternSelector = document.querySelector<HTMLButtonElement>("#nejime button")!;
 			queueMicrotask(() => {
 				patternSelector.focus();
+				lastPatternHex.value = (<HTMLButtonElement>document.activeElement).innerText;
 			});
-			// }
 		}
 	});
 </script>
