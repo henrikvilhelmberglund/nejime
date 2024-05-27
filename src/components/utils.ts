@@ -138,12 +138,14 @@ export function playPhraseFromSong(state: string, hex: string, i: number, transp
 			} catch (error) {}
 			if (note && instruments.value) {
 				const instrument =
-          instruments.value[playbackInstruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
-        // TODO implement removing of playing notes if another note appears on same channel
+					instruments.value[playbackInstruments?.[toHex(playPositionsPhrases.value[i])] ?? "00"];
+				// TODO implement removing of playing notes if another note appears on same channel
 				const duration =
-					instrumentDurations.value?.[
-						playbackInstruments?.[toHex(playPositionsPhrases.value?.[i])]
-					] ?? bpm.value / 60 / 4;
+					instrument.type === "soundfont" ?
+						instrumentDurations.value?.[
+							playbackInstruments?.[toHex(playPositionsPhrases.value?.[i])]
+						] ?? bpm.value / 60 / 4
+					:	undefined;
 				// console.info(transpose);
 				// instrument.stop();
 				if (instrument.sound) {
@@ -195,12 +197,14 @@ export function playPhrase(state: string, hex: string) {
 			} catch (error) {}
 			if (note && instruments.value) {
 				const instrument =
-          instruments.value[playbackInstruments?.[toHex(playPositionsPhrases.value["0"])] ?? "00"];
-        // TODO implement removing of playing notes if another note appears on same channel
+					instruments.value[playbackInstruments?.[toHex(playPositionsPhrases.value["0"])] ?? "00"];
+				// TODO implement removing of playing notes if another note appears on same channel
 				const duration =
-					instrumentDurations.value?.[
-						playbackInstruments?.[toHex(playPositionsPhrases.value?.["0"])]
-					] ?? bpm.value / 60 / 4;
+					instrument.type === "soundfont" ?
+						instrumentDurations.value?.[
+							playbackInstruments?.[toHex(playPositionsPhrases.value?.["0"])]
+						] ?? bpm.value / 60 / 4
+					:	undefined;
 				// console.info(instrument);
 				// instrument.stop();
 				// console.table([transposePatterns.value, lastPatternHex.value, playPositionsPatterns.value[0]])
