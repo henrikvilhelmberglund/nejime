@@ -1,6 +1,17 @@
 <script lang="ts">
-	import { dPressed, fPressed, lastChannelNote, lastRowNote, sPressed } from "./globalState.svelte";
+	import {
+		dPressed,
+		fPressed,
+		lastChannelNote,
+		lastPatternHex,
+		lastPhraseHex,
+		lastRowNote,
+		lastRowPhrase,
+		patterns,
+		sPressed
+	} from "./globalState.svelte";
 	import { editInstrument, remove } from "./editing.svelte";
+	import { toHex } from "./utils";
 
 	let { id, hex, selectedInstrument }: { id: string; hex: string; selectedInstrument: string } =
 		$props();
@@ -72,9 +83,29 @@
 		} else if (e.code === "ArrowRight") {
 			focusNoteSelector({ row: parseInt(row), channel: 0 });
 		} else if (e.code === "ArrowUp") {
-			focusInstrumentSelector({ row: parseInt(row) - 1 });
+			if (parseInt(row) === 0) {
+				// phrase exists above
+				if (patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value - 1)]) {
+					lastPhraseHex.value =
+						patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value - 1)];
+					lastRowPhrase.value -= 1;
+					focusInstrumentSelector({ row: 15 });
+				}
+			} else {
+				focusInstrumentSelector({ row: parseInt(row) - 1 });
+			}
 		} else if (e.code === "ArrowDown") {
-			focusInstrumentSelector({ row: parseInt(row) + 1 });
+			if (parseInt(row) === 15) {
+				// phrase exists below
+				if (patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value + 1)]) {
+					lastPhraseHex.value =
+						patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value + 1)];
+					lastRowPhrase.value += 1;
+					focusInstrumentSelector({ row: 0 });
+				}
+			} else {
+				focusInstrumentSelector({ row: parseInt(row) + 1 });
+			}
 		}
 	}
 
