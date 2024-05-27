@@ -25,7 +25,6 @@
 			const noteSelector: HTMLButtonElement = document.querySelector(
 				`#note${row}-channel${+channel}`
 			)!;
-			console.log("noteSelector", noteSelector);
 			noteSelector.focus();
 			lastRowNote.value = row;
 			lastChannelNote.value = channel;
@@ -39,7 +38,6 @@
 			const instrumentSelector: HTMLButtonElement = document.querySelector(
 				`#instrument-selector${row}`
 			)!;
-			console.log("instrumentSelector", instrumentSelector);
 			instrumentSelector.focus();
 		} catch (error) {
 			console.error(`element ${`#note${row}-channel${+channel}`} not found, can't focus`);
