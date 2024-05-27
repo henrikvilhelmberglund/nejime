@@ -16,7 +16,8 @@ UI:
   ✔ add instrument field in Phrase @done(24-04-26 16:58)
   ✔ add ability to go from note channel 5 to instrument field (right) and from instrument field to channel 5 (left) and channel 0 (right) @done(24-05-03 17:08)
   ✔ add Project screen with editable BPM value @done(24-04-29 16:20)
-  ☐ add Instrument screen for configuring instruments
+  ✔ add Instrument screen for configuring instruments @done(24-05-26 22:44)
+  ☐ add duration to Instrument screen
       
 saving songs:
   ☐ save song data in local storage in case of crash
