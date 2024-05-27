@@ -307,8 +307,8 @@
 		let timeTaken = performance.now() - start;
 		console.log("Total time taken : " + timeTaken + " milliseconds");
 		console.log(savedSong);
-		const currentURL = $page.url.href;
-		navigator.clipboard.writeText(`${currentURL}${savedSong}`);
+		const currentURL = $page.url.origin;
+		navigator.clipboard.writeText(`${currentURL}/${savedSong}`);
 	}}>Save</button>
 	<p id="save-song-text" class="mx-auto mt-80 text-center border-green-500 border-2 rounded-md animate-custom-fade animate-duration-1050" popover="auto" ontoggle={handlePopover}>Saved song!</p>
 <a
