@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { add, edit, preview, remove, stopNotePreview } from "./editing.svelte";
 	import {
-    instruments,
+		instruments,
 		dPressed,
 		fPressed,
 		lastChannelNote,
@@ -9,9 +9,14 @@
 		lastTouchedInstrument,
 		lastTouchedNote,
 		sPressed,
-		shouldPreview
+		shouldPreview,
+		lastRowPhrase,
+		lastPhraseHex,
+		phrases,
+		patterns,
+		lastPatternHex
 	} from "./globalState.svelte";
-	import { addSpace } from "./utils";
+	import { addSpace, toHex } from "./utils";
 	import DOMPurify from "isomorphic-dompurify";
 
 	let {
@@ -134,9 +139,29 @@
 				focusNoteSelector({ row: parseInt(row), channel: parseInt(channel) + 1 });
 			}
 		} else if (e.code === "ArrowUp") {
-			focusNoteSelector({ row: parseInt(row) - 1, channel: parseInt(channel) });
+			if (parseInt(row) === 0) {
+				// phrase exists above
+				if (patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value - 1)]) {
+					lastPhraseHex.value =
+						patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value - 1)];
+					lastRowPhrase.value -= 1;
+					focusNoteSelector({ row: 15, channel: parseInt(channel) });
+				}
+			} else {
+				focusNoteSelector({ row: parseInt(row) - 1, channel: parseInt(channel) });
+			}
 		} else if (e.code === "ArrowDown") {
-			focusNoteSelector({ row: parseInt(row) + 1, channel: parseInt(channel) });
+			if (parseInt(row) === 15) {
+				// phrase exists below
+				if (patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value + 1)]) {
+					lastPhraseHex.value =
+						patterns.value[lastPatternHex.value][toHex(lastRowPhrase.value + 1)];
+					lastRowPhrase.value += 1;
+					focusNoteSelector({ row: 0, channel: parseInt(channel) });
+				}
+			} else {
+				focusNoteSelector({ row: parseInt(row) + 1, channel: parseInt(channel) });
+			}
 		}
 	}
 
