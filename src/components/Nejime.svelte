@@ -292,7 +292,7 @@
 		}
 	}
 
-	function handlePopover() {
+	function handlePopover(this: HTMLParagraphElement) {
 		setTimeout(() => {
 			this.hidePopover();
 		}, 1000);
