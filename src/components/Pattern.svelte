@@ -63,7 +63,7 @@
 				<div id={`row${i}`} class="flex gap-2">
 					<!-- TODO cursor shows in patterns that are not playing atm -->
 					<!-- TODO check channel instead of assuming "0" -->
-					{#if isPlayingBack.value && playPositionsPattern.value[lastChannelPattern.value] === i}
+					{#if isPlayingBack.value && playPositionsPattern.value["0"] === i}
 						<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
 					{/if}
 					<PhraseSelector
