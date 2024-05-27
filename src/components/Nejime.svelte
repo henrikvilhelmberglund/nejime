@@ -28,7 +28,8 @@
 		lastPatternHex,
 		song,
 		patterns,
-		phrases
+		phrases,
+		lastChannelPattern
 	} from "./globalState.svelte";
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 	import { fade } from "svelte/transition";
@@ -310,7 +311,13 @@
 		const currentURL = $page.url.origin;
 		navigator.clipboard.writeText(`${currentURL}/${savedSong}`);
 	}}>Save</button>
-	<p id="save-song-text" class="mx-auto mt-80 text-center border-green-500 border-2 rounded-md animate-custom-fade animate-duration-1050" popover="auto" ontoggle={handlePopover}>Saved song!</p>
+<p
+	id="save-song-text"
+	class="animate-custom-fade animate-duration-1050 mx-auto mt-80 rounded-md border-2 border-green-500 text-center"
+	popover="auto"
+	ontoggle={handlePopover}>
+	Saved song to clipboard!
+</p>
 <a
 	href="/N4IgRgDgtiBcCMAmADAGhASwHYGcAuATgK5QCmWeOcoyy1IeAnhKXCDgPZFYAmAZhwoh0AC1IAPNgGYAwiAC+6ZPHpMWbTt36C8wkGMmwQyABwL0AMQurmrI5t4CKPYlCqiJbKwsWZchEnI8ABEiAgBDPAxBKlgaOlhkADopJRVEpPhfTiwAc3paegBjEXCsLFIAGwTjOnQSsorK9OMVetLyqsQ2ZG72xqqpHqH+zsqAFh7J32VijqaalD0GsZbENpAVpu6jRD7N+cG2RBGDgYnj6d8ISLxSAlx6Jbjatng61reN3rf95CGjPBTshJoDJkoAKxvKFKABsb3BxgA7NC9KY3h9kABOL5ogCCvzRACE3kNfOsCjVxt8WuM-jsQONgQDGYiQWxxjDjFCjON4XCOVzkCjefzjGZed8cby-gTecCSbzpkoEvEMWiWvBvgykGiWUC0aCQPA2TzjUL4WC0SLzWiJcbMdLjd85ca-orjWS0pSOTSOfSOcyOWyjZy0Wa+WjLYyhTbI0p7dS0U66fjA8Tgz50IQyjgIBwcKQAAq3e6PF7PNVGZBClo1tEM+tKFlN4xG1v16uxnoWnt2vtKJ0d10dj318npKvcjUD4yNoUtoXtoVmjvRjs2jv2jtDoUjoVjqEzVWvauYxuY9t0GaT0+vb1nhs9a-XEQRQuxUDvH0vQpGGQhmwAH9kYADibJyGByqfHE8i+FqP5TnigFGMhIEgOB5gwcAMw7Dh8F4aeU4WChIAkehACiEFsFRWGzLBSh4XB6AGr+J5-iAwSkVx6HAcxxqglWU6YUoRoieKXjUUY5H8fAPJCXetGiTRbL2jx-FJmxP4gDIQr2hRR6+KmWkmWRek0YZ6BMohd7BOZ-6WayNkcWhylGESqlAY5YYmVOBmGmw4nokYdlopBGFXFZloKRxukBVB6EeWFgVXK+76kAAkv4rhBJ+DraYUD4gAAtMVT5GKVepsJVkLVWVbn3hJj5KOFhTwbeHGFW2z7oW1LGEZ1l49Qmw3GK114sQCU5deyzVNa88GCXeM1Xr1mLjVhckFUNc3BQtVkdTUswNTV83HWNdVYcZ03fEap17edyCuvd4WVUZU3Lbdl0jdW3zBN9F0VWVRlLZ1X2-b13yvcDVnyZ98WfD9iOA58RnRfDDWPduUM9CocHyEAA"
 	>Twinkle Twinkle Little Star</a>
