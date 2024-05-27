@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { dPressed, fPressed, lastChannelPattern, lastPatternHex, lastRowPattern, lastTouchedPattern, sPressed } from "./globalState.svelte";
+	import {
+		dPressed,
+		fPressed,
+		lastChannelPattern,
+		lastPatternHex,
+		lastRowPattern,
+		lastTouchedPattern,
+		sPressed
+	} from "./globalState.svelte";
 	import { add, edit, remove } from "./editing.svelte";
 
 	let {
@@ -74,6 +82,10 @@
 		} else if (e.code === "ArrowDown") {
 			focusPatternSelector({ row: parseInt(row) + 1, channel: parseInt(channel) });
 		}
+
+		queueMicrotask(() => {
+			lastPatternHex.value = (<HTMLButtonElement>document.activeElement).innerText;
+		});
 	}
 </script>
 

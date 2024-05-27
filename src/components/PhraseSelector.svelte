@@ -1,6 +1,13 @@
 <script lang="ts">
 	import { add, edit, remove } from "./editing.svelte";
-	import { dPressed, fPressed, lastPhraseHex, lastRowPhrase, lastTouchedPhrase, sPressed } from "./globalState.svelte";
+	import {
+		dPressed,
+		fPressed,
+		lastPhraseHex,
+		lastRowPhrase,
+		lastTouchedPhrase,
+		sPressed
+	} from "./globalState.svelte";
 
 	let { id, hex, selectedPhrase }: { id: string; hex: string; selectedPhrase: string } = $props();
 
@@ -8,7 +15,7 @@
 		try {
 			const phraseSelector: HTMLButtonElement = document.querySelector(`#row${row}-pattern`)!;
 			phraseSelector.focus();
-      lastPhraseHex.value = (<HTMLButtonElement>document.activeElement)!.innerText;
+			lastPhraseHex.value = (<HTMLButtonElement>document.activeElement)!.innerText;
 			lastRowPhrase.value = row;
 		} catch (error) {
 			console.error(`element ${`#row${row}-pattern`} not found, can't focus`);
@@ -72,6 +79,10 @@
 		} else if (e.code === "ArrowDown") {
 			focusPhraseSelector({ row: parseInt(row) + 1 });
 		}
+
+		queueMicrotask(() => {
+			lastPhraseHex.value = (<HTMLButtonElement>document.activeElement).innerText;
+		});
 	}
 </script>
 
