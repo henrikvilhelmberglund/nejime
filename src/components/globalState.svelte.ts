@@ -252,13 +252,13 @@ export let phrases = ref<Record<string, Phrase>>({
 	}
 });
 
-export type instrumentType = {
+export type InstrumentType = {
 	type: string;
-	sound: Soundfont;
+	sound?: Soundfont;
 	hex: string;
 };
 
-export let instruments = ref<Record<string, instrumentType> | undefined>(
+export let instruments = ref<Record<string, InstrumentType> | undefined>(
 	browser && context.value ?
 		{
 			"00": {
@@ -278,7 +278,7 @@ export let instruments = ref<Record<string, instrumentType> | undefined>(
 						"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
 					volume: 80
 				}),
-				hex: "00"
+				hex: "FF"
 			}
 		}
 	:	undefined
@@ -388,6 +388,14 @@ export function createIntervalIdsSongState() {
 export function saveSong() {
 	const exportBpm = $state.snapshot(bpm.value);
 	const exportInstruments = $state.snapshot(instruments.value);
+	if (exportInstruments) {
+		// remove soundfonts from saved data
+		Object.values(exportInstruments).forEach((inner) => {
+			if (inner.hasOwnProperty("sound")) {
+				delete inner.sound;
+			}
+		});
+	}
 	const exportInstrumentDurations = $state.snapshot(instrumentDurations.value);
 	const exportSong = $state.snapshot(song.value);
 	const exportPatterns = $state.snapshot(patterns.value);
@@ -397,7 +405,7 @@ export function saveSong() {
 
 	const allData = {
 		bpm: exportBpm,
-		// instruments: exportInstruments,
+		instruments: exportInstruments,
 		instrumentDurations: exportInstrumentDurations,
 		song: exportSong,
 		patterns: exportPatterns,
@@ -419,6 +427,7 @@ export function saveSong() {
 type songProps = {
 	bpm: number;
 	instrumentDurations: Record<string, number>;
+	instruments: Record<string, InstrumentType>;
 	song: Patterns;
 	patterns: Patterns;
 	transposePatterns: Patterns;
@@ -428,6 +437,26 @@ type songProps = {
 
 export function loadSong(obj: songProps) {
 	bpm.value = obj.bpm;
+	console.log(obj);
+	if (obj.instruments) {
+		instruments.value = obj.instruments;
+		// load soundfonts for each instrument
+		Object.values(instruments.value).forEach((loadedInstrument) => {
+			if (context.value) {
+				if (loadedInstrument.type === "soundfont") {
+					loadedInstrument.sound = new Soundfont(context.value, {
+						instrument: instrumentNames[loadedInstrument.hex]
+					});
+				} else if (loadedInstrument.type === "soundfontdrums") {
+					loadedInstrument.sound = new Soundfont(context.value, {
+						instrumentUrl:
+							"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
+						volume: 80
+					});
+				}
+			}
+		});
+	}
 	instrumentDurations.value = obj.instrumentDurations;
 	song.value = obj.song;
 	patterns.value = obj.patterns;
@@ -493,7 +522,7 @@ export function newSong() {
 							"https://henrikvilhelmberglund.com/midi-js-compat-soundfonts/GM-soundfonts/FluidR3_GM/drumkits/Standard-mp3.js",
 						volume: 80
 					}),
-					hex: "00"
+					hex: "FF"
 				}
 			}
 		:	undefined;
