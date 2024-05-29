@@ -7,7 +7,7 @@ import { themes } from "./src/lib/theme/theme";
 import presetTheme from "unocss-preset-theme";
 
 export default defineConfig({
-	rules: [],
+	rules: [[/^grid-area-(.*)$/, ([, input]) => ({ "grid-area": input })]],
 	shortcuts: [],
 	safelist: [
 		// ...Array.from({ length: 26 }, (_, i) => String.fromCharCode("a".charCodeAt(0) + i)).map(
