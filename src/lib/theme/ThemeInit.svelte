@@ -14,13 +14,5 @@
 	});
 </script>
 
-<div class="flex flex-col absolute top-16 left-28">
-	{#each themeColors as themeColor}
-		<button
-			onclick={() => (selectedTheme = themeColor)}
-			class="mx-2 h-10 w-16 rounded p-2 text-transparent bg-{themeColor}-500"></button>
-	{/each}
-</div>
-
 <style>
 </style>
