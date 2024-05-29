@@ -90,7 +90,7 @@
 		if (sPressed.value || dPressed.value) return;
 
 		// * preview
-		if (!fPressed.value && instruments.value) {
+		if (!e.repeat && instruments.value) {
 			if (shouldPreview.value) {
 				preview({
 					element: <HTMLButtonElement>document.activeElement,
