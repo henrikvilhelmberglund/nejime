@@ -64,7 +64,7 @@
 	<VerticalNumbers />
 	<div class="relative flex flex-col">
 		{#each rows as row, i}
-			<div id={`note${i}`} class="flex gap-4">
+			<div id={`note${i}`} class="flex gap-1 lg:gap-4">
 				<!-- TODO cursor shows even if current phrase is not being played -->
 				{#if isPlayingBack.value && playPositionsPhrases.value["0"] === i}
 					<div class="i-ph-play-fill absolute -left-4 py-[10px] text-xs text-white"></div>
