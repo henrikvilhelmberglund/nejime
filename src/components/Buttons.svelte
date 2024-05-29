@@ -52,10 +52,7 @@
 				>Demo</a>
 		</div>
 	{/if}
-	<button class="i-carbon-color-palette h-12 w-12" onclick={() => toggle("showThemes")}></button>
-	{#if showing === "showThemes"}
-		<ThemeSwitcher />
-	{/if}
+
 	<button
 		class="i-carbon-save h-12 w-12"
 		onclick={() => {
@@ -71,11 +68,15 @@
 	{#if showing === "showSaveSuccessful"}
 		<p
 			use:closeSelf
-			class="animate-custom-fade animate-duration-1050 absolute left-32 top-16 w-max rounded-md font-semibold bg-green-500 p-2 text-center text-white">
+			class="animate-custom-fade animate-duration-1050 absolute left-32 top-16 w-max rounded-md bg-green-500 p-2 text-center font-semibold text-white">
 			Saved song to clipboard!
 		</p>
 	{/if}
-  <DarkModeToggle/>
+	<button class="i-carbon-color-palette h-12 w-12" onclick={() => toggle("showThemes")}></button>
+	{#if showing === "showThemes"}
+		<ThemeSwitcher />
+	{/if}
+	<DarkModeToggle />
 </header>
 
 <style>
