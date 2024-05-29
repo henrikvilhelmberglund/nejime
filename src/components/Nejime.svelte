@@ -34,8 +34,22 @@
 	import { playPhrase, playPhraseFromSong, stop, toHex } from "./utils";
 	import { fade } from "svelte/transition";
 	import Buttons from "./Buttons.svelte";
+	import FancyButton from "./FancyButton.svelte";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
+
+	let focusedElement = $state();
+
+	// function getCurrentActiveElement() {
+	//   return document.activeElement
+	// }
+
+	function restoreFocus() {
+		let activeElement = document.activeElement;
+		setTimeout(() => {
+			activeElement.focus();
+		}, 0);
+	}
 
 	function changeState(direction: string) {
 		let activeElement = <HTMLButtonElement>document.activeElement!;
@@ -318,7 +332,7 @@
 			fPressed.value = false;
 		}
 	}}
-	class="bg-primary-400 dark:bg-primary-950 flex lg:h-[500px] h-[50%] w-[80%] lg:w-[500px] flex-col rounded border border-black text-black dark:text-white">
+	class="bg-primary-400 dark:bg-primary-950 flex h-[370px] w-[85%] flex-col rounded border border-black text-black lg:h-[500px] lg:w-[500px] dark:text-white">
 	{#if activeScreenState.value === "song"}
 		<Song />
 	{:else if activeScreenState.value === "pattern"}
@@ -331,7 +345,128 @@
 		<Project />
 	{/if}
 </div>
-<Buttons/>
+
+<div
+	tabindex="0"
+	onmousedown={(e) => {
+		e.preventDefault();
+	}}
+	oncontextmenu={(e) => {
+		// e.preventDefault();
+		// e.stopPropagation();
+		// e.stopImmediatePropagation();
+		// return false;
+		focusedElement.focus();
+	}}
+	role="button"
+	class="mt-4 flex w-full justify-between">
+	<div
+		tabindex="0"
+		role="button"
+		onmousedown={(e) => {
+			e.preventDefault();
+		}}
+		class="my-grid justify-start">
+		<button
+			ontouchstart={(e) => {
+      document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "ArrowUp", bubbles: true })
+      );
+      focusedElement = document.activeElement;
+    }}
+			class="i-carbon-arrow-up grid-area-header h-18 w-18"></button>
+		<button
+			ontouchstart={(e) => {
+				document.activeElement!.dispatchEvent(
+					new KeyboardEvent("keydown", { code: "ArrowLeft", bubbles: true })
+				);
+        focusedElement = document.activeElement;
+			}}
+			class="i-carbon-arrow-left grid-area-main h-18 w-18"></button>
+		<button
+			ontouchstart={(e) => {
+				document.activeElement!.dispatchEvent(
+					new KeyboardEvent("keydown", { code: "ArrowRight", bubbles: true })
+				);
+        focusedElement = document.activeElement;
+        
+			}}
+			class="i-carbon-arrow-right grid-area-right h-18 w-18"></button>
+		<button
+			ontouchstart={(e) => {
+				document.activeElement!.dispatchEvent(
+					new KeyboardEvent("keydown", { code: "ArrowDown", bubbles: true })
+				);
+        focusedElement = document.activeElement;
+			}}
+			class="i-carbon-arrow-down grid-area-footer h-18 w-18"></button>
+	</div>
+	<button
+		onclick={() => {
+      
+    document.activeElement!.dispatchEvent(
+      new KeyboardEvent("keydown", { code: "Space", bubbles: true })
+    );
+  }}
+		class="absolute left-[50%] translate-x-[-25%] rounded-full bg-slate-300 px-6 py-3">Play</button>
+	<div
+		tabindex="0"
+		onmousedown={(e) => {
+			e.preventDefault();
+		}}
+		role="button"
+		class="mr-6 flex flex-col items-center gap-2 text-5xl">
+    <FancyButton/>
+		<button
+			ontouchstart={(e) => {
+        fPressed.value = true;
+        // ? avoid losing focus on mobile longpress
+        focusedElement = document.activeElement;
+        console.log(focusedElement)
+        document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "KeyF", bubbles: true })
+      );
+    }}
+			ontouchend={() => {
+				fPressed.value = false;
+			}}
+			class="rounded-full bg-slate-300 px-4 py-2">A</button>
+		<button
+			ontouchstart={(e) => {
+        dPressed.value = true;
+        focusedElement = document.activeElement;
+        document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "KeyD", bubbles: true })
+      );
+    }}
+			ontouchend={() => {
+				dPressed.value = false;
+			}}
+			class="rounded-full bg-slate-300 px-4 py-2">B</button>
+		<button
+			ontouchstart={(e) => {
+        sPressed.value = true;
+        focusedElement = document.activeElement;
+        document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "KeyS", bubbles: true })
+      );
+    }}
+			ontouchend={() => {
+				sPressed.value = false;
+			}}
+			class="rounded-full bg-slate-300 px-4 py-2">C</button>
+	</div>
+</div>
+
+<!-- <div class="my-2"></div> -->
+<Buttons />
 
 <style>
+	.my-grid {
+		display: grid;
+		grid-template-areas:
+			". header ."
+			"main . right"
+			". footer .";
+	}
 </style>
