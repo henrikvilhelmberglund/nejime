@@ -15,7 +15,7 @@ import {
 	patterns,
 	transposePatterns,
 	phrases,
- context,
+	context
 } from "./globalState.svelte";
 import { toHex, toInt } from "./utils";
 
@@ -194,7 +194,7 @@ export function edit({ direction, element }: editProps) {
 		}
 		// ensure we get the updated value
 		setTimeout(() => {
-			lastTouchedPattern.value = (<HTMLButtonElement>document.activeElement).innerText;
+			lastTouchedPattern.value = song.value[toHex(+row)][channel];
 		}, 0);
 	}
 
@@ -237,7 +237,7 @@ export function edit({ direction, element }: editProps) {
 		}
 		// ensure we get the updated value
 		setTimeout(() => {
-			lastTouchedPhrase.value = (<HTMLButtonElement>document.activeElement).innerText;
+			lastTouchedPhrase.value = patterns.value[lastPatternHex.value][toHex(+row)];
 		}, 0);
 	}
 
@@ -293,19 +293,15 @@ export function edit({ direction, element }: editProps) {
 		}
 
 		// ensure we get the updated value
-		setTimeout(() => {
-			lastTouchedNote.value = (<HTMLButtonElement>document.activeElement).innerText.replaceAll(
-				// ! this is probably stupid but it works (C  3 turns into C3 etc)
-				" ",
-				""
-			);
-		}, 0);
+		if (newNoteTone && newNoteOctave) {
+			lastTouchedNote.value = newNoteTone + newNoteOctave;
+		}
 	}
 }
 
 export function editInstrument({ direction, element }: editProps) {
-  // const instruments = createInstrumentsState();
-  // const context = createContextState();
+	// const instruments = createInstrumentsState();
+	// const context = createContextState();
 
 	if (activeScreenState.value === "phrase") {
 		const row = element.id.split("instrument-selector")[1];
@@ -376,7 +372,7 @@ export function editInstrument({ direction, element }: editProps) {
 					hex: "00"
 				};
 			}
-			lastTouchedInstrument.value = (<HTMLButtonElement>document.activeElement).innerText;
+			lastTouchedInstrument.value = phraseInstruments.value[lastPhraseHex.value][toHex(+row)];
 		}, 0);
 	}
 }
