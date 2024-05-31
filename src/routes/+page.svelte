@@ -4,6 +4,11 @@
 	import Nejime from "../components/Nejime.svelte";
 </script>
 
+<svelte:head>
+  <title>Nejime - music tracker</title>
+  <meta name="description" content="Nejime is a music tracker for creating and sharing music. WIP!">
+</svelte:head>
+
 <main
 	oncontextmenu={(e) => {
 		e.preventDefault();

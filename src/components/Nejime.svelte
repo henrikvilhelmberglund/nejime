@@ -372,7 +372,7 @@
 				fPressed.value = false;
 			}
 		}}
-		class="bg-primary-400 dark:bg-primary-950 flex h-[370px] w-[85%] flex-col rounded border border-black text-black lg:h-[500px] lg:w-[500px] dark:text-white">
+		class="bg-primary-500 dark:bg-primary-950 flex h-[370px] w-[85%] flex-col rounded border border-black text-black lg:h-[500px] lg:w-[500px] dark:text-white">
 		{#if activeScreenState.value === "song"}
 			<Song />
 		{:else if activeScreenState.value === "pattern"}

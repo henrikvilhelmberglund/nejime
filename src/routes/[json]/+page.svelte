@@ -4,14 +4,21 @@
 	import Nejime from "../../components/Nejime.svelte";
 </script>
 
+<svelte:head>
+	<title>Nejime - music tracker</title>
+	<meta
+		name="description"
+		content="Nejime is a music tracker for creating and sharing music. WIP!" />
+</svelte:head>
+
 <main
 	oncontextmenu={(e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
-    return false;
+		return false;
 	}}
-	class="flex h-[86vh] lg:h-screen flex-col items-center lg:justify-center dark:bg-black dark:text-white">
+	class="flex h-[86vh] flex-col items-center lg:h-screen lg:justify-center dark:bg-black dark:text-white">
 	<header>
 		<ThemeInit />
 		<DarkModeInit />
@@ -23,8 +30,8 @@
 	:root {
 		touch-action: pan-x pan-y;
 		height: 100%;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-user-drag: none;
+		user-select: none;
+		-webkit-user-select: none;
+		-webkit-user-drag: none;
 	}
 </style>
