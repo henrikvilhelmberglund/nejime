@@ -14,7 +14,7 @@
 	});
 </script>
 
-<div class="flex flex-col absolute -top-40 left-44">
+<div class="flex flex-col absolute -top-40 left-40">
 	{#each themeColors as themeColor}
 		<button
 			onclick={() => (selectedTheme.value = themeColor)}
