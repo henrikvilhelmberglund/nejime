@@ -25,7 +25,7 @@
 	}
 </script>
 
-<header class="fixed bottom-0 flex gap-2 lg:fixed lg:bottom-0 dark:bg-black dark:text-white">
+<footer class="fixed bottom-0 flex gap-2 lg:fixed lg:bottom-0 dark:bg-black dark:text-white">
 	<button
 		onclick={() => {
 			toggle("createSong");
@@ -65,7 +65,7 @@
 			console.log(savedSong);
 			const currentURL = $page.url.origin;
 			navigator.clipboard.writeText(`${currentURL}/${savedSong}`);
-				toggle("showSaveSuccessful");
+			toggle("showSaveSuccessful");
 		}}></button>
 	{#if showing === "showSaveSuccessful"}
 		<p
@@ -80,7 +80,7 @@
 	{/if}
 	<DarkModeToggle />
 	<button onclick={onShowTutorial} class="i-carbon-help h-12 w-12"></button>
-</header>
+</footer>
 
 <style>
 </style>
