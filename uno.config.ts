@@ -13,7 +13,8 @@ export default defineConfig({
 		// ...Array.from({ length: 26 }, (_, i) => String.fromCharCode("a".charCodeAt(0) + i)).map(
 		// 	(char) => `font-${char}`
 		// ),
-		...createSafeList()
+    ...createSafeList(),
+    "i-carbon-arrow-up", "i-carbon-arrow-down", "i-carbon-arrow-left", "i-carbon-arrow-right", "grid-area-up", "grid-area-left", "grid-area-right", "grid-area-down"
 		// `font-thin font-extralight font-light font-normal font-medium font-semibold font-bold font-extrabold font-black
 		//     btn-primary btn-secondary`,
 	],

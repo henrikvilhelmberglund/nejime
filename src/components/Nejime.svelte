@@ -317,10 +317,21 @@
 	}
 </script>
 
-<div class="flex justify-center w-[100%]">
+{#snippet arrowKey(classes, code)}
+	<button
+		ontouchstart={(e) => {
+    document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code, bubbles: true })
+      );
+      focusedElement = document.activeElement;
+    }}
+		class="{classes} h-18 w-18"></button>
+{/snippet}
+
+<div class="flex w-[100%] justify-center">
 	<div
 		id="spacer"
-		class="invisible absolute lg:static h-[370px] w-[85%] lg:flex lg:h-[500px] lg:w-[500px] dark:text-white">
+		class="invisible absolute h-[370px] w-[85%] lg:static lg:flex lg:h-[500px] lg:w-[500px] dark:text-white">
 	</div>
 	<main
 		tabindex="-1"
@@ -360,7 +371,7 @@
 	<div
 		id="tutorial"
 		class:invisible={!showTutorial}
-		class="z-1000 absolute lg:static w-[85%] flex-col rounded border border-black bg-slate-100 p-1 text-black lg:flex lg:h-[370px] lg:h-[500px] lg:w-[500px] dark:bg-slate-950 dark:text-white">
+		class="z-1000 absolute w-[85%] flex-col rounded border border-black bg-slate-100 p-1 text-black lg:static lg:flex lg:h-[370px] lg:h-[500px] lg:w-[500px] dark:bg-slate-950 dark:text-white">
 		<div class="hidden lg:block">
 			<p class="text-lg">Tutorial</p>
 			<br />
@@ -379,7 +390,7 @@
 			<br />
 			<p>Save the song using the Save icon at the bottom to get a shareable link.</p>
 		</div>
-    <div class="block lg:hidden">
+		<div class="block lg:hidden">
 			<p class="text-lg">Tutorial</p>
 			<br />
 			<p>Press within the blue square to focus a value.</p>
@@ -421,39 +432,18 @@
 			e.preventDefault();
 		}}
 		class="my-grid justify-start">
-		<button
+		<!-- <button
 			ontouchstart={(e) => {
       document.activeElement!.dispatchEvent(
         new KeyboardEvent("keydown", { code: "ArrowUp", bubbles: true })
       );
       focusedElement = document.activeElement;
     }}
-			class="i-carbon-arrow-up grid-area-header h-18 w-18"></button>
-		<button
-			ontouchstart={(e) => {
-				document.activeElement!.dispatchEvent(
-					new KeyboardEvent("keydown", { code: "ArrowLeft", bubbles: true })
-				);
-        focusedElement = document.activeElement;
-			}}
-			class="i-carbon-arrow-left grid-area-main h-18 w-18"></button>
-		<button
-			ontouchstart={(e) => {
-				document.activeElement!.dispatchEvent(
-					new KeyboardEvent("keydown", { code: "ArrowRight", bubbles: true })
-				);
-        focusedElement = document.activeElement;
-        
-			}}
-			class="i-carbon-arrow-right grid-area-right h-18 w-18"></button>
-		<button
-			ontouchstart={(e) => {
-				document.activeElement!.dispatchEvent(
-					new KeyboardEvent("keydown", { code: "ArrowDown", bubbles: true })
-				);
-        focusedElement = document.activeElement;
-			}}
-			class="i-carbon-arrow-down grid-area-footer h-18 w-18"></button>
+			class="i-carbon-arrow-up grid-area-header h-18 w-18"></button> -->
+		{@render arrowKey("i-carbon-arrow-up grid-area-up", "ArrowUp")}
+		{@render arrowKey("i-carbon-arrow-left grid-area-left", "ArrowLeft")}
+		{@render arrowKey("i-carbon-arrow-right grid-area-right", "ArrowRight")}
+		{@render arrowKey("i-carbon-arrow-down grid-area-down", "ArrowDown")}
 	</div>
 	<button
 		onclick={() => {
@@ -470,7 +460,7 @@
 		}}
 		role="button"
 		class="mr-6 flex flex-col items-center gap-2 text-5xl">
-		<FancyButton />
+		<!-- <FancyButton /> -->
 		<button
 			ontouchstart={(e) => {
         fPressed.value = true;
@@ -519,8 +509,8 @@
 	.my-grid {
 		display: grid;
 		grid-template-areas:
-			". header ."
-			"main . right"
-			". footer .";
+			". up ."
+			"left . right"
+			". down .";
 	}
 </style>
