@@ -25,7 +25,7 @@
 	}
 </script>
 
-<header class="fixed bottom-0 flex gap-4 dark:text-white">
+<header class="lg:fixed lg:bottom-0 fixed bottom-0 flex gap-2 dark:bg-black dark:text-white">
 	<button
 		onclick={() => {
 			toggle("createSong");

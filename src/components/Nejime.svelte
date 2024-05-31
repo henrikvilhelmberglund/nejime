@@ -317,8 +317,10 @@
 	}
 </script>
 
-<div class="flex">
-	<div id="spacer" class="invisible h-[370px] w-[85%] lg:h-[500px] lg:w-[500px] dark:text-white">
+<div class="flex justify-center w-[100%]">
+	<div
+		id="spacer"
+		class="invisible absolute lg:static h-[370px] w-[85%] lg:flex lg:h-[500px] lg:w-[500px] dark:text-white">
 	</div>
 	<main
 		tabindex="-1"
@@ -358,21 +360,43 @@
 	<div
 		id="tutorial"
 		class:invisible={!showTutorial}
-		class="ml-2 h-[370px] w-[85%] flex-col rounded border border-black bg-slate-100 p-1 text-black lg:h-[500px] lg:w-[500px] dark:bg-slate-950 dark:text-white">
-		<p class="text-lg">Tutorial</p>
-		<br />
-		<p>Click within the blue square to focus a value.</p>
-		<p>Use arrow keys to move the cursor.</p>
-		<p>Press Spacebar to play the song.</p>
-		<p>Press S and arrow keys to change the active view.</p>
-		<p>Press F to add a value.</p>
-		<p>Press F and arrow keys to change the active value.</p>
-		<p>Press D and F to remove a value.</p>
-		<br />
-		<p>In a phrase go beyond the bottom or top to go to the next/previous phrase.</p>
-		<p>In a phrase press S+↑ to switch the active instrument for the selected instrument number.</p>
-    <br>
-    <p>Save the song using the Save icon at the bottom to get a shareable link.</p>
+		class="z-1000 absolute lg:static w-[85%] flex-col rounded border border-black bg-slate-100 p-1 text-black lg:flex lg:h-[370px] lg:h-[500px] lg:w-[500px] dark:bg-slate-950 dark:text-white">
+		<div class="hidden lg:block">
+			<p class="text-lg">Tutorial</p>
+			<br />
+			<p>Click within the blue square to focus a value.</p>
+			<p>Use arrow keys to move the cursor.</p>
+			<p>Press Spacebar to play the song.</p>
+			<p>Press S and arrow keys to change the active view.</p>
+			<p>Press F to add a value.</p>
+			<p>Press F and arrow keys to change the active value.</p>
+			<p>Press D and F to remove a value.</p>
+			<br />
+			<p>In a phrase go beyond the bottom or top to go to the next/previous phrase.</p>
+			<p>
+				In a phrase press S+↑ to switch the active instrument for the selected instrument number.
+			</p>
+			<br />
+			<p>Save the song using the Save icon at the bottom to get a shareable link.</p>
+		</div>
+    <div class="block lg:hidden">
+			<p class="text-lg">Tutorial</p>
+			<br />
+			<p>Press within the blue square to focus a value.</p>
+			<p>Use the arrow buttons to move the cursor.</p>
+			<p>Press the Play button to play the song.</p>
+			<p>Press C and arrow buttons to change the active view.</p>
+			<p>Press the A button to add a value.</p>
+			<p>Press the A button and arrow buttons to change the active value.</p>
+			<p>Press the B and A buttons to remove a value.</p>
+			<br />
+			<p>In a phrase go beyond the bottom or top to go to the next/previous phrase.</p>
+			<p>
+				In a phrase press B+↑ to switch the active instrument for the selected instrument number.
+			</p>
+			<br />
+			<p>Save the song using the Save icon at the bottom to get a shareable link.</p>
+		</div>
 	</div>
 </div>
 
