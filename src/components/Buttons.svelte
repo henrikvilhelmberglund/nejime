@@ -27,6 +27,7 @@
 
 <footer class="fixed bottom-0 flex gap-2 lg:fixed lg:bottom-0 dark:bg-black dark:text-white">
 	<button
+		id="create-song-button"
 		onclick={() => {
 			toggle("createSong");
 		}}
@@ -43,6 +44,7 @@
 		</div>
 	{/if}
 	<button
+		id="show-songs-button"
 		onclick={() => {
 			toggle("showSongs");
 		}}
@@ -56,6 +58,7 @@
 	{/if}
 
 	<button
+		id="save-song-button"
 		class="i-carbon-save h-12 w-12"
 		onclick={() => {
 			let start = performance.now();
@@ -74,13 +77,18 @@
 			Saved song to clipboard!
 		</p>
 	{/if}
-	<button class="i-carbon-color-palette h-12 w-12" onclick={() => toggle("showThemes")}></button>
+	<button
+		id="show-themes-button"
+		class="i-carbon-color-palette h-12 w-12"
+		onclick={() => toggle("showThemes")}></button>
 	{#if showing === "showThemes"}
 		<ThemeSwitcher />
 	{/if}
 	<DarkModeToggle />
-	<button onclick={onShowTutorial} class="i-carbon-help h-12 w-12"></button>
-  <button onclick={onShowInfo} class="i-carbon-information h-12 w-12"></button>
+	<button id="show-tutorial-button" onclick={onShowTutorial} class="i-carbon-help h-12 w-12"
+	></button>
+	<button id="show-info-button" onclick={onShowInfo} class="i-carbon-information h-12 w-12"
+	></button>
 </footer>
 
 <style>
