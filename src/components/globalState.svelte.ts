@@ -202,6 +202,13 @@ export type InstrumentType = {
 export let instruments = ref<Record<string, InstrumentType> | undefined>(
 	browser && context.value ?
 		{
+			"00": {
+				type: "soundfont",
+				sound: new Soundfont(context.value, {
+					instrument: instrumentNames["00"]
+				}),
+				hex: "00"
+			},
 			FF: {
 				type: "soundfontdrums",
 				sound: new Soundfont(context.value, {
