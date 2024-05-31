@@ -33,7 +33,7 @@
 		onclick={() => {
 			toggle("createSong");
 		}}
-		class="i-carbon-music-add h-12 w-12"></button>
+		class="i-carbon-music-add h-12 w-12">Create new song</button>
 	{#if showing === "createSong"}
 		<div class="border-1 absolute -top-20 left-0 border-slate-400 bg-white p-4 dark:bg-black">
 			<p>Create new song?</p>
@@ -51,7 +51,7 @@
 		onclick={() => {
 			toggle("showSongs");
 		}}
-		class="i-carbon-music h-12 w-12"></button>
+		class="i-carbon-music h-12 w-12">Show demo song</button>
 	{#if showing === "showSongs"}
 		<div class="border-1 absolute -top-20 left-12 border-slate-400 bg-white p-4 dark:bg-black">
 			<a
@@ -73,7 +73,7 @@
 			const currentURL = $page.url.origin;
 			navigator.clipboard.writeText(`${currentURL}/${savedSong}`);
 			toggle("showSaveSuccessful");
-		}}></button>
+		}}>Save song</button>
 	{#if showing === "showSaveSuccessful"}
 		<p
 			use:closeSelf
@@ -85,15 +85,15 @@
 		id="show-themes-button"
     use:tooltip={"Show themes"}
 		class="i-carbon-color-palette h-12 w-12"
-		onclick={() => toggle("showThemes")}></button>
+		onclick={() => toggle("showThemes")}>Show themes</button>
 	{#if showing === "showThemes"}
 		<ThemeSwitcher />
 	{/if}
 	<DarkModeToggle />
 	<button id="show-tutorial-button" use:tooltip={"Show tutorial"} onclick={onShowTutorial} class="i-carbon-help h-12 w-12"
-	></button>
+	>Show tutorial</button>
 	<button id="show-info-button" onclick={onShowInfo} use:tooltip={"Show information"} class="i-carbon-information h-12 w-12"
-	></button>
+	>Show info</button>
 </footer>
 
 <style>
