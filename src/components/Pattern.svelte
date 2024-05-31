@@ -71,7 +71,7 @@
 						hex={toHex(i)}
 						id={`row${i}-pattern`} />
 				</div>
-				<div id={`row${i}-transpose-div`} class="bg-primary-500 flex gap-2">
+				<div id={`row${i}-transpose-div`} class="bg-primary-600 flex gap-2">
 					<TransposeSelector
 						transpose={transposePatterns.value[lastPatternHex.value as keyof typeof patterns.value]?.[toHex(i) as keyof typeof patterns.value] ?? "00"}
 						hex={toHex(i)}
