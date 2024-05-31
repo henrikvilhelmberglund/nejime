@@ -185,72 +185,13 @@ export const shouldPreview = ref(false);
 
 export const bpm = ref(120);
 
-export let song = ref<Patterns>({
-	"00": {
-		channel0: "00",
-		channel1: "01",
-		channel2: "02",
-		channel3: "03",
-		channel4: "04"
-	},
-	"01": {
-		channel0: "20",
-		channel1: "21",
-		channel2: "22",
-		channel3: "23",
-		channel4: "24"
-	}
-});
+export let song = ref<Patterns>({});
 
-export let patterns = ref<Record<string, Pattern>>({
-	"00": {
-		"00": "10",
-		"01": "11",
-		"02": "12"
-	},
-	"01": {
-		"00": "41",
-		"01": "42",
-		"02": "43"
-	}
-});
+export let patterns = ref<Record<string, Pattern>>({});
 
-export let transposePatterns = ref<Record<string, Pattern>>({
-	"00": {
-		"00": "01",
-		"02": "02"
-	},
-	"01": {
-		"00": "01",
-		"01": "02",
-		"02": "03"
-	}
-});
+export let transposePatterns = ref<Record<string, Pattern>>({});
 
-export let phrases = ref<Record<string, Phrase>>({
-	"10": {
-		"00": {
-			"00": "C1",
-			"01": "C2",
-			"02": "C3",
-			"03": "C#3",
-			"05": "F3"
-		},
-		"01": {
-			"00": "G3"
-		}
-	},
-	"11": {
-		"00": { "00": "E3" },
-		"01": { "00": "F3" },
-		"02": { "00": "G3" }
-	},
-	"12": {
-		"00": { "00": "E4" },
-		"01": { "00": "F4" },
-		"02": { "00": "G4" }
-	}
-});
+export let phrases = ref<Record<string, Phrase>>({});
 
 export type InstrumentType = {
 	type: string;
@@ -261,16 +202,6 @@ export type InstrumentType = {
 export let instruments = ref<Record<string, InstrumentType> | undefined>(
 	browser && context.value ?
 		{
-			"00": {
-				type: "soundfont",
-				sound: new Soundfont(context.value, { instrument: instrumentNames["3C"] }),
-				hex: "3C"
-			},
-			"01": {
-				type: "soundfont",
-				sound: new Soundfont(context.value, { instrument: instrumentNames["08"] }),
-				hex: "08"
-			},
 			FF: {
 				type: "soundfontdrums",
 				sound: new Soundfont(context.value, {
@@ -284,20 +215,9 @@ export let instruments = ref<Record<string, InstrumentType> | undefined>(
 	:	undefined
 );
 
-export let instrumentDurations = ref<Record<string, number>>({
-	"00": 0.3,
-	"01": 0.1
-});
+export let instrumentDurations = ref<Record<string, number>>({});
 
-export let phraseInstruments = ref<Record<string, Record<string, string>>>({
-	"10": {
-		"00": "00",
-		"01": "00",
-		"02": "01",
-		"03": "01",
-		"05": "01"
-	}
-});
+export let phraseInstruments = ref<Record<string, Record<string, string>>>({});
 
 let intervalId = $state<Timer>();
 let phraseLoopIntervalId = $state<Timer>();
