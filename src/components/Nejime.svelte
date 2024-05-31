@@ -359,7 +359,7 @@
 		focusedElement.focus();
 	}}
 	role="button"
-	class="mt-4 flex w-full justify-between">
+	class="mt-4 flex w-full justify-between lg:hidden">
 	<div
 		tabindex="0"
 		role="button"
