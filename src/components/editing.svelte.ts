@@ -362,9 +362,9 @@ export function editInstrument({ direction, element }: editProps) {
 			if (
 				instruments.value &&
 				context.value &&
-				!instruments.value[(<HTMLButtonElement>document.activeElement)!.innerText]?.sound
+				!instruments.value[phraseInstruments.value[lastPhraseHex.value][toHex(+row)]]?.sound
 			) {
-				instruments.value[(<HTMLButtonElement>document.activeElement)!.innerText] = {
+				instruments.value[phraseInstruments.value[lastPhraseHex.value][toHex(+row)]] = {
 					type: "soundfont",
 					sound: new Soundfont(context.value, {
 						instrument: instrumentNames["00"]
