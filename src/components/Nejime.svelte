@@ -399,7 +399,7 @@
 			<p>Press C and arrow buttons to change the active view.</p>
 			<p>Press the A button to add a value.</p>
 			<p>Press the A button and arrow buttons to change the active value.</p>
-			<p>Press the B and A buttons to remove a value.</p>
+			<p>Press the B button to remove a value.</p>
 			<br />
 			<p>In a phrase go beyond the bottom or top to go to the next/previous phrase.</p>
 			<p>
@@ -482,9 +482,13 @@
         document.activeElement!.dispatchEvent(
         new KeyboardEvent("keydown", { code: "KeyD", bubbles: true })
       );
+        document.activeElement!.dispatchEvent(
+        new KeyboardEvent("keydown", { code: "KeyF", bubbles: true })
+      );
     }}
 			ontouchend={() => {
 				dPressed.value = false;
+				fPressed.value = false;
 			}}
 			class="rounded-full bg-slate-300 px-4 py-2">B</button>
 		<button
