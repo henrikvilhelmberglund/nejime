@@ -4,7 +4,7 @@
 	import ThemeSwitcher from "$lib/theme/ThemeSwitcher.svelte";
 	import { newSong, saveSong } from "./globalState.svelte";
 
-	let { onShowTutorial } = $props();
+	let { onShowTutorial, onShowInfo } = $props();
 
 	let showing = $state("");
 
@@ -80,6 +80,7 @@
 	{/if}
 	<DarkModeToggle />
 	<button onclick={onShowTutorial} class="i-carbon-help h-12 w-12"></button>
+  <button onclick={onShowInfo} class="i-carbon-information h-12 w-12"></button>
 </footer>
 
 <style>

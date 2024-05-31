@@ -35,6 +35,7 @@
 	import { fade } from "svelte/transition";
 	import Buttons from "./Buttons.svelte";
 	import FancyButton from "./FancyButton.svelte";
+	import { versionNumber } from "$lib/metadata.svelte";
 
 	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 
@@ -45,6 +46,7 @@
 	// }
 
 	let showTutorial = $state(false);
+	let showInfo = $state(false);
 
 	function restoreFocus() {
 		let activeElement = document.activeElement;
@@ -330,8 +332,23 @@
 
 <div class="flex w-[100%] justify-center">
 	<div
-		id="spacer"
-		class="invisible absolute h-[370px] w-[85%] lg:static lg:flex lg:h-[500px] lg:w-[500px] dark:text-white">
+		id="info"
+		class:invisible={!showInfo}
+		class="z-1000 absolute w-[85%] flex-col rounded border border-black bg-slate-100 p-1 text-black lg:static lg:flex lg:h-[370px] lg:h-[500px] lg:w-[500px] dark:bg-slate-950 dark:text-white">
+		<p class="text-lg">Welcome to Nejime {versionNumber}!</p>
+		<br />
+		<p>Nejime is a music tracker made for creating and sharing music.</p>
+		<p>It is heavily WIP and unstable right now but still possibly interesting.</p>
+		<p>I hope you like it! 😊</p>
+		<p>To report bugs/issues, go to</p>
+
+		<a
+			class="underline-blue-500 block flex w-40 items-center underline"
+			href="https://github.com/henrikvilhelmberglund/nejime/issues">
+			<div class="i-carbon-logo-github h-6 w-6"></div>
+			<span>Nejime</span>
+		</a>
+		<p></p>
 	</div>
 	<main
 		tabindex="-1"
@@ -506,7 +523,9 @@
 </div>
 
 <!-- <div class="my-2"></div> -->
-<Buttons onShowTutorial={() => (showTutorial = !showTutorial)} />
+<Buttons
+	onShowTutorial={() => (showTutorial = !showTutorial)}
+	onShowInfo={() => (showInfo = !showInfo)} />
 
 <style>
 	.my-grid {
