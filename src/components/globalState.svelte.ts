@@ -5,7 +5,7 @@ globalThis.Buffer = Buffer;
 import LZString from "lz-string";
 import { browser } from "$app/environment";
 
-function ref<Type>(initial: Type) {
+export function ref<Type>(initial: Type) {
 	let value = $state(initial);
 	return {
 		get value() {
