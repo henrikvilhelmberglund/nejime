@@ -74,7 +74,7 @@
 	{activeScreenState.value.toUpperCase()}
 	{openedInstrument.value}
 </p>
-<main class="flex gap-2 overflow-hidden">
+<main class="flex gap-2 overflow-hidden text-white pl-1">
 	{instrumentNames[instrumentHex]}
 	<button
 		onkeydown={handleKeyPress}
