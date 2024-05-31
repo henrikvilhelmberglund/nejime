@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import { tooltip } from "$lib/actions/tooltip";
 	import DarkModeToggle from "$lib/theme/DarkModeToggle.svelte";
 	import ThemeSwitcher from "$lib/theme/ThemeSwitcher.svelte";
 	import { newSong, saveSong } from "./globalState.svelte";
@@ -28,6 +29,7 @@
 <footer class="fixed bottom-0 flex gap-2 lg:fixed lg:bottom-0 dark:bg-black dark:text-white">
 	<button
 		id="create-song-button"
+    use:tooltip={"Create song"}
 		onclick={() => {
 			toggle("createSong");
 		}}
@@ -45,6 +47,7 @@
 	{/if}
 	<button
 		id="show-songs-button"
+    use:tooltip={"Show demo song"}
 		onclick={() => {
 			toggle("showSongs");
 		}}
@@ -59,6 +62,7 @@
 
 	<button
 		id="save-song-button"
+    use:tooltip={"Save song"}
 		class="i-carbon-save h-12 w-12"
 		onclick={() => {
 			let start = performance.now();
@@ -79,15 +83,16 @@
 	{/if}
 	<button
 		id="show-themes-button"
+    use:tooltip={"Show themes"}
 		class="i-carbon-color-palette h-12 w-12"
 		onclick={() => toggle("showThemes")}></button>
 	{#if showing === "showThemes"}
 		<ThemeSwitcher />
 	{/if}
 	<DarkModeToggle />
-	<button id="show-tutorial-button" onclick={onShowTutorial} class="i-carbon-help h-12 w-12"
+	<button id="show-tutorial-button" use:tooltip={"Show tutorial"} onclick={onShowTutorial} class="i-carbon-help h-12 w-12"
 	></button>
-	<button id="show-info-button" onclick={onShowInfo} class="i-carbon-information h-12 w-12"
+	<button id="show-info-button" onclick={onShowInfo} use:tooltip={"Show information"} class="i-carbon-information h-12 w-12"
 	></button>
 </footer>
 
