@@ -447,8 +447,7 @@
 	</div>
 	<button
 		onclick={() => {
-      
-    document.activeElement!.dispatchEvent(
+    document.querySelector("#nejime")!.dispatchEvent(
       new KeyboardEvent("keydown", { code: "Space", bubbles: true })
     );
   }}
