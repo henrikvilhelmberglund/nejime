@@ -21,10 +21,8 @@
 	}
 
 	function closeSelf(node: any) {
-		console.log(showing);
 		setTimeout(() => {
 			showing = showing === "showSaveSuccessful" ? "" : showing;
-			console.log(showing);
 		}, 1000);
 
 		return {

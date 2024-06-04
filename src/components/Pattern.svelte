@@ -35,7 +35,7 @@
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
-			console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
+			// console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
 			// setTimeout(() => {
 			// 	document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
 			// }, 0);
@@ -48,7 +48,7 @@
 		}
 	});
 
-	$inspect(lastPatternHex.value);
+	// $inspect(lastPatternHex.value);
 </script>
 
 <p class="pl-1 text-lg font-semibold text-white">

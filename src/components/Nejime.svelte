@@ -128,7 +128,7 @@
 
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("row")[1].split("-channel")[0];
-						console.log("position", position);
+						// console.log("position", position);
 						const newPosition = parseInt(position);
 						playPositionsSong.value = {
 							0: newPosition,
@@ -141,7 +141,7 @@
 						playPositionsSong.value = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
 					}
 
-					console.log("playPositions", playPositionsSong.value);
+					// console.log("playPositions", playPositionsSong.value);
 					["channel0", "channel1", "channel2", "channel3", "channel4"].forEach((channel, i) => {
 						// console.table(phrasesToPlay);
 						let patternsToPlay = song.value[toHex(playPositionsSong.value[i])];
@@ -220,7 +220,7 @@
 
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("row")[1].split("-pattern")[0];
-						console.log("position", position);
+						// console.log("position", position);
 						playPositionsPatterns.value["0"] = parseInt(position);
 					} else {
 						playPositionsPatterns.value["0"] = 0;
@@ -269,7 +269,7 @@
 
 					if (e.ctrlKey) {
 						const position = document.activeElement!.id.split("-channel")[0].split("note")[1];
-						console.log("position", position);
+						// console.log("position", position);
 						playPositionsPhrases.value["0"] = parseInt(position);
 					} else {
 						playPositionsPhrases.value["0"] = 0;
@@ -346,7 +346,6 @@
 		onclick={(e) => {
       // console.log(e.target.type)
       if (e.target && e.target instanceof Element && e.target.tagName !== "BUTTON") {
-        console.log(e)
         document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
         }
 		}}
@@ -474,7 +473,7 @@
         fPressed.value = true;
         // ? avoid losing focus on mobile longpress
         focusedElement = document.activeElement;
-        console.log(focusedElement)
+        // console.log(focusedElement)
         document.activeElement!.dispatchEvent(
         new KeyboardEvent("keydown", { code: "KeyF", bubbles: true })
       );

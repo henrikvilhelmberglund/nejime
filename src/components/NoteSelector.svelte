@@ -71,7 +71,7 @@
 					" ",
 					""
 				);
-				console.info("lastTouchedNote", lastTouchedNote.value);
+				// console.info("lastTouchedNote", lastTouchedNote.value);
 				shouldPreview.value = true;
 			}
 		} else {
@@ -80,7 +80,7 @@
 
 		// * remove
 		if (dPressed.value && e.code === "KeyF") {
-			console.log("remove");
+			// console.log("remove");
 			if ((<HTMLButtonElement>document.activeElement).innerText !== "---") {
 				remove({ element: <HTMLButtonElement>document.activeElement });
 			}

@@ -31,7 +31,7 @@
 
     		// * remove
 		if (dPressed.value && e.code === "KeyF") {
-			console.log("remove");
+			// console.log("remove");
 			if ((<HTMLButtonElement>document.activeElement).innerText !== "--") {
 				removeTranspose({ element: <HTMLButtonElement>document.activeElement });
 			}

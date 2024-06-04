@@ -32,7 +32,7 @@ export function toInt(input: string) {
 }
 
 export function toIntFromTranspose(input: string) {
-	console.log("input", input);
+	// console.log("input", input);
 	if (parseInt(input, 16) > 128) {
 		return (256 - parseInt(input, 16)) * -1;
 	} else {
@@ -240,7 +240,7 @@ export function stop(state: string) {
 	// const instruments = createInstrumentsState();
 	// const context = createContextState();
 
-	console.log("state", state);
+	// console.log("state", state);
 	if (state === "phrase" && context.value && instruments.value) {
 		// marimba.start("C3");
 		// let activePhrase = createActivePhraseState();

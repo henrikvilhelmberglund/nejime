@@ -39,7 +39,7 @@
 			});
 		} else {
 			// console.log(document.querySelector("#nejime button"))
-			console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
+			// console.log(document.querySelector<HTMLButtonElement>("#nejime button"));
 			// setTimeout(() => {
 			// 	document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
 			// }, 0);

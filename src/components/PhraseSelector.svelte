@@ -47,7 +47,7 @@
 
 		// * remove
 		if (dPressed.value && e.code === "KeyF") {
-			console.log("remove");
+			// console.log("remove");
 			if ((<HTMLButtonElement>document.activeElement).innerText !== "--") {
 				remove({ element: <HTMLButtonElement>document.activeElement });
 			}
@@ -58,7 +58,7 @@
 		// * edit
 		if (fPressed.value) {
 			// preview({ element: <HTMLButtonElement>document.activeElement });
-			console.log("pressed phrase");
+			// console.log("pressed phrase");
 			if (e.code === "ArrowLeft") {
 				edit({ direction: "left", element: <HTMLButtonElement>document.activeElement });
 			} else if (e.code === "ArrowRight") {
