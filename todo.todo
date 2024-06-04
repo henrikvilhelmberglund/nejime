@@ -3,8 +3,10 @@ core:
   ✔ transpose can go from 00 to FF (to allow for negative transpose) @done(24-04-29 16:21)
   ✔ add drum type and set it as default FF instrument @done(24-05-09 14:56)
   ✔ add instrument type to instruments @done(24-05-09 14:56)
-  ☐ init instrument when a new instrument is added
-  ☐ load instruments using the hex value
+  ✔ init instrument when a new instrument is added @done(24-06-04 14:32)
+  ✔ load instruments using the hex value @done(24-06-04 14:32)
+  ☐ load instruments on each channel to enable stopping notes when a new note appears on the same channel
+  ☐ add command column with support for changing bpm, adding vibrato and pitch bending
     
 UI:
   ✔ add transpose field @done(24-04-19 16:59)
@@ -23,8 +25,8 @@ saving songs:
   ☐ save song data in local storage in case of crash
   ✔ save song data as string (base64?) @done(24-05-03 17:09)
   ✔ load song data from string (base64?) @done(24-05-03 17:09)
-  ☐ add instrument type and number for saving and create instruments on load
-  ☐ create button which copies the song link to clipboard
+  ✔ add instrument type and number for saving and create instruments on load @done(24-06-04 14:32)
+  ✔ create button which copies the song link to clipboard @done(24-06-04 14:32)
 
 editing:
   ✔ add way to play back song @done(24-05-07 15:06)
