@@ -10,7 +10,7 @@ import {
 	lastTouchedPhrase,
 	song,
 	instruments,
-	type instrumentType,
+	type InstrumentType,
 	phraseInstruments,
 	patterns,
 	transposePatterns,
@@ -124,7 +124,7 @@ export function add({ element }: addProps) {
 
 type previewProps = {
 	element: HTMLButtonElement;
-	instrument: instrumentType;
+	instrument: InstrumentType;
 };
 
 export function preview({ element, instrument }: previewProps) {
@@ -135,8 +135,10 @@ export function preview({ element, instrument }: previewProps) {
 	if (selectedNote === undefined) return;
 	// marimba.start({ note: selectedNote });
 
-	instrument.sound.stop();
-	instrument.sound.start({ note: selectedNote });
+	if (instrument.sound) {
+		instrument.sound.stop();
+		instrument.sound.start({ note: selectedNote });
+	}
 	// setTimeout(
 	//   () => {
 	//     instrument.stop();
@@ -151,7 +153,7 @@ type editProps = {
 };
 
 export function stopNotePreview({ element, instrument }: previewProps) {
-	if (instrument) {
+	if (instrument.sound) {
 		instrument.sound.stop();
 	}
 }

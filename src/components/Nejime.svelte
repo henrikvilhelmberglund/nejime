@@ -37,23 +37,11 @@
 	import FancyButton from "./FancyButton.svelte";
 	import { versionNumber } from "$lib/metadata.svelte";
 
-	let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
+	// let allStates = ["song", "pattern", "phrase", "instrument", "project-song", "project-pattern"];
 
 	let focusedElement = $state();
-
-	// function getCurrentActiveElement() {
-	//   return document.activeElement
-	// }
-
 	let showTutorial = $state(false);
 	let showInfo = $state(false);
-
-	function restoreFocus() {
-		let activeElement = document.activeElement;
-		setTimeout(() => {
-			activeElement.focus();
-		}, 0);
-	}
 
 	function changeState(direction: string) {
 		let activeElement = <HTMLButtonElement>document.activeElement!;
@@ -357,8 +345,10 @@
 		onkeydown={(e) => handleKeyDown(e)}
 		onclick={(e) => {
       // console.log(e.target.type)
-      if (!e.target.type)
-			document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
+      if (e.target && e.target instanceof Element && e.target.tagName !== "BUTTON") {
+        console.log(e)
+        document.querySelector<HTMLButtonElement>("#nejime button")!.focus();
+        }
 		}}
 		onkeyup={(e) => {
 			// console.log(e);
@@ -372,7 +362,7 @@
 				fPressed.value = false;
 			}
 		}}
-		class="bg-[#2971e7] dark:bg-primary-950 flex h-[370px] w-[85%] flex-col rounded border border-black text-black lg:h-[500px] lg:w-[500px] dark:text-white">
+		class="dark:bg-primary-950 flex h-[370px] w-[85%] flex-col rounded border border-black bg-[#2971e7] text-black lg:h-[500px] lg:w-[500px] dark:text-white">
 		{#if activeScreenState.value === "song"}
 			<Song />
 		{:else if activeScreenState.value === "pattern"}
@@ -438,7 +428,9 @@
 		// e.stopPropagation();
 		// e.stopImmediatePropagation();
 		// return false;
-		focusedElement.focus();
+		if (focusedElement && focusedElement instanceof HTMLButtonElement) {
+			focusedElement.focus();
+		}
 	}}
 	role="button"
 	class="mt-4 flex w-full justify-between lg:hidden">

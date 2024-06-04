@@ -3,9 +3,16 @@
 	import { tooltip } from "$lib/actions/tooltip";
 	import DarkModeToggle from "$lib/theme/DarkModeToggle.svelte";
 	import ThemeSwitcher from "$lib/theme/ThemeSwitcher.svelte";
+	import type { MouseEventHandler } from "svelte/elements";
 	import { newSong, saveSong } from "./globalState.svelte";
 
-	let { onShowTutorial, onShowInfo } = $props();
+	let {
+		onShowTutorial,
+		onShowInfo
+	}: {
+		onShowTutorial: MouseEventHandler<HTMLButtonElement>;
+		onShowInfo: MouseEventHandler<HTMLButtonElement>;
+	} = $props();
 
 	let showing = $state("");
 
@@ -29,7 +36,7 @@
 <footer class="fixed bottom-0 flex gap-2 lg:fixed lg:bottom-0 dark:bg-black dark:text-white">
 	<button
 		id="create-song-button"
-    use:tooltip={"Create song"}
+		use:tooltip={"Create song"}
 		onclick={() => {
 			toggle("createSong");
 		}}
@@ -47,7 +54,7 @@
 	{/if}
 	<button
 		id="show-songs-button"
-    use:tooltip={"Show demo song"}
+		use:tooltip={"Show demo song"}
 		onclick={() => {
 			toggle("showSongs");
 		}}
@@ -62,7 +69,7 @@
 
 	<button
 		id="save-song-button"
-    use:tooltip={"Save song"}
+		use:tooltip={"Save song"}
 		class="i-carbon-save h-12 w-12"
 		onclick={() => {
 			let start = performance.now();
@@ -83,17 +90,23 @@
 	{/if}
 	<button
 		id="show-themes-button"
-    use:tooltip={"Show themes"}
+		use:tooltip={"Show themes"}
 		class="i-carbon-color-palette h-12 w-12"
 		onclick={() => toggle("showThemes")}>Show themes</button>
 	{#if showing === "showThemes"}
 		<ThemeSwitcher />
 	{/if}
 	<DarkModeToggle />
-	<button id="show-tutorial-button" use:tooltip={"Show tutorial"} onclick={onShowTutorial} class="i-carbon-help h-12 w-12"
-	>Show tutorial</button>
-	<button id="show-info-button" onclick={onShowInfo} use:tooltip={"Show information"} class="i-carbon-information h-12 w-12"
-	>Show info</button>
+	<button
+		id="show-tutorial-button"
+		use:tooltip={"Show tutorial"}
+		onclick={onShowTutorial}
+		class="i-carbon-help h-12 w-12">Show tutorial</button>
+	<button
+		id="show-info-button"
+		onclick={onShowInfo}
+		use:tooltip={"Show information"}
+		class="i-carbon-information h-12 w-12">Show info</button>
 </footer>
 
 <style>
